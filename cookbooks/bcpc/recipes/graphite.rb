@@ -25,6 +25,7 @@ ruby_block "initialize-graphite-config" do
     block do
         make_config('mysql-graphite-user', "graphite")
         make_config('mysql-graphite-password', secure_password)
+        make_config('graphite-secret-key', secure_password)
     end
 end
 
@@ -113,6 +114,12 @@ template "/opt/graphite/webapp/graphite/local_settings.py" do
     mode 00644
     variables( :servers => get_head_nodes )
     notifies :restart, "service[apache2]", :delayed
+end
+
+bash "remove-app-settings-secret-key" do
+    user "root"
+    code "sed --in-place '/^SECRET_KEY /d' /opt/graphite/webapp/graphite/app_settings.py"
+    only_if "grep -e '^SECRET_KEY ' /opt/graphite/webapp/graphite/app_settings.py"
 end
 
 execute "graphite-storage-ownership" do

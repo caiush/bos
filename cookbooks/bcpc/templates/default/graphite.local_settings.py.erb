@@ -177,5 +177,6 @@ CARBONLINK_HOSTS = [ <%="#{@servers.collect{|x| "\""+x['bcpc']['management']['ip
 #####################################
 # Uncomment the following line for direct access to Django settings such as
 # MIDDLEWARE_CLASSES or APPS
-#from graphite.app_settings import *
-
+from graphite.app_settings import *
+SECRET_KEY = '<%="#{get_config('graphite-secret-key')}"%>'
+ALLOWED_HOSTS = ['*']
