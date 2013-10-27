@@ -135,6 +135,15 @@
 
 <source>
     type tail_multiline
+    path /var/log/heat/heat-api.log,/var/log/heat/heat-api-cfn.log,/var/log/heat/heat-engine.log
+    pos_file /var/log/td-agent/openstack-heat.pos
+    tag pre.openstack.heat
+    format /^(?<time>[^ ]* [^ ]*)\s*(?<pid>([0-9]+)?)\s*(?<level>[a-zA-Z]*)\s*(?<ident>[^ ]*)\s*(\[.*\])?\s*(?<message>.*)$/
+    time_format %Y-%m-%d %H:%M:%S
+</source>
+
+<source>
+    type tail_multiline
     path /var/lib/mysql/<%="#{node[:hostname]}"%>.err
     pos_file /var/log/td-agent/mysql.pos
     tag pre.mysql
