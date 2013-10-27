@@ -46,7 +46,7 @@ template "/etc/keystone/keystone.conf" do
     owner "keystone"
     group "keystone"
     mode 00600
-    notifies :restart, "service[keystone]", :delayed
+    notifies :restart, "service[apache2]", :delayed
 end
 
 template "/etc/keystone/cert.pem" do
@@ -54,7 +54,7 @@ template "/etc/keystone/cert.pem" do
     owner "keystone"
     group "keystone"
     mode 00644
-    notifies :restart, "service[keystone]", :delayed
+    notifies :restart, "service[apache2]", :delayed
 end
 
 template "/etc/keystone/key.pem" do
@@ -62,7 +62,7 @@ template "/etc/keystone/key.pem" do
     owner "keystone"
     group "keystone"
     mode 00600
-    notifies :restart, "service[keystone]", :delayed
+    notifies :restart, "service[apache2]", :delayed
 end
 
 template "/root/adminrc" do
@@ -105,7 +105,7 @@ bash "apache-enable-keystone" do
 end
 
 service "keystone" do
-    action [ :enable, :start ]
+    action [ :disable, :stop ]
     restart_command "(service keystone stop || true) && service keystone start && sleep 5"
 end
 
@@ -131,7 +131,7 @@ bash "keystone-database-sync" do
     action :nothing
     user "root"
     code "keystone-manage db_sync"
-    notifies :restart, "service[keystone]", :immediately
+    notifies :restart, "service[apache2]", :immediately
 end
 
 bash "keystone-service-catalog-keystone" do
@@ -140,9 +140,9 @@ bash "keystone-service-catalog-keystone" do
         . /root/keystonerc
         export KEYSTONE_ID=`keystone service-create --name=keystone --type=identity --description="Identity Service" | grep " id " | awk '{print $4}'`
         keystone endpoint-create --region #{node[:bcpc][:region_name]} --service_id $KEYSTONE_ID \
-            --publicurl   "http://#{node[:bcpc][:management][:vip]}:5000/v2.0" \
-            --adminurl    "http://#{node[:bcpc][:management][:vip]}:35357/v2.0" \
-            --internalurl "http://#{node[:bcpc][:management][:vip]}:5000/v2.0"
+            --publicurl   "https://#{node[:bcpc][:management][:vip]}:5000/v2.0" \
+            --adminurl    "https://#{node[:bcpc][:management][:vip]}:35357/v2.0" \
+            --internalurl "https://#{node[:bcpc][:management][:vip]}:5000/v2.0"
     EOH
     only_if ". /root/keystonerc; keystone service-get keystone 2>&1 | grep -e '^No service'"
 end
