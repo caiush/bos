@@ -199,6 +199,32 @@ bash "keystone-service-catalog-ec2" do
     only_if ". /root/keystonerc; keystone service-get ec2 2>&1 | grep -e '^No service'"
 end
 
+bash "keystone-service-catalog-heat" do
+    user "root"
+    code <<-EOH
+        . /root/keystonerc
+        export HEAT_ID=`keystone service-create --name=heat --type=orchestration --description="Heat Orchestration API" | grep " id " | awk '{print $4}'`
+        keystone endpoint-create --region #{node[:bcpc][:region_name]} --service_id $HEAT_ID \
+            --publicurl   "http://#{node[:bcpc][:management][:vip]}:8004/v1/\\\$(tenant_id)s" \
+            --adminurl    "http://#{node[:bcpc][:management][:vip]}:8004/v1/\\\$(tenant_id)s" \
+            --internalurl "http://#{node[:bcpc][:management][:vip]}:8004/v1/\\\$(tenant_id)s"
+    EOH
+    only_if ". /root/keystonerc; keystone service-get heat 2>&1 | grep -e '^No service'"
+end
+
+bash "keystone-service-catalog-heat-cfn" do
+    user "root"
+    code <<-EOH
+        . /root/keystonerc
+        export HEAT_CFN_ID=`keystone service-create --name=heat-cfn --type=cloudformation --description="Heat CloudFormation API" | grep " id " | awk '{print $4}'`
+        keystone endpoint-create --region #{node[:bcpc][:region_name]} --service_id $HEAT_CFN_ID \
+            --publicurl   "http://#{node[:bcpc][:management][:vip]}:8000/v1" \
+            --adminurl    "http://#{node[:bcpc][:management][:vip]}:8000/v1" \
+            --internalurl "http://#{node[:bcpc][:management][:vip]}:8000/v1"
+    EOH
+    only_if ". /root/keystonerc; keystone service-get heat-cfn 2>&1 | grep -e '^No service'"
+end
+
 bash "keystone-service-catalog-s3" do
     action :nothing
     user "root"

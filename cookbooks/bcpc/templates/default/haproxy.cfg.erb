@@ -159,6 +159,24 @@ listen nova-compute <%="#{node[:bcpc][:management][:vip]}"%>:8774
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8774 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
+listen heat-api <%="#{node[:bcpc][:management][:vip]}"%>:8004
+  balance  source
+  option  tcplog
+  option httpchk GET /
+  http-check expect status 300
+<% @servers.each do |server| -%>
+  <%= "server #{server.hostname} #{server[:bcpc][:management][:ip]}:8004 check inter 1s rise 1 fall 1" %>
+<% end -%>
+
+listen heat-api-cfn <%="#{node[:bcpc][:management][:vip]}"%>:8000
+  balance  source
+  option  tcplog
+  option httpchk GET /
+  http-check expect status 300
+<% @servers.each do |server| -%>
+  <%= "server #{server.hostname} #{server[:bcpc][:management][:ip]}:8000 check inter 1s rise 1 fall 1" %>
+<% end -%>
+
 listen horizon-http <%="#{node[:bcpc][:management][:vip]}"%>:80
   balance  source
   option  tcplog

@@ -30,7 +30,7 @@ apt_repository "openstack" do
 end
 
 %w{python-novaclient python-cinderclient python-glanceclient nova-common python-nova
-   python-keystoneclient python-nova-adminclient python-mysqldb}.each do |pkg|
+   python-keystoneclient python-nova-adminclient python-heatclient python-mysqldb}.each do |pkg|
         package pkg do
             action :upgrade
         end

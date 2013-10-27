@@ -143,7 +143,7 @@ OPENSTACK_KEYSTONE_URL = "https://%s:5000/v2.0" % OPENSTACK_HOST
 OPENSTACK_KEYSTONE_DEFAULT_ROLE = "<%="#{node[:bcpc][:member_role]}"%>"
 
 # Disable SSL certificate checks (useful for self-signed certificates):
-# OPENSTACK_SSL_NO_VERIFY = True
+OPENSTACK_SSL_NO_VERIFY = True
 
 # The CA certificate to use to verify SSL connections
 OPENSTACK_SSL_CACERT = '/etc/ssl/certs/ssl-bcpc.pem'
