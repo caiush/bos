@@ -225,6 +225,19 @@ bash "keystone-service-catalog-heat-cfn" do
     only_if ". /root/keystonerc; keystone service-get heat-cfn 2>&1 | grep -e '^No service'"
 end
 
+bash "keystone-service-catalog-ceilometer" do
+    user "root"
+    code <<-EOH
+        . /root/keystonerc
+        export CEILOMETER_ID=`keystone service-create --name=ceilometer --type=metering --description="Ceilometer Metring API" | grep " id " | awk '{print $4}'`
+        keystone endpoint-create --region #{node[:bcpc][:region_name]} --service_id $CEILOMETER_ID \
+            --publicurl   "http://#{node[:bcpc][:management][:vip]}:8777/" \
+            --adminurl    "http://#{node[:bcpc][:management][:vip]}:8777/" \
+            --internalurl "http://#{node[:bcpc][:management][:vip]}:8777/"
+    EOH
+    only_if ". /root/keystonerc; keystone service-get ceilometer 2>&1 | grep -e '^No service'"
+end
+
 bash "keystone-service-catalog-s3" do
     action :nothing
     user "root"

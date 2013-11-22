@@ -19,6 +19,7 @@
       "recipe[bcpc::cinder]",
       "recipe[bcpc::nova-head]",
       "recipe[bcpc::heat]",
+      "recipe[bcpc::ceilometer-head]",
       "recipe[bcpc::horizon]",
       "recipe[bcpc::powerdns]",
       "recipe[bcpc::graphite]",

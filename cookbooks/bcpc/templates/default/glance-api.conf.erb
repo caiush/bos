@@ -208,7 +208,7 @@ registry_client_protocol = http
 # There are three methods of sending notifications, logging (via the
 # log_file directive), rabbit (via a rabbitmq queue), qpid (via a Qpid
 # message queue), or noop (no notifications sent, the default)
-notifier_strategy = noop
+notifier_strategy = rabbit
 
 # Configuration options if sending notifications via rabbitmq (these are
 # the defaults)
@@ -220,7 +220,7 @@ rabbit_password = <%="#{get_config('rabbitmq-password')}"%>
 rabbit_virtual_host = /
 rabbit_notification_exchange = glance
 rabbit_notification_topic = notifications
-rabbit_durable_queues = False
+rabbit_durable_queues = True
 
 # Configuration options if sending notifications via Qpid (these are
 # the defaults)

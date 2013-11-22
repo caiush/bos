@@ -177,6 +177,15 @@ listen heat-api-cfn <%="#{node[:bcpc][:management][:vip]}"%>:8000
   <%= "server #{server.hostname} #{server[:bcpc][:management][:ip]}:8000 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
+listen ceilometer-api <%="#{node[:bcpc][:management][:vip]}"%>:8777
+  balance  source
+  option  tcplog
+  option httpchk GET /
+  http-check expect status 401
+<% @servers.each do |server| -%>
+  <%= "server #{server.hostname} #{server[:bcpc][:management][:ip]}:8777 check inter 1s rise 1 fall 1" %>
+<% end -%>
+
 listen horizon-http <%="#{node[:bcpc][:management][:vip]}"%>:80
   balance  source
   option  tcplog

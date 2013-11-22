@@ -44,6 +44,10 @@ glance_api_version=2
 # Volume driver settings for RBD
 enabled_backends=<%="#{node[:bcpc][:ceph][:enabled_pools].map {|type| type.upcase}.join(",")}"%>
 
+# Ceilometer metrics
+control_exchange = cinder
+notification_driver = cinder.openstack.common.notifier.rpc_notifier
+
 <% node[:bcpc][:ceph][:enabled_pools].each do |type| -%>
 [<%="#{type.upcase}"%>]
 volume_driver=cinder.volume.drivers.rbd.RBDDriver
