@@ -17,19 +17,8 @@
 # limitations under the License.
 #
 
-include_recipe "bcpc::openstack"
 include_recipe "bcpc::ceph-work"
-
-ruby_block "initialize-nova-work-config" do
-    block do
-        require 'openssl'
-        require 'net/ssh'
-        key = OpenSSL::PKey::RSA.new 2048;
-        pubkey = "#{key.ssh_type} #{[ key.to_blob ].pack('m0')}"
-        make_config('ssh-nova-private-key', key.to_pem)
-        make_config('ssh-nova-public-key', pubkey)
-    end
-end
+include_recipe "bcpc::nova-common"
 
 package "nova-compute-#{node[:bcpc][:virt_type]}" do
     action :upgrade
@@ -41,6 +30,9 @@ end
     end
     service pkg do
         action [ :enable, :start ]
+        subscribes :restart, "template[/etc/nova/nova.conf]", :delayed
+        subscribes :restart, "template[/etc/nova/api-paste.ini]", :delayed
+        subscribes :restart, "template[/etc/nova/policy.json]", :delayed
     end
 end
 
@@ -48,43 +40,10 @@ service "nova-api" do
     restart_command "(service nova-api stop || true) && service nova-api start && sleep 5"
 end
 
-%w{novnc pm-utils memcached python-memcache sysfsutils}.each do |pkg|
+%w{novnc pm-utils memcached sysfsutils}.each do |pkg|
     package pkg do
         action :upgrade
     end
-end
-
-template "/etc/nova/nova.conf" do
-    source "nova.conf.erb"
-    owner "nova"
-    group "nova"
-    mode 00600
-    notifies :restart, "service[nova-api]", :delayed
-    notifies :restart, "service[nova-compute]", :delayed
-    notifies :restart, "service[nova-network]", :delayed
-    notifies :restart, "service[nova-novncproxy]", :delayed
-end
-
-template "/etc/nova/api-paste.ini" do
-    source "nova.api-paste.ini.erb"
-    owner "nova"
-    group "nova"
-    mode 00600
-    notifies :restart, "service[nova-api]", :delayed
-    notifies :restart, "service[nova-compute]", :delayed
-    notifies :restart, "service[nova-network]", :delayed
-    notifies :restart, "service[nova-novncproxy]", :delayed
-end
-
-template "/etc/nova/policy.json" do
-    source "policy.json.erb"
-    owner "nova"
-    group "nova"
-    mode 00600
-    notifies :restart, "service[nova-api]", :delayed
-    notifies :restart, "service[nova-compute]", :delayed
-    notifies :restart, "service[nova-network]", :delayed
-    notifies :restart, "service[nova-novncproxy]", :delayed
 end
 
 directory "/var/lib/nova/.ssh" do
