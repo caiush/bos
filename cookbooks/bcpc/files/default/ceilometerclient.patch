@@ -1,0 +1,29 @@
+--- client.py.orig      2013-11-21 23:04:24.838188266 -0500
++++ client.py   2013-11-21 23:06:30.179597770 -0500
+@@ -30,6 +30,7 @@
+                            tenant_name=kwargs.get('tenant_name'),
+                            auth_url=kwargs.get('auth_url'),
+                            region_name=kwargs.get('region_name'),
++                           cacert=kwargs.get('cacert'),
+                            insecure=kwargs.get('insecure'))
+
+
+@@ -72,6 +73,7 @@
+             'region_name': kwargs.get('os_region_name'),
+             'service_type': kwargs.get('os_service_type'),
+             'endpoint_type': kwargs.get('os_endpoint_type'),
++            'cacert': kwargs.get('ca_file'),
+             'insecure': kwargs.get('insecure'),
+         }
+         _ksclient = _get_ksclient(**ks_kwargs)
+
+--- shell.py.orig       2013-11-21 23:03:02.060419990 -0500
++++ shell.py    2013-11-21 23:04:01.386688198 -0500
+@@ -77,6 +77,7 @@
+                             'prepended to your cert file.')
+
+         parser.add_argument('--ca-file',
++                            default=utils.env('OS_CACERT'),
+                             help='Path of CA SSL certificate(s) used to verify'
+                             ' the remote server certificate. Without this '
+                             'option ceilometer looks for the default system '

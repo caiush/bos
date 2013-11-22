@@ -49,18 +49,20 @@ directory "/opt/openstack" do
     mode 00755
 end
 
-cookbook_file "/tmp/heatclient.patch" do
-    source "heatclient.patch"
-    owner "root"
-    mode 00644
-end
+%w{heat ceilometer}.each do |client|
+    cookbook_file "/tmp/#{client}client.patch" do
+        source "#{client}client.patch"
+        owner "root"
+        mode 00644
+    end
 
-bash "patch-for-heatclient-bugs" do
-    user "root"
-    code <<-EOH
-        cd /usr/lib/python2.7/dist-packages/heatclient
-        patch -p0 < /tmp/heatclient.patch
-        cp /tmp/heatclient.patch .
-    EOH
-    not_if "test -f /usr/lib/python2.7/dist-packages/heatclient/heatclient.patch"
+    bash "patch-for-#{client}client-bugs" do
+        user "root"
+        code <<-EOH
+            cd /usr/lib/python2.7/dist-packages/#{client}client
+            patch -p0 < /tmp/#{client}client.patch
+            cp /tmp/#{client}client.patch .
+        EOH
+        not_if "test -f /usr/lib/python2.7/dist-packages/#{client}client/#{client}client.patch"
+    end
 end
