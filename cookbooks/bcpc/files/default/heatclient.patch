@@ -1,14 +1,19 @@
---- shell.py.orig       2013-11-21 12:59:51.046409233 -0500
-+++ shell.py    2013-11-21 13:12:49.210385762 -0500
-@@ -74,6 +74,7 @@
-                             ' prepended to your cert file.')
+--- shell.py.orig       2013-11-28 09:21:18.549667830 -0500
++++ shell.py    2013-11-28 09:31:03.286806741 -0500
+@@ -166,6 +166,12 @@
+         parser.add_argument('--os_endpoint_type',
+                             help=argparse.SUPPRESS)
 
-         parser.add_argument('--ca-file',
++        parser.add_argument('--os-cacert',
 +                            default=utils.env('OS_CACERT'),
-                             help='Path of CA SSL certificate(s) used to verify'
-                             ' the remote server\'s certificate. Without this'
-                             ' option the client looks'
-@@ -220,6 +221,7 @@
++                            help="Specify a CA bundle file to use in "
++                            "verifying a TLS (https) server certificate. "
++                            "Defaults to env[OS_CACERT]")
++
+         parser.add_argument('-t', '--token-only',
+                             default=bool(False),
+                             action='store_true',
+@@ -220,6 +226,7 @@
                                 tenant_id=kwargs.get('tenant_id'),
                                 tenant_name=kwargs.get('tenant_name'),
                                 auth_url=kwargs.get('auth_url'),
@@ -16,10 +21,10 @@
                                 insecure=kwargs.get('insecure'))
 
      def _get_endpoint(self, client, **kwargs):
-@@ -296,6 +298,7 @@
+@@ -296,6 +303,7 @@
              'auth_url': args.os_auth_url,
              'service_type': args.os_service_type,
              'endpoint_type': args.os_endpoint_type,
-+            'cacert': args.ca_file,
++            'cacert': args.os_cacert,
              'insecure': args.insecure
          }
