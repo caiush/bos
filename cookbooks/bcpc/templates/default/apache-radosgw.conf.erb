@@ -36,7 +36,7 @@ FastCgiExternalServer /var/www/s3gw.fcgi -socket /var/lib/ceph/radosgw/rgw_fcgi.
         </IfModule>
         AllowEncodedSlashes On
         ErrorLog /var/log/apache2/rgw_error.log
-        CustomLog /var/log/apache2/rgw_access.log combined
+        CustomLog /var/log/apache2/rgw_access.log  "%h %l %u %t \"%r\" %>s %I/%O [%D] \"%{Referer}i\" \"%{User-Agent}i\""
         ServerSignature Off
 </VirtualHost>
 
