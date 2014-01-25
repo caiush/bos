@@ -53,7 +53,7 @@ function download_VM_files {
   fi
 
   # Can we create the bootstrap VM via Vagrant
-  if hash vagrant ; then
+  if hash vagrant 2> /dev/null ; then
     echo "Vagrant detected - downloading Vagrant box for bcpc-bootstrap VM"
     if [[ ! -f precise-server-cloudimg-amd64-vagrant-disk1.box ]]; then
       $CURL -o precise-server-cloudimg-amd64-vagrant-disk1.box http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box
@@ -210,7 +210,7 @@ function install_cluster {
 environment=${1-Test-Laptop}
 ip=${2-10.0.100.3}
   # VMs are now created - if we are using Vagrant, finish the install process.
-  if hash vagrant ; then
+  if hash vagrant 2> /dev/null ; then
     pushd $P
     # N.B. As of Aug 2013, grub-pc gets confused and wants to prompt re: 3-way
     # merge.  Sigh.
