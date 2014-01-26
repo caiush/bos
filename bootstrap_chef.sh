@@ -62,10 +62,13 @@ if [[ -z $VAGRANT ]]; then
   fi
   echo "Running rsync of non-Vagrant install"
   rsync  $RSYNCEXTRA -avP -e "ssh -i $KEYFILE" --exclude vbox --exclude $KEYFILE --exclude .chef . ${SSH_USER}@$IP:chef-bcpc 
+  rsync  $RSYNCEXTRA -avP -e "ssh -i $KEYFILE" vbox/ubuntu-12.04-mini.iso ${SSH_USER}@$IP:chef-bcpc/cookbooks/bcpc/files/default/bins
   $SSH_CMD "cd $BCPC_DIR && ./setup_ssh_keys.sh ${KEYFILE}.pub"
 else
   echo "Running rsync of Vagrant install"
   $SSH_CMD "rsync $RSYNCEXTRA -avP --exclude vbox --exclude .chef /chef-bcpc-host/ /home/vagrant/chef-bcpc/"
+  echo "Rsync over the hypervisor mini ISO to avoid redownloading"
+  $SSH_CMD "rsync $RSYNCEXTRA -avP /chef-bcpc-host/vbox/ubuntu-12.04-mini.iso  /home/vagrant/chef-bcpc/cookbooks/bcpc/files/default/bins"
 fi
 
 echo "Setting up chef server"
