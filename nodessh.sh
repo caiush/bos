@@ -12,13 +12,13 @@
 # $4 (optional) if 'sudo' is specified, the command will be executed using sudo
 #
 if [[ -z "$1" || -z "$2" || -z "$3" ]]; then
-	NAME=$(basename "$0")
-	if [[ "$NAME" = nodescp ]]; then		
-		echo "Usage: $0 'environment' 'nodename|IP address' 'from' 'to'"
-	else
-		echo "Usage: $0 'environment' 'nodename|IP address' 'command' (sudo)"
+    NAME=$(basename "$0")
+    if [[ "$NAME" = nodescp ]]; then		
+	echo "Usage: $0 'environment' 'nodename|IP address' 'from' 'to'"
+    else
+	echo "Usage: $0 'environment' 'nodename|IP address' 'command' (sudo)"
     fi
-	exit
+    exit
 fi
 
 if [[ -z `which sshpass` ]]; then
@@ -27,7 +27,7 @@ if [[ -z `which sshpass` ]]; then
 fi
 
 ENVIRONMENT=$1
-NODE=$2
+IP=$2
 COMMAND=$3
 
 # verify we can access the data bag for this environment
@@ -44,7 +44,6 @@ if [[ -z "$PASSWD" ]]; then
     exit
 fi
 
-IP=$2
 
 # check if the specified host is responding
 #UP=`ping -c 1 $IP | grep ttl`
@@ -53,11 +52,24 @@ IP=$2
 #    exit
 #fi
 
-SSHCOMMON="-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o VerifyHostKeyDNS=no"
+if [[ $(basename "$0") == nssh ]]; then
+    SSH1COMMON=""
+else
+    SSHCOMMON="-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o VerifyHostKeyDNS=no"
+fi
+
+apply_command() {
+    "$@"
+    RES=$?
+    if [[ "$RES" -ne 0 ]]; then
+	echo "Executing '$@' failed"
+	exit $RES
+    fi
+}
 
 if [[ $(basename "$0") == nodescp ]]; then
     SCPCMD="scp $SSHCOMMON"
-    sshpass -p $PASSWD $SCPCMD -p "$3" "$4"
+    apply_command sshpass -p $PASSWD $SCPCMD -p "$3" "$4"
 else
     # finally ... run the specified command
     # the -t creates a pty which ensures we see errors if the command fails
@@ -66,14 +78,14 @@ else
 
     if [[ "$4" == sudo ]]; then
         # if we need to sudo, pipe the passwd to that too
-	sshpass -p $PASSWD $SSHCMD -t ubuntu@$IP "echo $PASSWD | sudo -S $COMMAND"
+	apply_command sshpass -p $PASSWD $SSHCMD -t ubuntu@$IP "echo $PASSWD | sudo -S $COMMAND"
     else  
         # not sudo, do it the normal way
 	if [[ "$COMMAND" == - ]]; then
 	    echo "You might need this : cobbler_root = $PASSWD"
-	    sshpass -p $PASSWD $SSHCMD -t ubuntu@$IP
+	    apply_command sshpass -p $PASSWD $SSHCMD -t ubuntu@$IP
 	else
-	    sshpass -p $PASSWD $SSHCMD -t ubuntu@$IP "$COMMAND"
+	    apply_command sshpass -p $PASSWD $SSHCMD -t ubuntu@$IP "$COMMAND"
 	fi
     fi
 fi 
