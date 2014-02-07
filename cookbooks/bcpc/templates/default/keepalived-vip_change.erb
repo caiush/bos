@@ -25,6 +25,11 @@ service zabbix-agent restart
 # Restart the powerdns service
 service pdns restart
 
+# kill the zabbix server if no longer vip
+if_not_vip service zabbix-server stop
+# and start one up if we got the vip
+if_vip service zabbix-server start
+
 # Restart the openstack services that connect to the VIP
 for i in keystone glance-api glance-registry cinder-api cinder-scheduler cinder-volume nova-api nova-cert nova-compute nova-conductor nova-consoleauth nova-network nova-novncproxy nova-scheduler; do
 	service $i restart
