@@ -86,6 +86,7 @@ default['bcpc']['fixed']['cidr'] = "1.127.0.0/16"
 default['bcpc']['fixed']['vlan_start'] = "1000"
 default['bcpc']['fixed']['num_networks'] = "100"
 default['bcpc']['fixed']['network_size'] = "256"
+default['bcpc']['fixed']['dhcp_lease_time'] = 3600
 
 default['bcpc']['ntp_servers'] = [ "pool.ntp.org" ]
 default['bcpc']['dns_servers'] = [ "8.8.8.8", "8.8.4.4" ]
