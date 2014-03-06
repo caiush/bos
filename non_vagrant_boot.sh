@@ -7,11 +7,8 @@
 echo "this is not working yet"
 exit
 
-VBM=VBoxManage
-if ! hash $VBM 2> /dev/null ; then
-  echo "You do not appear to have $VBM from VirtualBox"
-  exit 1
-fi
+# bash imports
+source ./virtualbox_env.sh
 
 UP=`$VBM showvminfo bcpc-bootstrap | grep -i State`
 if [[ ! $UP =~ running ]]; then
