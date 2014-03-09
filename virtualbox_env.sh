@@ -19,7 +19,7 @@ if [[ -z "$VBM" ]]; then
         local IFS='.'
         local version="$(VBoxManage --version)"
         local version_array
-        read -a version_array <<< "$($VBM --version)"
+        read -a version_array <<< "$version"
 
         if ! [[ "${version_array[0]}" -ge "$MIN_MAJOR" && \
                 "${version_array[1]}" -ge "$MIN_MINOR" ]]
