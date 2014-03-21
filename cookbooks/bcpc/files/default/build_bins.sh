@@ -39,10 +39,19 @@ if [ ! -f kibana3.tgz ]; then
 fi
 FILES="kibana3.tgz $FILES"
 
+# any pegged gem versions
+REV_elasticsearch="0.2.0"
+
 # Grab plugins for fluentd
 for i in elasticsearch tail-multiline tail-ex record-reformer rewrite; do
     if [ ! -f fluent-plugin-${i}.gem ]; then
-        gem fetch fluent-plugin-${i}
+        PEG=REV_${i}
+        if [[ ! -z ${!PEG} ]]; then
+            VERS="-v ${!PEG}"
+        else
+            VERS=""
+        fi
+        gem fetch fluent-plugin-${i} ${VERS}
         mv fluent-plugin-${i}-*.gem fluent-plugin-${i}.gem
     fi
     FILES="fluent-plugin-${i}.gem $FILES"
