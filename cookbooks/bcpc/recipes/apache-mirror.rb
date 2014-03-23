@@ -19,8 +19,11 @@
 
 package "apache2"
 
-service "apache2" do
-    action [ :enable, :start ]
+bash "apache-enable-version" do
+    user "root"
+    code "a2enmod version"
+    not_if "test -r /etc/apache2/mods-enabled/version.load"
+    notifies :restart, "service[apache2]", :delayed
 end
 
 template "/etc/apache2/sites-available/default" do
@@ -30,3 +33,8 @@ template "/etc/apache2/sites-available/default" do
     mode 00644
     notifies :restart, "service[apache2]", :delayed
 end
+
+service "apache2" do
+    action [ :enable, :start ]
+end
+
