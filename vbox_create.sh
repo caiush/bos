@@ -268,5 +268,5 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   download_VM_files
   create_bootstrap_VM
   create_cluster_VMs
-  install_cluster
+  install_cluster $*
 fi
