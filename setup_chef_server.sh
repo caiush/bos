@@ -57,5 +57,3 @@ if [[ -f $HOME/.ssh/authorized_keys && ! -f /root/.ssh/authorized_keys ]]; then
   fi
   cp $HOME/.ssh/authorized_keys /root/.ssh/authorized_keys
 fi
-
-./cookbooks/bcpc/files/default/build_bins.sh
