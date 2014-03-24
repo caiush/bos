@@ -58,10 +58,10 @@ for i in elasticsearch tail-multiline tail-ex record-reformer rewrite; do
 done
 
 # Fetch the cirros image for testing
-if [ ! -f cirros-0.3.0-x86_64-disk.img ]; then
-    $CURL -O -L https://launchpad.net/cirros/trunk/0.3.0/+download/cirros-0.3.0-x86_64-disk.img
+if [ ! -f cirros-0.3.2-x86_64-disk.img ]; then
+    $CURL -O -L http://download.cirros-cloud.net/0.3.2/cirros-0.3.2-x86_64-disk.img
 fi
-FILES="cirros-0.3.0-x86_64-disk.img $FILES"
+FILES="cirros-0.3.2-x86_64-disk.img $FILES"
 
 # Grab the Ubuntu 12.04 installer image
 if [ ! -f ubuntu-12.04-mini.iso ]; then
