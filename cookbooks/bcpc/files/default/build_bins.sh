@@ -29,6 +29,19 @@ if [ -z `gem list --local fpm | grep fpm | cut -f1 -d" "` ]; then
   gem install fpm --no-ri --no-rdoc
 fi
 
+# Fetch chef client and server debs
+CHEF_CLIENT_URL=https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef_10.30.4-1.ubuntu.12.04_amd64.deb
+#CHEF_CLIENT_URL=https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef_11.10.4-1.ubuntu.12.04_amd64.deb
+CHEF_SERVER_URL=https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.11-1.ubuntu.12.04_amd64.deb
+if [ ! -f chef-client.deb ]; then
+   $CURL -o chef-client.deb ${CHEF_CLIENT_URL}
+fi
+
+if [ ! -f chef-server.deb ]; then
+   $CURL -o chef-server.deb ${CHEF_SERVER_URL}
+fi
+FILES="chef-client.deb chef-server.deb $FILES"
+
 # Build kibana3 installable bundle
 if [ ! -f kibana3.tgz ]; then
     git clone https://github.com/elasticsearch/kibana.git kibana3

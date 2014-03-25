@@ -16,39 +16,34 @@ if [[ -z "$CURL" ]]; then
 	exit
 fi
 
-if [[ ! -f /etc/apt/sources.list.d/opscode.list ]]; then
-  cp opscode.list /etc/apt/sources.list.d/
-fi
-
-# When rerunning a bootstrap, the 'apt-get update' gets very slow if
-# the bootstrap node happens to be our apt mirror, so only do this if
-# the package we're after is not installed at all
-#
-# See http://askubuntu.com/questions/44122/upgrade-a-single-package-with-apt-get
-#
-if dpkg -s opscode-keyring 2>/dev/null | grep -q Status.*installed; then
-  echo opscode-keyring is installed
-else 
-  apt-get update
-  apt-get --allow-unauthenticated -y install opscode-keyring
-  apt-get update
-fi
-
 if dpkg -s chef 2>/dev/null | grep -q Status.*installed; then
   echo chef is installed
 else
-  DEBCONF_DB_FALLBACK=File{$(pwd)/debconf-chef.conf} DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install chef
+  dpkg -i cookbooks/bcpc/files/default/bins/chef-client.deb
 fi
 
 if dpkg -s chef-server 2>/dev/null | grep -q Status.*installed; then
   echo chef-server is installed
 else
-  DEBCONF_DB_FALLBACK=File{$(pwd)/debconf-chef.conf} DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install chef-server
+  dpkg -i cookbooks/bcpc/files/default/bins/chef-server.deb
+  if [ ! -f /etc/chef-server/chef-server.rb ]; then
+    if [ ! -d /etc/chef-server ]; then
+      mkdir /etc/chef-server
+      chown 775 /etc/chef-server
+    fi
+    cat > /etc/chef-server/chef-server.rb <<EOF
+# have nginx listen on port 4000
+nginx['non_ssl_port'] = 4000
+# allow long-running recipes not to die with an error due to auth
+erchef['s3_url_ttl'] = 3600
+EOF
+  fi
+  sudo chef-server-ctl reconfigure
 fi
 
-
-chmod +r /etc/chef/validation.pem
-chmod +r /etc/chef/webui.pem
+chmod +r /etc/chef-server/admin.pem
+chmod +r /etc/chef-server/chef-validator.pem
+chmod +r /etc/chef-server/chef-webui.pem
 
 # copy our ssh-key to be authorized for root
 if [[ -f $HOME/.ssh/authorized_keys && ! -f /root/.ssh/authorized_keys ]]; then
