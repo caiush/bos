@@ -10,6 +10,12 @@ if [[ -f ./proxy_setup.sh ]]; then
   . ./proxy_setup.sh
 fi
 
+if [[ -z "$1" ]]; then
+        BOOTSTRAP_IP=10.0.100.3
+else
+        BOOTSTRAP_IP=$1
+fi
+
 # needed within build_bins which we call
 if [[ -z "$CURL" ]]; then
 	echo "CURL is not defined"
@@ -26,6 +32,7 @@ else
       chown 775 /etc/chef-server
     fi
     cat > /etc/chef-server/chef-server.rb <<EOF
+api_fqdn "${BOOTSTRAP_IP}"
 # allow connecting to http port directly
 nginx['enable_non_ssl'] = true
 # have nginx listen on port 4000
