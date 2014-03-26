@@ -16,12 +16,6 @@ if [[ -z "$CURL" ]]; then
 	exit
 fi
 
-if dpkg -s chef 2>/dev/null | grep -q Status.*installed; then
-  echo chef is installed
-else
-  dpkg -i cookbooks/bcpc/files/default/bins/chef-client.deb
-fi
-
 if dpkg -s chef-server 2>/dev/null | grep -q Status.*installed; then
   echo chef-server is installed
 else
@@ -32,6 +26,8 @@ else
       chown 775 /etc/chef-server
     fi
     cat > /etc/chef-server/chef-server.rb <<EOF
+# allow connecting to http port directly
+nginx['enable_non_ssl'] = true
 # have nginx listen on port 4000
 nginx['non_ssl_port'] = 4000
 # allow long-running recipes not to die with an error due to auth
@@ -39,6 +35,12 @@ erchef['s3_url_ttl'] = 3600
 EOF
   fi
   sudo chef-server-ctl reconfigure
+fi
+
+if dpkg -s chef 2>/dev/null | grep -q Status.*installed; then
+  echo chef is installed
+else
+  dpkg -i cookbooks/bcpc/files/default/bins/chef-client.deb
 fi
 
 chmod +r /etc/chef-server/admin.pem
