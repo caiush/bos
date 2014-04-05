@@ -2,6 +2,18 @@
 
 These instructions assume that you basically know what you are doing.  =)
 
+### 20140405
+
+Percona XtraDB was upgraded from 5.5 to 5.6 - for in-place upgrades, please
+consult:
+http://www.percona.com/doc/percona-xtradb-cluster/5.6/upgrading_guide_55_56.html
+
+Other upstream packages updated:
+- ElasticSearch 0.90.3 -> 1.1.0
+- Kibana to current snapshot
+- Graphite 0.9.10 -> 0.9.12
+- Zabbix 2.0.7 -> 2.2.2
+
 ### 20131026
 
 The Ceph storage back-end was revamped to allow for multiple storage tiers, namely keeping SSD and HDD separate
