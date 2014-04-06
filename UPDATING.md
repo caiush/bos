@@ -11,6 +11,8 @@ Upstream packages updated:
 - Zabbix 2.0.7 -> 2.2.2
 - ElasticSearch-Head to current snapshot (as of April 2014)
 - Diamond to a newer snapshot (April 2014 upstream does not build on 12.04)
+- RabbitMQ 3.3.0+ requires a configuration change.
+   http://www.rabbitmq.com/blog/2014/04/02/breaking-things-with-rabbitmq-3-3/
 - Percona XtraDB 5.5 -> 5.6
   For in-place Percona upgrades, please consult:
    http://www.percona.com/doc/percona-xtradb-cluster/5.6/upgrading_guide_55_56.html
