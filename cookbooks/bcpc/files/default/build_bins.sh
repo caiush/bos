@@ -157,11 +157,13 @@ fi
 FILES="zabbix-agent.tar.gz zabbix-server.tar.gz $FILES"
 
 # Get some python libs 
-if [ ! -f python-requests-aws_0.1.5_all.deb ]; then 
+if [ ! -f python-requests-aws_0.1.5_all.deb ]; then
     $CURL -L -O http://pypi.python.org/packages/source/r/requests-aws/requests-aws-0.1.5.tar.gz
     tar zxf requests-aws-0.1.5.tar.gz
     fpm -s python -t deb requests-aws
+    rm -rf requests-aws-0.1.5 requests-aws-0.1.5.tar.gz
 fi
+FILES="python-requests-aws_0.1.5_all.deb $FILES"
 
 
 popd
