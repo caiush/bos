@@ -32,9 +32,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.health</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>4</value_type>
                     <allowed_hosts/>
@@ -71,9 +71,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.run[ip route show table mgmt]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>1</value_type>
                     <allowed_hosts/>
@@ -110,9 +110,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.run[ip route show table storage]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>1</value_type>
                     <allowed_hosts/>
@@ -149,9 +149,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[ceph-osd,root]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -188,9 +188,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,,,diamond]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -227,9 +227,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[ruby,,,td-agent]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -266,9 +266,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,nova,,nova-api]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -305,9 +305,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,nova,,nova-compute]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -344,9 +344,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,nova,,nova-network]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -383,9 +383,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,nova,,nova-novncproxy]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -422,9 +422,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[ceph-osd,root]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -461,9 +461,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,,,diamond]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -500,9 +500,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[ruby,,,td-agent]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -539,9 +539,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,nova,,nova-api]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -578,9 +578,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,nova,,nova-compute]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -617,9 +617,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,nova,,nova-network]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -656,9 +656,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,nova,,nova-novncproxy]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -695,9 +695,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[ntpd,ntp]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -734,9 +734,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[sshd,root]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -773,9 +773,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.rgw.admin</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -812,9 +812,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>log[/var/log/apache2/rgw_error.log]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>2</value_type>
                     <allowed_hosts/>
@@ -851,9 +851,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.rgw.haproxy</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -890,9 +890,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.rgw.healthcheck</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -929,9 +929,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.rgw.http500</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -998,9 +998,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.pg_count[active]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1037,9 +1037,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.pg_count[active+clean]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1076,9 +1076,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.pg_count[active+degraded]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1115,9 +1115,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.pg_count[active+remapped]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1154,9 +1154,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.pg_count[down]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1193,9 +1193,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.pg_count[inactive]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1232,9 +1232,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.total.objects</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1271,9 +1271,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.total.percent</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -1310,9 +1310,9 @@
                     <multiplier>1</multiplier>
                     <snmp_oid/>
                     <key>ceph.total.space</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1349,9 +1349,9 @@
                     <multiplier>1</multiplier>
                     <snmp_oid/>
                     <key>ceph.total.usage</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1389,8 +1389,8 @@
                     <snmp_oid/>
                     <key>check.nova</key>
                     <delay>0</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -1428,8 +1428,8 @@
                     <snmp_oid/>
                     <key>check.rgw</key>
                     <delay>0</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -1466,9 +1466,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[apache2,www-data]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1505,9 +1505,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,,,carbon-cache]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1544,9 +1544,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,,,carbon-relay]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1583,9 +1583,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[ceph-mds,root]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1622,9 +1622,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[ceph-mon,root]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1661,9 +1661,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,cinder,,cinder-api]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1700,9 +1700,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,cinder,,cinder-scheduler]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1739,9 +1739,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,cinder,,cinder-volume]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1778,9 +1778,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[java,,,ElasticSearch]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1817,9 +1817,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,glance,,glance-api]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1856,9 +1856,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,glance,,glance-registry]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1895,9 +1895,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,keystone,,keystone-all]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1934,9 +1934,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[ruby,kibana,,kibana]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1973,9 +1973,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[mysqld,mysql,max]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2012,9 +2012,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,nova,,nova-cert]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2051,9 +2051,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,nova,,nova-conductor]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2090,9 +2090,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,nova,,nova-consoleauth]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2129,9 +2129,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[python,nova,,nova-scheduler]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2168,9 +2168,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[pdns_server-instance,pdns]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2207,9 +2207,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.mem[beam,rabbitmq,max,rabbitmq]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2247,8 +2247,8 @@
                     <snmp_oid/>
                     <key>mysql.status[Aborted_clients]</key>
                     <delay>120</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2286,8 +2286,8 @@
                     <snmp_oid/>
                     <key>mysql.status[Aborted_connects]</key>
                     <delay>120</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2324,9 +2324,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>mysql.status[Bytes_received]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2363,9 +2363,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>mysql.status[Bytes_sent]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2402,9 +2402,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>mysql.status[Connections]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2441,9 +2441,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>mysql.ping</key>
-                    <delay>10</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2480,9 +2480,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>mysql.status[Questions]</key>
-                    <delay>10</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2519,9 +2519,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[apache2,www-data]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2558,9 +2558,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,,,carbon-cache]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2597,9 +2597,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,,,carbon-relay]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2636,9 +2636,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[ceph-mds,root]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2675,9 +2675,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[ceph-mon,root]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2714,9 +2714,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,cinder,,cinder-api]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2753,9 +2753,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,cinder,,cinder-scheduler]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2792,9 +2792,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,cinder,,cinder-volume]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2831,9 +2831,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[java,,,ElasticSearch]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2870,9 +2870,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,glance,,glance-api]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2909,9 +2909,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,glance,,glance-registry]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2948,9 +2948,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[haproxy,haproxy]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -2987,9 +2987,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[keepalived,root]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3026,9 +3026,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,keystone,,keystone-all]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3065,9 +3065,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[ruby,kibana,,kibana]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3104,9 +3104,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[mysqld,mysql]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3143,9 +3143,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,nova,,nova-cert]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3182,9 +3182,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,nova,,nova-conductor]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3221,9 +3221,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,nova,,nova-consoleauth]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3260,9 +3260,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[python,nova,,nova-scheduler]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3299,9 +3299,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[pdns_server-instance,pdns]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3338,9 +3338,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[beam,rabbitmq,all,rabbitmq]</key>
-                    <delay>30</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3377,9 +3377,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>ceph.rgw.nbuckets</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -3416,9 +3416,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.run[whohasthevip]</key>
-                    <delay>60</delay>
-                    <history>90</history>
-                    <trends>365</trends>
+                    <delay>90</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>1</value_type>
                     <allowed_hosts/>
@@ -3456,7 +3456,7 @@
                     <snmp_community/>
                     <snmp_oid/>
                     <key>ceph.rgw.bucket.discovery</key>
-                    <delay>60</delay>
+                    <delay>90</delay>
                     <status>0</status>
                     <allowed_hosts/>
                     <snmpv3_securityname/>
@@ -3483,9 +3483,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>ceph.rgw.bucket.usage[{#BKTNAME},delete_obj,ops]</key>
-                            <delay>60</delay>
-                            <history>90</history>
-                            <trends>365</trends>
+                            <delay>90</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -3522,9 +3522,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>ceph.rgw.bucket.usage[{#BKTNAME},put_obj,bytes_sent]</key>
-                            <delay>60</delay>
-                            <history>90</history>
-                            <trends>365</trends>
+                            <delay>90</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -3561,9 +3561,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>ceph.rgw.bucket.usage[{#BKTNAME},get_obj,ops]</key>
-                            <delay>60</delay>
-                            <history>90</history>
-                            <trends>365</trends>
+                            <delay>90</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -3600,9 +3600,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>ceph.rgw.bucket.objects[{#BKTNAME}]</key>
-                            <delay>30</delay>
-                            <history>90</history>
-                            <trends>365</trends>
+                            <delay>90</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -3639,9 +3639,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>ceph.rgw.bucket.usage[{#BKTNAME},put_obj,ops]</key>
-                            <delay>60</delay>
-                            <history>90</history>
-                            <trends>365</trends>
+                            <delay>90</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -3678,9 +3678,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>ceph.rgw.bucket.size[{#BKTNAME}]</key>
-                            <delay>30</delay>
-                            <history>90</history>
-                            <trends>365</trends>
+                            <delay>90</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>

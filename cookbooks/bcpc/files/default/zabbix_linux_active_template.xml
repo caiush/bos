@@ -56,9 +56,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>agent.ping</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -97,9 +97,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>vm.memory.size[available]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -137,8 +137,8 @@
                     <snmp_oid/>
                     <key>vfs.file.cksum[/etc/passwd]</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -175,9 +175,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.switches</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -217,9 +217,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.util[,interrupt]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -259,9 +259,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.util[,idle]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -301,9 +301,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.util[,nice]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -343,9 +343,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.util[,system]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -385,9 +385,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.util[,user]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -427,9 +427,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.util[,steal]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -469,9 +469,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.util[,softirq]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -511,9 +511,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.util[,iowait]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -553,9 +553,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.swap.size[,free]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -592,9 +592,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.swap.size[,pfree]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -632,8 +632,8 @@
                     <snmp_oid/>
                     <key>system.boottime</key>
                     <delay>600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -673,9 +673,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.localtime</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -716,8 +716,8 @@
                     <snmp_oid/>
                     <key>system.hostname</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>1</value_type>
                     <allowed_hosts/>
@@ -758,8 +758,8 @@
                     <snmp_oid/>
                     <key>agent.hostname</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>1</value_type>
                     <allowed_hosts/>
@@ -796,9 +796,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.intr</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -839,8 +839,8 @@
                     <snmp_oid/>
                     <key>kernel.maxfiles</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -878,8 +878,8 @@
                     <snmp_oid/>
                     <key>kernel.maxproc</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -916,9 +916,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.users.num</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -958,9 +958,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -997,9 +997,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>proc.num[,,run]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1036,9 +1036,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.load[percpu,avg1]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -1078,9 +1078,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.load[percpu,avg5]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -1120,9 +1120,9 @@
                     <multiplier>0</multiplier>
                     <snmp_oid/>
                     <key>system.cpu.load[percpu,avg15]</key>
-                    <delay>60</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <delay>120</delay>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>0</value_type>
                     <allowed_hosts/>
@@ -1163,8 +1163,8 @@
                     <snmp_oid/>
                     <key>system.uname</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>1</value_type>
                     <allowed_hosts/>
@@ -1205,8 +1205,8 @@
                     <snmp_oid/>
                     <key>system.uptime</key>
                     <delay>600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1247,8 +1247,8 @@
                     <snmp_oid/>
                     <key>vm.memory.size[total]</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1286,8 +1286,8 @@
                     <snmp_oid/>
                     <key>system.swap.size[,total]</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>3</value_type>
                     <allowed_hosts/>
@@ -1325,8 +1325,8 @@
                     <snmp_oid/>
                     <key>agent.version</key>
                     <delay>3600</delay>
-                    <history>7</history>
-                    <trends>365</trends>
+                    <history>3</history>
+                    <trends>30</trends>
                     <status>0</status>
                     <value_type>1</value_type>
                     <allowed_hosts/>
@@ -1391,9 +1391,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>vfs.fs.size[{#FSNAME},free]</key>
-                            <delay>60</delay>
-                            <history>7</history>
-                            <trends>365</trends>
+                            <delay>120</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -1430,9 +1430,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>vfs.fs.size[{#FSNAME},pfree]</key>
-                            <delay>60</delay>
-                            <history>7</history>
-                            <trends>365</trends>
+                            <delay>120</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>0</value_type>
                             <allowed_hosts/>
@@ -1469,9 +1469,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>vfs.fs.inode[{#FSNAME},pfree]</key>
-                            <delay>60</delay>
-                            <history>7</history>
-                            <trends>365</trends>
+                            <delay>120</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>0</value_type>
                             <allowed_hosts/>
@@ -1509,8 +1509,8 @@
                             <snmp_oid/>
                             <key>vfs.fs.size[{#FSNAME},total]</key>
                             <delay>3600</delay>
-                            <history>7</history>
-                            <trends>365</trends>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -1547,9 +1547,9 @@
                             <multiplier>0</multiplier>
                             <snmp_oid/>
                             <key>vfs.fs.size[{#FSNAME},used]</key>
-                            <delay>60</delay>
-                            <history>7</history>
-                            <trends>365</trends>
+                            <delay>120</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -1680,9 +1680,9 @@
                             <multiplier>1</multiplier>
                             <snmp_oid/>
                             <key>net.if.in[{#IFNAME}]</key>
-                            <delay>60</delay>
-                            <history>7</history>
-                            <trends>365</trends>
+                            <delay>120</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
@@ -1719,9 +1719,9 @@
                             <multiplier>1</multiplier>
                             <snmp_oid/>
                             <key>net.if.out[{#IFNAME}]</key>
-                            <delay>60</delay>
-                            <history>7</history>
-                            <trends>365</trends>
+                            <delay>120</delay>
+                            <history>3</history>
+                            <trends>30</trends>
                             <status>0</status>
                             <value_type>3</value_type>
                             <allowed_hosts/>
