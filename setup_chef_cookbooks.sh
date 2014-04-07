@@ -26,7 +26,7 @@ if [[ -f .chef/knife.rb ]]; then
   knife client delete $USER -y || true
   mv .chef/ ".chef_found_$(date +"%m-%d-%Y %H:%M:%S")"
 fi
-echo -e ".chef/knife.rb\nhttp://$BOOTSTRAP_IP:4000\n\n\n\n\n\n.\n" | knife configure --initial
+echo -e ".chef/knife.rb\nhttp://$BOOTSTRAP_IP:4000\n\n\n/etc/chef-server/chef-webui.pem\n\n/etc/chef-server/chef-validator.pem\n.\n" | knife configure --initial
 
 cp -p .chef/knife.rb .chef/knife-proxy.rb
 
@@ -38,11 +38,16 @@ fi
 cd cookbooks
 
 # allow versions on cookbooks so 
-for cookbook in "apt 1.10.0" ubuntu cron "chef-client 3.1.2" ntp "yum 2.4.2" logrotate; do
+for cookbook in "apt 1.10.0" ubuntu cron "chef-client 3.3.8" ntp "yum 2.4.2" logrotate; do
   if [[ ! -d ${cookbook% *} ]]; then
      # unless the proxy was defined this knife config will be the same as the one generated above
     knife cookbook site download $cookbook --config ../.chef/knife-proxy.rb
     tar zxf ${cookbook% *}*.tar.gz
     rm ${cookbook% *}*.tar.gz
+    if [[ -f ${cookbook% *}.patch ]]; then
+      pushd ${cookbook% *}
+      patch -p1 < ../${cookbook% *}.patch
+      popd
+    fi
   fi
 done

@@ -74,7 +74,7 @@ fi
 echo "Building binaries"
 $SSH_CMD "cd $BCPC_DIR && sudo ./cookbooks/bcpc/files/default/build_bins.sh"
 echo "Setting up chef server"
-$SSH_CMD "cd $BCPC_DIR && sudo ./setup_chef_server.sh"
+$SSH_CMD "cd $BCPC_DIR && sudo ./setup_chef_server.sh ${IP}"
 echo "Setting up chef cookbooks"
 $SSH_CMD "cd $BCPC_DIR && ./setup_chef_cookbooks.sh ${IP} ${SSH_USER}"
 echo "Setting up chef environment, roles, and uploading cookbooks"
