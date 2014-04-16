@@ -285,6 +285,17 @@ get_all_nodes.each do |server|
             end
         end
     end
+
+    ruby_block "create-dns-entry-#{server['hostname']}-shared" do
+        block do
+            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node[:bcpc][:pdns_dbname]} -e 'SELECT name FROM records_static' | grep -q \"#{server['hostname']}-shared.#{node[:bcpc][:domain_name]}\""
+            if not $?.success? then
+                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node[:bcpc][:pdns_dbname]} <<-EOH
+                        INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node[:bcpc][:domain_name]}'),'#{server['hostname']}-shared.#{node[:bcpc][:domain_name]}','#{server['bcpc']['floating']['ip']}','A',300,NULL);
+                ]
+            end
+        end
+    end
 end
 
 %w{openstack kibana graphite zabbix}.each do |static|
