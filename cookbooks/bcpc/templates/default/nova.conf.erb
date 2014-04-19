@@ -83,6 +83,12 @@ libvirt_images_rbd_ceph_conf=/etc/ceph/ceph.conf
 rbd_user=admin
 rbd_secret_uuid=<%="#{get_config('libvirt-secret-uuid')}"%>
 
+# Live migration settings
+live_migration_uri=qemu+ssh://%s/system
+live_migration_bandwidth=0
+live_migration_retry_count=30
+live_migration_flag=VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE
+
 # Nova VNC settings
 novnc_enabled=True
 novncproxy_base_url=http://<%="#{node[:bcpc][:management][:ip]}"%>:6080/vnc_auto.html

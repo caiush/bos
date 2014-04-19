@@ -42,6 +42,15 @@ ruby_block "initialize-ssh-keys" do
     end
 end
 
+ruby_block "set-ssh-host-key-reference" do
+    block do
+        if node['bcpc']['ssh_host_key'].nil? then
+            node.set['bcpc']['ssh_host_key'] = %x[ ssh-keyscan #{node['bcpc']['management']['ip']} #{node['hostname']} ]
+            node.save rescue nil
+        end
+    end
+end
+
 directory "/root/.ssh" do
     owner "root"
     group "root"
@@ -60,6 +69,14 @@ template "/root/.ssh/id_rsa" do
     owner "root"
     group "root"
     mode 00600
+end
+
+template "/root/.ssh/known_hosts" do
+    source "known_hosts.erb"
+    owner "root"
+    group "root"
+    mode 00644
+    variables( :servers => get_all_nodes )
 end
 
 template "/etc/ssl/certs/ssl-bcpc.pem" do

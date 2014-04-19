@@ -76,6 +76,14 @@ template "/var/lib/nova/.ssh/authorized_keys" do
     mode 00644
 end
 
+template "/var/lib/nova/.ssh/known_hosts" do
+    source "known_hosts.erb"
+    owner "nova"
+    group "nova"
+    mode 00644
+    variables( :servers => get_all_nodes )
+end
+
 template "/var/lib/nova/.ssh/id_rsa" do
     source "nova-id_rsa.erb"
     owner "nova"
