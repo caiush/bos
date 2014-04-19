@@ -23,6 +23,7 @@ apt_repository "fluentd" do
     uri node['bcpc']['repos']['fluentd']
     distribution node['lsb']['codename']
     components ["contrib"]
+    key "fluentd.key"
 end
 
 package "td-agent" do
