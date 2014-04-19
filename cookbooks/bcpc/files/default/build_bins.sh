@@ -20,10 +20,6 @@ DIR=`dirname $0`
 mkdir -p $DIR/bins
 pushd $DIR/bins/
 
-# Get up to date
-apt-get -y update
-apt-get -y dist-upgrade
-
 # Install tools needed for packaging
 apt-get -y install git rubygems make pbuilder python-mock python-configobj python-support cdbs python-all-dev python-stdeb libmysqlclient-dev libldap2-dev
 if [ -z `gem list --local fpm | grep fpm | cut -f1 -d" "` ]; then
@@ -31,9 +27,9 @@ if [ -z `gem list --local fpm | grep fpm | cut -f1 -d" "` ]; then
 fi
 
 # Fetch chef client and server debs
-CHEF_CLIENT_URL=https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef_10.30.4-1.ubuntu.12.04_amd64.deb
+CHEF_CLIENT_URL=https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef_10.32.2-1_amd64.deb
 #CHEF_CLIENT_URL=https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef_11.10.4-1.ubuntu.12.04_amd64.deb
-CHEF_SERVER_URL=https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.11-1.ubuntu.12.04_amd64.deb
+CHEF_SERVER_URL=https://opscode-omnibus-packages.s3.amazonaws.com/ubuntu/12.04/x86_64/chef-server_11.0.12-1.ubuntu.12.04_amd64.deb
 if [ ! -f chef-client.deb ]; then
    $CURL -o chef-client.deb ${CHEF_CLIENT_URL}
 fi

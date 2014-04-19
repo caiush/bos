@@ -5,6 +5,8 @@
 # $2 is the IP address of the bootstrap node
 # $3 is the optional knife recipe name, default "Test-Laptop"
 
+source ./virtualbox_env.sh
+
 if [[ $OSTYPE == msys || $OSTYPE == cygwin ]]; then
   # try to fix permission mismatch between windows and real unix
   RSYNCEXTRA="--perms --chmod=a=rwx,Da+x"
@@ -71,6 +73,12 @@ else
   $SSH_CMD "rsync $RSYNCEXTRA -avP /chef-bcpc-host/vbox/ubuntu-12.04-mini.iso  /home/vagrant/chef-bcpc/cookbooks/bcpc/files/default/bins"
 fi
 
+echo "Updating server"
+$SSH_CMD "cd $BCPC_DIR && sudo apt-get -y update && sudo apt-get -y dist-upgrade"
+if [[ -z `$VBM snapshot bcpc-bootstrap list | grep dist-upgrade` ]]; then
+  echo "Taking snapshot"
+  $VBM snapshot bcpc-bootstrap take dist-upgrade-complete
+fi
 echo "Building binaries"
 $SSH_CMD "cd $BCPC_DIR && sudo ./cookbooks/bcpc/files/default/build_bins.sh"
 echo "Setting up chef server"
