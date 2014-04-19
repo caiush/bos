@@ -40,6 +40,23 @@ service "nova-api" do
     restart_command "(service nova-api stop || true) && service nova-api start && sleep 5"
 end
 
+cookbook_file "/tmp/havana-ephemeral-rbd.patch" do
+    source "havana-ephemeral-rbd.patch"
+    owner "root"
+    mode 00644
+end
+
+bash "patch-for-havana-ephemeral-rbd" do
+    user "root"
+    code <<-EOH
+        cd /usr/lib/python2.7/dist-packages/nova
+        patch -p1 < /tmp/havana-ephemeral-rbd.patch
+        cp /tmp/havana-ephemeral-rbd.patch .
+    EOH
+    not_if "test -f /usr/lib/python2.7/dist-packages/nova/havana-ephemeral-rbd.patch"
+    notifies :restart, "service[nova-compute]", :delayed
+end
+
 %w{novnc pm-utils memcached sysfsutils}.each do |pkg|
     package pkg do
         action :upgrade
