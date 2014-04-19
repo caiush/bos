@@ -5,6 +5,38 @@
 #
 ################################################
 
-for i in glance-api glance-registry cinder-api cinder-scheduler cinder-volume nova-api nova-cert nova-compute nova-conductor nova-consoleauth nova-network nova-novncproxy nova-scheduler heat-api heat-api-cfn heat-engine; do
-	service $i restart
+<% if @servers.include?(node) -%>
+echo
+echo "################################"
+echo "# HEAD NODE SERVICES"
+for i in glance-api \
+         glance-registry \
+         cinder-api \
+         cinder-scheduler \
+         cinder-volume \
+         nova-cert \
+         nova-conductor \
+         nova-consoleauth \
+         nova-scheduler \
+         heat-api \
+         heat-api-cfn \
+         heat-engine \
+         ceilometer-api \
+         ceilometer-agent-central \
+         ceilometer-collector
+do
+    service $i restart
+done
+<% end -%>
+
+echo
+echo "################################"
+echo "# WORK NODE SERVICES"
+for i in nova-api \
+         nova-compute \
+         nova-network \
+         nova-novncproxy \
+         ceilometer-agent-compute
+do
+    service $i restart
 done
