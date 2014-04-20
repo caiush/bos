@@ -5,7 +5,7 @@ These instructions assume that you basically know what you are doing.  =)
 ### 20140405
 
 Upstream packages updated:
-- ElasticSearch 0.90.3 -> 1.1.0
+- ElasticSearch 0.90.3 -> 1.1.1
 - Kibana to current snapshot (as of April 2014)
 - Graphite 0.9.10 -> 0.9.12
 - Zabbix 2.0.7 -> 2.2.2
