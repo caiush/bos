@@ -98,7 +98,7 @@ service "zabbix-server" do
     action [ :enable, :start ]
 end
 
-%w{traceroute php5-mysql php5-gd}.each do |pkg|
+%w{traceroute php5-mysql php5-gd python-requests}.each do |pkg|
     package pkg do
         action :upgrade
     end
@@ -139,7 +139,20 @@ bash "apache-enable-zabbix-web" do
          a2ensite zabbix-web
     EOH
     not_if "test -r /etc/apache2/sites-enabled/zabbix-web"
-    notifies :restart, "service[apache2]", :delayed
+    notifies :restart, "service[apache2]", :immediate
+end
+
+template "/usr/local/share/zabbix/zabbix-api-auto-discovery" do
+    source "zabbix_api_auto_discovery.erb"
+    owner "root"
+    group "root"
+    mode 00750
+end
+
+ruby_block "zabbix-api-auto-discovery-register" do
+    block do
+        system "/usr/local/share/zabbix/zabbix-api-auto-discovery"
+    end
 end
 
 include_recipe "bcpc::zabbix-work"
