@@ -107,10 +107,21 @@ fi
 FILES="diamond.deb $FILES"
 
 # Snag elasticsearch
-if [ ! -f elasticsearch-1.1.0.deb ]; then
-    $CURL -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.1.0.deb
+ES_VER=1.1.1
+if [ ! -f elasticsearch-${ES_VER}.deb ]; then
+    $CURL -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ES_VER}.deb
 fi
-FILES="elasticsearch-1.1.0.deb $FILES"
+if [ ! -f elasticsearch-${ES_VER}.deb.sha1.txt ]; then
+    $CURL -O -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-${ES_VER}.deb.sha1.txt
+fi
+if [[ `shasum elasticsearch-${ES_VER}.deb` != `cat elasticsearch-${ES_VER}.deb.sha1.txt` ]]; then
+    echo "SHA mismatch detected for elasticsearch ${ES_VER}!"
+    echo "Have: `shasum elasticsearch-${ES_VER}.deb`"
+    echo "Expected: `cat elasticsearch-${ES_VER}.deb.sha1.txt`"
+    exit 1
+fi
+
+FILES="elasticsearch-${ES_VER}.deb elasticsearch-${ES_VER}.deb.sha1.txt $FILES"
 
 if [ ! -f elasticsearch-plugins.tgz ]; then
     git clone https://github.com/mobz/elasticsearch-head.git
