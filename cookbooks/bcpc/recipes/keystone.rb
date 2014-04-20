@@ -226,6 +226,7 @@ bash "keystone-service-catalog-heat-cfn" do
 end
 
 bash "keystone-service-catalog-ceilometer" do
+    action :nothing
     user "root"
     code <<-EOH
         . /root/keystonerc

@@ -10,7 +10,6 @@
       "recipe[bcpc::ceph-work]",
       "recipe[bcpc::ceph-rgw]",
       "recipe[bcpc::nova-work]",
-      "recipe[bcpc::ceilometer-work]",
       "recipe[bcpc::diamond]",
       "recipe[bcpc::fluentd]",
       "recipe[bcpc::zabbix-work]"
