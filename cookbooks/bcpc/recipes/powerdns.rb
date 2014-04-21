@@ -135,6 +135,7 @@ ruby_block "powerdns-function-dns-name" do
                   SELECT REPLACE(tenant, '&', 'and') INTO tenant;
                   SELECT REPLACE(tenant, '_', '-') INTO tenant;
                   SELECT REPLACE(tenant, ' ', '-') INTO tenant;
+                  SELECT REPLACE(tenant, '.', '-') INTO tenant;
                   RETURN tenant;
                 END//
             ]
