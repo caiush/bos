@@ -104,11 +104,9 @@ ruby_block "powerdns-table-records" do
                         change_date INT DEFAULT NULL,
                         primary key(id)
                     );
-                    INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains_static WHERE name='#{node[:bcpc][:domain_name]}'),'#{node[:bcpc][:domain_name]}','localhost root@#{node[:bcpc][:domain_name]} 1','SOA',300,NULL);
                     INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains_static WHERE name='#{node[:bcpc][:domain_name]}'),'#{node[:bcpc][:domain_name]}','#{node[:bcpc][:management][:vip]}','NS',300,NULL);
                     INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains_static WHERE name='#{node[:bcpc][:domain_name]}'),'#{node[:bcpc][:domain_name]}','#{node[:bcpc][:management][:vip]}','A',300,NULL);
                     
-                    INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains_static WHERE name='#{reverse_dns_zone}'),'#{reverse_dns_zone}', '#{reverse_dns_zone} root@#{node[:bcpc][:domain_name]} 1','SOA',300,NULL);
                     INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains_static WHERE name='#{reverse_dns_zone}'),'#{reverse_dns_zone}','#{node[:bcpc][:management][:vip]}','NS',300,NULL);
                     
                     CREATE INDEX rec_name_index ON records_static(name);
@@ -199,9 +197,16 @@ ruby_block "powerdns-table-records_forward-view" do
         if not $?.success? then
             %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node[:bcpc][:pdns_dbname]} <<-EOH
                 CREATE OR REPLACE VIEW records_forward AS
+                    /* SOA Forward */
+                    select -1 as id ,
+                        (SELECT id FROM domains_static WHERE name='#{node[:bcpc][:domain_name]}') as domain_id,
+                        '#{node[:bcpc][:domain_name]}' as name,
+                        'SOA' as type,
+                        '#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]}' as content,
+                         300 as ttl, NULL as prio,
+                         (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) as change_date
+                    union
                     SELECT id,domain_id,name,type,content,ttl,prio,change_date FROM records_static UNION  
-                    # assume we only have 250 or less static domains
-                    SELECT domains.id+750 AS id, domains.id AS domain_id, domains.name AS name, 'SOA' AS type, 'localhost root@#{node[:bcpc][:domain_name]} 1' AS content, 300 AS ttl, NULL AS prio, NULL AS change_date FROM domains WHERE id > (SELECT MAX(id) FROM domains_static) UNION
                     # again, assume we only have 250 or less static domains
                     SELECT nova.instances.id+10000 AS id,
                         # query the domain ID from the domains view
@@ -235,6 +240,15 @@ ruby_block "powerdns-table-records_reverse-view" do
 
             %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node[:bcpc][:pdns_dbname]} <<-EOH
                 create or replace view records_reverse as
+                /* SOA reverse */
+                select -2 as id,
+                    (SELECT id FROM domains_static WHERE name='#{reverse_dns_zone}') as domain_id,
+                    '#{reverse_dns_zone}' as name, 
+                    'SOA' as type,
+                    '#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]}' as content,
+                    300 as ttl, NULL as prio,
+                    (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) as change_date
+                union all
                 select r.id * -1 as id, d.id as domain_id,
                       ip4_to_ptr_name(r.content) as name,
                       'PTR' as type, r.name as content, r.ttl, r.prio, r.change_date
