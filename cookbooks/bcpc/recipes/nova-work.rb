@@ -50,7 +50,7 @@ bash "patch-for-havana-ephemeral-rbd" do
     user "root"
     code <<-EOH
         cd /usr/lib/python2.7/dist-packages/nova
-        patch -p1 < /tmp/havana-ephemeral-rbd.patch
+        patch -p2 < /tmp/havana-ephemeral-rbd.patch
         cp /tmp/havana-ephemeral-rbd.patch .
     EOH
     not_if "test -f /usr/lib/python2.7/dist-packages/nova/havana-ephemeral-rbd.patch"
