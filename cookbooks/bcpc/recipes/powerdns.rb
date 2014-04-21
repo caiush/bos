@@ -203,7 +203,7 @@ ruby_block "powerdns-table-records_forward-view" do
                         'SOA' as type,
                         '#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]}' as content,
                          300 as ttl, NULL as prio,
-                         (select unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) from nova.floating_ips) as change_date
+                         (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) as change_date
                     union
                     SELECT id,domain_id,name,type,content,ttl,prio,change_date FROM records_static UNION  
                     # again, assume we only have 250 or less static domains
@@ -246,7 +246,7 @@ ruby_block "powerdns-table-records_reverse-view" do
                     'SOA' as type,
                     '#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]}' as content,
                     300 as ttl, NULL as prio,
-                    (select unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) from nova.floating_ips) as change_date
+                    (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) as change_date
                 union all
                 select r.id * -1 as id, d.id as domain_id,
                       ip4_to_ptr_name(r.content) as name,
