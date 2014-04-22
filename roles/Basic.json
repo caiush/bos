@@ -4,8 +4,8 @@
     },
     "json_class": "Chef::Role",
     "run_list": [
-      "recipe[bcpc::packages-common]",
       "recipe[ubuntu]",
+      "recipe[bcpc::packages-common]",
       "recipe[ntp]",
       "recipe[chef-client::delete_validation]",
       "recipe[chef-client::config]"
