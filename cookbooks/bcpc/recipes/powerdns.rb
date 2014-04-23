@@ -266,14 +266,14 @@ ruby_block "powerdns-table-records_reverse-view" do
 end
 
 
-ruby_block "powerdns-table-records-view" do
+ruby_block "powerdns-table-records-all-view" do
 
     block do
         system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node[:bcpc][:pdns_dbname]}\" AND TABLE_NAME=\"records\"' | grep -q \"records\""
         if not $?.success? then
 
             %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node[:bcpc][:pdns_dbname]} <<-EOH
-              create or replace view records as
+              create or replace view records_all as
                 select id, domain_id, name, type, content, ttl, prio, change_date from records_forward
                 union all
                 select id, domain_id, name, type, content, ttl, prio, change_date from records_reverse;
@@ -285,6 +285,63 @@ ruby_block "powerdns-table-records-view" do
 
     end
 
+end
+
+ruby_block "powerdns-table-records" do
+    block do
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_name = \"records\" AND table_schema = \"#{node[:bcpc][:pdns_dbname]}\";' \"#{node[:bcpc][:pdns_dbname]}\" | grep -q \"records\""
+        if not $?.success? then
+
+            # Using this as a guide: http://doc.powerdns.com/html/generic-mypgsql-backends.html
+            # We don't currently have all the fields in the table, but it doesn't seem to cause a problem so
+            # far. I'm not changing the schema we have now. These might be important if we upgrade PDNS or
+            # need to use other features.
+
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node[:bcpc][:pdns_dbname]} <<-EOH
+              create table records( 
+                id          bigint(20) not null default 0,
+                domain_id   bigint(20),
+                name        varchar(341),
+                type        varchar(6),
+                content     varchar(341),
+                ttl         bigint(20),
+                prio        int(11),
+                change_date bigint unsigned
+              );
+              
+              /* Use the indexes from the doc. */
+              CREATE INDEX nametype_index ON records(name,type);
+              CREATE INDEX domain_id ON records(domain_id);
+              CREATE INDEX recordorder ON records (domain_id, ordername);
+
+            ]
+        end
+    end
+end
+
+ruby_block "powerdns-function-populate_records" do
+    block do
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT name FROM mysql.proc WHERE name = \"populate_records\" AND db = \"#{node[:bcpc][:pdns_dbname]}\";' \"#{node[:bcpc][:pdns_dbname]}\" | grep -q \"populate_records\""
+        if not $?.success? then
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node[:bcpc][:pdns_dbname]} <<-EOH
+                delimiter //
+                CREATE PROCEDURE populate_records () 
+                COMMENT 'Persists dynamic DNS records from records_all view into records table'
+                BEGIN
+
+                    start transaction;
+                        delete from records;
+                        insert into records(id, domain_id, name, type, content, ttl, prio, change_date)
+                        select id, domain_id, name, type, content, ttl, prio, change_date
+                        from records_all;
+                    commit;
+
+                END//
+            ]
+            self.notifies :restart, "service[pdns]", :delayed
+            self.resolve_notification_references
+        end
+    end
 end
 
 get_all_nodes.each do |server|
