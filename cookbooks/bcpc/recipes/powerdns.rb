@@ -210,7 +210,7 @@ ruby_block "powerdns-table-records_forward-view" do
                     # assume we only have 500 or less static records
                     SELECT domains.id+500 AS id, domains.id AS domain_id, domains.name AS name, 'NS' AS type, '#{node[:bcpc][:management][:vip]}' AS content, 300 AS ttl, NULL AS prio, NULL AS change_date FROM domains WHERE id > (SELECT MAX(id) FROM domains_static) UNION
                     # assume we only have 250 or less static domains
-                    SELECT domains.id+750 AS id, domains.id AS domain_id, domains.name AS name, 'SOA' AS type, concat('#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]} ', (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) ) AS content, 300 AS ttl, NULL AS prio, NULL AS change_date FROM domains WHERE id > (SELECT MAX(id) FROM domains_static) UNION
+                    SELECT domains.id+750 AS id, domains.id AS domain_id, domains.name AS name, 'SOA' AS type, concat('#{node[:bcpc][:domain_name]} root.#{node[:bcpc][:domain_name]} ', (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) ) AS content, 300 AS ttl, NULL AS prio, NULL AS change_date FROM domains WHERE id > (SELECT MAX(id) FROM domains_static) UNION
                     # again, assume we only have 250 or less static domains
                     SELECT nova.instances.id+10000 AS id,
                         # query the domain ID from the domains view
