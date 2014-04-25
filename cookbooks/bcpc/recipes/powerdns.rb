@@ -202,7 +202,7 @@ ruby_block "powerdns-table-records_forward-view" do
                         (SELECT id FROM domains_static WHERE name='#{node[:bcpc][:domain_name]}') as domain_id,
                         '#{node[:bcpc][:domain_name]}' as name,
                         'SOA' as type,
-                        concat('#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]}', (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) ) as content,
+                        concat('#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]} ', (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) ) as content,
                          300 as ttl, NULL as prio,
                          NULL as change_date
                     union
