@@ -202,11 +202,15 @@ ruby_block "powerdns-table-records_forward-view" do
                         (SELECT id FROM domains_static WHERE name='#{node[:bcpc][:domain_name]}') as domain_id,
                         '#{node[:bcpc][:domain_name]}' as name,
                         'SOA' as type,
-                        '#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]}' as content,
+                        concat('#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]}', (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) ) as content,
                          300 as ttl, NULL as prio,
-                         (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) as change_date
+                         NULL as change_date
                     union
                     SELECT id,domain_id,name,type,content,ttl,prio,change_date FROM records_static UNION  
+                    # assume we only have 500 or less static records
+                    SELECT domains.id+500 AS id, domains.id AS domain_id, domains.name AS name, 'NS' AS type, '#{node[:bcpc][:management][:vip]}' AS content, 300 AS ttl, NULL AS prio, NULL AS change_date FROM domains WHERE id > (SELECT MAX(id) FROM domains_static) UNION
+                    # assume we only have 250 or less static domains
+                    SELECT domains.id+750 AS id, domains.id AS domain_id, domains.name AS name, 'SOA' AS type, concat('#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]} ', (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) ) AS content, 300 AS ttl, NULL AS prio, NULL AS change_date FROM domains WHERE id > (SELECT MAX(id) FROM domains_static) UNION
                     # again, assume we only have 250 or less static domains
                     SELECT nova.instances.id+10000 AS id,
                         # query the domain ID from the domains view
@@ -245,9 +249,9 @@ ruby_block "powerdns-table-records_reverse-view" do
                     (SELECT id FROM domains_static WHERE name='#{reverse_dns_zone}') as domain_id,
                     '#{reverse_dns_zone}' as name, 
                     'SOA' as type,
-                    '#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]}' as content,
+                    concat('#{node[:bcpc][:domain_name]} root@#{node[:bcpc][:domain_name]} ', (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) ) as content,
                     300 as ttl, NULL as prio,
-                    (select cast(unix_timestamp(greatest(coalesce(max(created_at), 0), coalesce(max(updated_at), 0), coalesce(max(deleted_at), 0))) as unsigned integer) from nova.floating_ips) as change_date
+                    NULL as change_date
                 union all
                 select r.id * -1 as id, d.id as domain_id,
                       ip4_to_ptr_name(r.content) as name,
@@ -312,7 +316,6 @@ ruby_block "powerdns-table-records" do
               /* Use the indexes from the doc. */
               CREATE INDEX nametype_index ON records(name,type);
               CREATE INDEX domain_id ON records(domain_id);
-              CREATE INDEX recordorder ON records (domain_id, ordername);
 
             ]
         end
