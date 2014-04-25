@@ -344,17 +344,14 @@ ruby_block "powerdns-function-populate_records" do
     end
 end
 
-# This triggers populate_records() to populate records from records_all. If this doesn't run, the dynamic bits of DNS will get stale.
+# This triggers populate_records() to populate records from records_all. If this doesn't run, the dynamic 
+# bits of DNS will get stale. The command is guarded by if_vip so that it is present on all head 
+# nodes should one go away, but it will only execute if the current node is the VIP.
 cron "powerdns_populate_records" do
-  action :create
   minute "*"
   hour "*"
   weekday "*"
-  user "root"  # To avoid log permission issues.
-  home "/root"
-  command %Q{
-    echo "call populate_records();" | mysql -updns -p#{get_config('mysql-pdns-password')} #{node[:bcpc][:pdns_dbname]} 2>&1 > /var/log/pdns_populate_records.last_run.log
-  }
+  command "if [ -n \"$(/usr/local/bin/if_vip echo Y)\" ] ; then echo \"call populate_records();\" | mysql -updns -p#{get_config('mysql-pdns-password')} #{node[:bcpc][:pdns_dbname]} ; fi"
 end
 
 get_all_nodes.each do |server|
