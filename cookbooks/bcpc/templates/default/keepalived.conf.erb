@@ -48,8 +48,9 @@ vrrp_instance VI1_<%="#{node[:bcpc][:region_name]}"%> {
     auth_type PASS
     auth_pass <%="#{get_config('keepalived-password')}"%>
   }
-  notify_backup "/usr/local/bin/vip_change"
-  notify_fault "/usr/local/bin/vip_change"
+  notify_backup "/usr/local/bin/vip_lost"
+  notify_fault "/usr/local/bin/vip_lost"
+  notify_master "/usr/local/bin/vip_won"
 }
 
 vrrp_instance VI2_<%="#{node[:bcpc][:region_name]}"%> {
