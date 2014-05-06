@@ -1855,7 +1855,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>proc.mem[python,keystone,,keystone-all]</key>
+                    <key>proc.mem[,keystone,,]</key>
                     <delay>90</delay>
                     <history>3</history>
                     <trends>30</trends>
@@ -2986,7 +2986,7 @@
                     <snmp_community/>
                     <multiplier>0</multiplier>
                     <snmp_oid/>
-                    <key>proc.num[python,keystone,,keystone-all]</key>
+                    <key>proc.num[,keystone,,]</key>
                     <delay>90</delay>
                     <history>3</history>
                     <trends>30</trends>
@@ -3718,7 +3718,7 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{BCPC-Headnode:mysql.status[Aborted_clients].last(0)}&gt;0</expression>
+            <expression>{BCPC-Headnode:mysql.status[Aborted_clients].last(0)}&gt;50</expression>
             <name>Aborted MySQL Clients</name>
             <url/>
             <status>0</status>
@@ -3728,7 +3728,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{BCPC-Headnode:mysql.status[Aborted_connects].last(0)}&gt;0</expression>
+            <expression>{BCPC-Headnode:mysql.status[Aborted_connects].last(0)}&gt;50</expression>
             <name>Aborted MySQL Connections</name>
             <url/>
             <status>0</status>
@@ -3798,7 +3798,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{BCBC-Worknode:system.run[ip route show table mgmt].nodata(240)}=1 | {BCBC-Worknode:system.run[ip route show table mgmt].str(default)}=0</expression>
+            <expression>{BCBC-Worknode:system.run[ip route show table mgmt].str(default)}=0</expression>
             <name>IP Route Check for MGMT failed on {HOST.NAME}</name>
             <url/>
             <status>0</status>
@@ -3808,7 +3808,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{BCBC-Worknode:system.run[ip route show table storage].nodata(240)}=1 | {BCBC-Worknode:system.run[ip route show table storage].str(scope)}=0</expression>
+            <expression>{BCBC-Worknode:system.run[ip route show table storage].str(scope)}=0</expression>
             <name>IP Route Check for STORAGE failed on {HOST.NAME}</name>
             <url/>
             <status>0</status>
@@ -3835,16 +3835,6 @@
             <priority>3</priority>
             <description>HAPRoxy pings Rados Gateway every few sec. If this stops it probably means that HAProxy has dropped the host.</description>
             <type>0</type>
-            <dependencies/>
-        </trigger>
-        <trigger>
-            <expression>{BCBC-Worknode:ceph.rgw.healthcheck.last(0)}=0</expression>
-            <name>RGW: Healthchecks stopped</name>
-            <url/>
-            <status>0</status>
-            <priority>2</priority>
-            <description/>
-            <type>1</type>
             <dependencies/>
         </trigger>
         <trigger>
@@ -3898,7 +3888,7 @@
             <dependencies/>
         </trigger>
         <trigger>
-            <expression>{BCPC-Headnode:proc.num[python,keystone,,keystone-all].last(0)}#1</expression>
+            <expression>{BCPC-Headnode:proc.num[,keystone,,].last(0)}=0</expression>
             <name>Service: Keystone</name>
             <url/>
             <status>0</status>
