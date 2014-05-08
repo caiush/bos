@@ -43,18 +43,8 @@ end
 # Core networking package
 package "vlan"
 
-# Useful system tools
-package "fio"
-package "bc"
-package "htop"
-package "sysstat"
-package "iperf"
+# Enable LLDP - see https://github.com/bloomberg/chef-bcpc/pull/120
 package "lldpd"
-
-# Remove spurious logging failures from this package
-package "powernap" do
-    action :remove
-end
 
 bash "enable-ip-forwarding" do
     user "root"

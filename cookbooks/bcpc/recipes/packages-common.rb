@@ -23,3 +23,7 @@
 
 package 'sshpass'  # GitHub #112 -- required for nodessh.sh 
 
+# Remove spurious logging failures from this package
+package "powernap" do
+    action :remove
+end

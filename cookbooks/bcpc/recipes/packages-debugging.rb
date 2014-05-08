@@ -28,3 +28,12 @@ package "ethtool"
 package "bmon"
 package "tshark"
 package "nmap"
+package "iperf"
+
+# I/O troubleshooting tools
+package "fio"
+package "bc"
+
+# System troubleshooting tools
+package "htop"
+package "sysstat"
