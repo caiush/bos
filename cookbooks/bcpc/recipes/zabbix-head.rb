@@ -212,7 +212,7 @@ end
     user "zabbix"
     minute "0"
     path "/usr/local/bin:/usr/bin:/bin"
-    command "zabbix_sender -c /usr/local/etc/zabbix_agentd.conf --key 'check.#{cc}' --value `check -f timeonly #{cc}` 2>&1 /usr/bin/logger -p local0.notice"
+    command "zabbix_sender -c /usr/local/etc/zabbix_agentd.conf --key 'check.#{cc}' --value `check -f timeonly #{cc}` 2>&1 | /usr/bin/logger -p local0.notice"
   end
 end
 
