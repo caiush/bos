@@ -2,7 +2,7 @@
 # Cookbook Name:: bcpc
 # Recipe:: networking-test
 #
-# Copyright 2013, Bloomberg Finance L.P.
+# Copyright 2014, Bloomberg Finance L.P.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,13 +22,23 @@ othernodes=[]
 ruby_block "setup-other-hosts" do
   block do
     get_all_nodes.each do |host|
-      if host.hostname != node.hostname then
-        othernodes.push host
+      host.roles.each do |role|
+        if role == "BCPC-Worknode" || role == "BCPC-Headnode" then
+          if host.hostname != node.hostname then
+            unless othernodes.include? host then
+              othernodes.push host
+              message = "Found a peer : " + host.hostname
+              Chef::Log.info(message)
+            end
+          end
+        end
       end
     end
     # if there are no other nodes, then I am the first. If so, ensure
     # the tests will still pass by referencing myself
     if othernodes.empty? then
+      message = "No peers, using self : " + node.hostname
+      Chef::Log.info(message)
       othernodes.push node
     end
   end
@@ -60,7 +70,6 @@ bash "ping-storage-peers" do
         fi
     done < /etc/storage-peers
     # if none found, cannot proceed
-    echo "Network test failed : no storage peers respond, perhaps the cable is bad"
     echo "-----------------------------------------------------------------------------"
     echo "-----------------------------------------------------------------------------"
     echo "- Network test failed : no storage peers respond, perhaps the cable is bad  -"
