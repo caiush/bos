@@ -8,6 +8,11 @@ VER_KIBANA=2581d314f12f520638382d23ffc03977f481c1e4
 VER_DIAMOND=f33aa2f75c6ea2dfbbc659766fe581e5bfe2476d
 VER_ESPLUGIN=9c032b7c628d8da7745fbb1939dcd2db52629943
 
+if [[ -f ./proxy_setup.sh ]]; then
+  . ./proxy_setup.sh
+fi
+
+
 # we now define CURL previously in proxy_setup.sh (called from
 # setup_chef_server which calls this script. Default definition is
 # CURL=curl
