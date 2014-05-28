@@ -37,16 +37,7 @@ apt_repository "percona" do
     key "percona-release.key"
 end
 
-bash "workaround-mysql-deps-problem" do
-    user "root"
-    code <<-EOH
-        VERSION=`apt-cache policy libmysqlclient18 | grep -B1 percona | head -1 | awk '{print $1}'`
-        DEBIAN_FRONTEND=noninteractive apt-get -y install libmysqlclient18=$VERSION
-    EOH
-    not_if "dpkg -l |grep libmysqlclient18"
-end
-
-package "percona-xtradb-cluster-server-5.6" do
+package "percona-xtradb-cluster-server" do
     action :upgrade
 end
 
