@@ -18,17 +18,7 @@
 #
 
 include_recipe "bcpc::mysql"
-include_recipe "bcpc::openstack"
-
-ruby_block "initialize-nova-config" do
-    block do
-        make_config('mysql-nova-user', "nova")
-        make_config('mysql-nova-password', secure_password)
-        make_config('glance-cloudpipe-uuid', %x[uuidgen -r].strip)
-    end
-end
-
-package "python-memcache"
+include_recipe "bcpc::nova-common"
 
 %w{nova-scheduler nova-cert nova-consoleauth nova-conductor}.each do |pkg|
     package pkg do
@@ -36,29 +26,9 @@ package "python-memcache"
     end
     service pkg do
         action [ :enable, :start ]
+        subscribes :restart, "template[/etc/nova/nova.conf]", :delayed
+        subscribes :restart, "template[/etc/nova/api-paste.ini]", :delayed
     end
-end
-
-template "/etc/nova/nova.conf" do
-    source "nova.conf.erb"
-    owner "nova"
-    group "nova"
-    mode 00600
-    notifies :restart, "service[nova-scheduler]", :delayed
-    notifies :restart, "service[nova-cert]", :delayed
-    notifies :restart, "service[nova-consoleauth]", :delayed
-    notifies :restart, "service[nova-conductor]", :delayed
-end
-
-template "/etc/nova/api-paste.ini" do
-    source "nova.api-paste.ini.erb"
-    owner "nova"
-    group "nova"
-    mode 00600
-    notifies :restart, "service[nova-scheduler]", :delayed
-    notifies :restart, "service[nova-cert]", :delayed
-    notifies :restart, "service[nova-consoleauth]", :delayed
-    notifies :restart, "service[nova-conductor]", :delayed
 end
 
 ruby_block "nova-database-creation" do

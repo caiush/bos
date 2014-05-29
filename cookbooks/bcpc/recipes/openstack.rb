@@ -29,8 +29,8 @@ apt_repository "openstack" do
     components ["main"]
 end
 
-%w{python-novaclient python-cinderclient python-glanceclient nova-common python-nova
-   python-keystoneclient python-nova-adminclient python-mysqldb}.each do |pkg|
+%w{python-novaclient python-cinderclient python-glanceclient python-nova python-memcache
+   python-keystoneclient python-nova-adminclient python-heatclient python-ceilometerclient python-mysqldb}.each do |pkg|
         package pkg do
             action :upgrade
         end
@@ -41,10 +41,29 @@ template "/usr/local/bin/hup_openstack" do
     mode 0755
     owner "root"
     group "root"
+    variables( :servers => get_head_nodes )
 end
 
 directory "/opt/openstack" do
     owner "root"
     group "root"
     mode 00755
+end
+
+%w{heat ceilometer}.each do |client|
+    cookbook_file "/tmp/#{client}client.patch" do
+        source "#{client}client.patch"
+        owner "root"
+        mode 00644
+    end
+
+    bash "patch-for-#{client}client-bugs" do
+        user "root"
+        code <<-EOH
+            cd /usr/lib/python2.7/dist-packages/#{client}client
+            patch -p0 < /tmp/#{client}client.patch
+            cp /tmp/#{client}client.patch .
+        EOH
+        not_if "test -f /usr/lib/python2.7/dist-packages/#{client}client/#{client}client.patch"
+    end
 end

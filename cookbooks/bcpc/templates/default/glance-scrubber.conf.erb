@@ -39,3 +39,21 @@ registry_host = <%="#{node[:bcpc][:management][:vip]}"%>
 
 # Port the registry server is listening on
 registry_port = 9191
+
+# Auth settings if using Keystone
+auth_url = https://<%="#{node[:bcpc][:management][:vip]}"%>:5000/v2.0/
+admin_tenant_name = <%="#{node[:bcpc][:admin_tenant]}"%>
+admin_user = <%="#{get_config('keystone-admin-user')}"%>
+admin_password = <%="#{get_config('keystone-admin-password')}"%>
+
+# Directory to use for lock files. Default to a temp directory
+# (string value). This setting needs to be the same for both
+# glance-scrubber and glance-api.
+#lock_path=<None>
+
+# ================= Security Options ==========================
+
+# AES key for encrypting store 'location' metadata, including
+# -- if used -- Swift or S3 credentials
+# Should be set to a random string of length 16, 24 or 32 bytes
+#metadata_encryption_key = <16, 24 or 32 char registry metadata key>

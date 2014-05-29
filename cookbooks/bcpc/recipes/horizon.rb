@@ -26,6 +26,7 @@ ruby_block "initialize-horizon-config" do
     block do
         make_config('mysql-horizon-user', "horizon")
         make_config('mysql-horizon-password', secure_password)
+        make_config('horizon-secret-key', secure_password)
     end
 end
 

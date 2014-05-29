@@ -76,8 +76,18 @@ use_cow_images=True
 # Nova Volume settings
 volume_api_class=nova.volume.cinder.API
 
-# This flag is added by the patch from Inktank
-always_use_volumes=True
+# Always boot nova VMs from RBD
+libvirt_images_type=rbd
+libvirt_images_rbd_pool=<%="#{node['bcpc']['ceph']['images']['name']}"%>
+libvirt_images_rbd_ceph_conf=/etc/ceph/ceph.conf
+rbd_user=admin
+rbd_secret_uuid=<%="#{get_config('libvirt-secret-uuid')}"%>
+
+# Live migration settings
+# live_migration_uri=qemu+ssh://%s/system
+# live_migration_bandwidth=0
+# live_migration_retry_count=30
+# live_migration_flag=VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE
 
 # Nova VNC settings
 novnc_enabled=True
@@ -94,6 +104,13 @@ glance_api_servers=<%="#{node[:bcpc][:management][:vip]}"%>:9292
 vpn_image_id=<%="#{get_config('glance-cloudpipe-uuid')}"%>
 use_project_ca=True
 cnt_vpn_clients=5
+
+# Ceilometer metrics
+instance_usage_audit=True
+instance_usage_audit_period=hour
+notify_on_state_change=vm_and_task_state
+notification_driver=nova.openstack.common.notifier.rpc_notifier
+notification_driver=ceilometer.compute.nova_notifier
 
 # Misc other settings
 logdir=/var/log/nova
