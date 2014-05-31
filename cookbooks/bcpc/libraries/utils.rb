@@ -169,3 +169,34 @@ def calc_reverse_dns_zone(cidr)
 
 end
 
+# We do not have net/ping, so just call out to system and check err value.
+def ping_node(list_name, ping_node)
+  Open3.popen3("ping -c1 #{ping_node}") {|stdin, stdout, stderr, wait_thr|
+    rv = wait_thr.value
+    if rv == 0
+      Chef::Log.info("Success pinging #{ping_node}")
+      return
+    end
+    Chef::Log.warn("Failure pinging #{ping_node} - #{rv} - #{stdout.read} - #{stderr.read}")
+  }
+  raise ("Network test failed: #{list_name} unreachable")
+end
+
+def ping_node_list(list_name, ping_list, fast_exit=true)
+  success = false
+  ping_list.each do |ping_node|
+    Open3.popen3("ping -c1 #{ping_node}") {|stdin, stdout, stderr, wait_thr|
+      rv = wait_thr.value
+      if rv == 0
+        Chef::Log.info("Success pinging #{ping_node}")
+        return unless not fast_exit
+        success = true
+      else
+        Chef::Log.warn("Failure pinging #{ping_node} - #{rv} - #{stdout.read} - #{stderr.read}")
+      end
+    }
+  end
+  if not success
+    raise ("Network test failed: #{list_name} unreachable")
+  end
+end
