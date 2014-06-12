@@ -112,8 +112,9 @@ end
 
 bash "set-glance-rados-pool-replicas" do
     user "root"
-    code "ceph osd pool set #{node[:bcpc][:ceph][:images][:name]} size #{node[:bcpc][:ceph][:images][:replicas]}"
-    not_if "ceph osd pool get #{node[:bcpc][:ceph][:images][:name]} size | grep #{node[:bcpc][:ceph][:images][:replicas]}"
+    replicas = [get_head_nodes.length, node[:bcpc][:ceph][:images][:replicas]].min
+    code "ceph osd pool set #{node[:bcpc][:ceph][:images][:name]} size #{replicas}"
+    not_if "ceph osd pool get #{node[:bcpc][:ceph][:images][:name]} size | grep #{replicas}"
 end
 
 bash "set-glance-rados-pool-pgs" do

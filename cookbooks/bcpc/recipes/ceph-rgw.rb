@@ -65,10 +65,15 @@ rgw_crush_ruleset = (node[:bcpc][:ceph][:rgw][:type] == "ssd") ? node[:bcpc][:ce
         code <<-EOH
             ceph osd pool create #{pool} #{rgw_optimal_pg}
             ceph osd pool set #{pool} crush_ruleset #{rgw_crush_ruleset}
-            ceph osd pool set #{pool} size #{node[:bcpc][:ceph][:rgw][:replicas]}
         EOH
         not_if "rados lspools | grep ^#{pool}$"
     end
+  bash "set-#{pool}-rados-pool-replicas" do
+      user "root"
+      replicas = [get_head_nodes.length, node[:bcpc][:ceph][:rgw][:replicas]].min
+      code "ceph osd pool set #{pool} size #{replicas}"
+      not_if "ceph osd pool get #{pool} size | grep #{replicas}"
+  end
 end
 
 # check to see if we should up the number of pg's now for the core buckets pool

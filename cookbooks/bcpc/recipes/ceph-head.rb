@@ -161,6 +161,15 @@ if get_head_nodes.length == 1; then
     end
 end
 
+replicas = [get_head_nodes.length, node[:bcpc][:ceph][:images][:replicas]].min
+%w{data metadata rbd}.each do |pool|
+    bash "set-#{pool}-rados-pool-replicas" do
+        user "root"
+        code "ceph osd pool set #{pool} size #{replicas}"
+        not_if "ceph osd pool get #{pool} size | grep #{replicas}"
+    end
+end
+
 %w{mon mds}.each do |svc|
     %w{done upstart}.each do |name|
         file "/var/lib/ceph/#{svc}/ceph-#{node[:hostname]}/#{name}" do

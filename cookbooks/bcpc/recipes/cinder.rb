@@ -98,8 +98,9 @@ node[:bcpc][:ceph][:enabled_pools].each do |type|
 
     bash "set-cinder-rados-pool-replicas-#{type}" do
         user "root"
-        code "ceph osd pool set #{node[:bcpc][:ceph][:volumes][:name]}-#{type} size #{node[:bcpc][:ceph][:volumes][:replicas]}"
-        not_if "ceph osd pool get #{node[:bcpc][:ceph][:volumes][:name]}-#{type} size | grep #{node[:bcpc][:ceph][:volumes][:replicas]}"
+        replicas = [get_head_nodes.length, node[:bcpc][:ceph][:volumes][:replicas]].min
+        code "ceph osd pool set #{node[:bcpc][:ceph][:volumes][:name]}-#{type} size #{replicas}"
+        not_if "ceph osd pool get #{node[:bcpc][:ceph][:volumes][:name]}-#{type} size | grep #{replicas}"
     end
 
     bash "set-cinder-rados-pool-pgs-#{type}" do

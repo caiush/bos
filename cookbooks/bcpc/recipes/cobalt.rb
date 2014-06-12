@@ -104,8 +104,9 @@ if not node["bcpc"]["vms_key"].nil?
 
     bash "set-vms-disk-rados-pool-replicas" do
         user "root"
-        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} size #{node[:bcpc][:ceph][:vms_disk][:replicas]}"
-        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} size | grep #{node[:bcpc][:ceph][:vms_disk][:replicas]}"
+        replicas = [get_head_nodes.length, node[:bcpc][:ceph][:vms_disk][:replicas]].min
+        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} size #{replicas}"
+        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} size | grep #{replicas}"
     end
 
     bash "set-vms-disk-rados-pool-pgs" do
@@ -127,8 +128,9 @@ if not node["bcpc"]["vms_key"].nil?
 
     bash "set-vms-mem-rados-pool-replicas" do
         user "root"
-        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} size #{node[:bcpc][:ceph][:vms_mem][:replicas]}"
-        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} size | grep #{node[:bcpc][:ceph][:vms_mem][:replicas]}"
+        replicas = [get_head_nodes.length, node[:bcpc][:ceph][:vms_mem][:replicas]].min
+        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} size #{replicas}"
+        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} size | grep #{replicas}"
     end
 
     bash "set-vms-mem-rados-pool-pgs" do
