@@ -86,7 +86,10 @@ end
 def get_head_nodes
 	results = search(:node, "role:BCPC-Headnode AND chef_environment:#{node.chef_environment}")
 	results.map!{ |x| x['hostname'] == node[:hostname] ? node : x }
-	return (results == []) ? [node] : results
+	if not results.include?(node) and node.run_list.roles.include?('BCPC-Headnode')
+		results.push(node)
+	end
+	return results
 end
 
 def get_cached_head_node_names
