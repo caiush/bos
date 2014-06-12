@@ -152,7 +152,7 @@ bash "ceph-add-crush-rules" do
 end
 
 if get_head_nodes.length == 1; then
-    rule = (node[:bcpc][:ceph][:ssd_disks].length > 0) ? 3 : 4
+    rule = (node[:bcpc][:ceph][:ssd_disks].length > 0) ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]
     %w{data metadata rbd}.each do |pool|
         bash "move-#{pool}-rados-pool" do
             user "root"

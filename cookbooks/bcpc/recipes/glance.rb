@@ -105,7 +105,7 @@ bash "create-glance-rados-pool" do
     optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:images][:replicas]*node[:bcpc][:ceph][:images][:portion]/100)
     code <<-EOH
         ceph osd pool create #{node[:bcpc][:ceph][:images][:name]} #{optimal}
-        ceph osd pool set #{node[:bcpc][:ceph][:images][:name]} crush_ruleset #{(node[:bcpc][:ceph][:images][:type]=="ssd")?3:4}
+        ceph osd pool set #{node[:bcpc][:ceph][:images][:name]} crush_ruleset #{(node[:bcpc][:ceph][:images][:type]=="ssd") ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]}
     EOH
     not_if "rados lspools | grep #{node[:bcpc][:ceph][:images][:name]}"
 end

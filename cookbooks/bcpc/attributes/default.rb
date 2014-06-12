@@ -59,6 +59,8 @@ default['bcpc']['ceph']['vms_mem']['replicas'] = 3
 default['bcpc']['ceph']['vms_mem']['portion'] = 10
 default['bcpc']['ceph']['vms_mem']['type'] = 'ssd'
 default['bcpc']['ceph']['vms_mem']['name'] = "vmsmem"
+default['bcpc']['ceph']['ssd']['ruleset'] = 1
+default['bcpc']['ceph']['hdd']['ruleset'] = 2
 
 ###########################################
 #
