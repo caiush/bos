@@ -161,7 +161,7 @@ if get_head_nodes.length == 1; then
     end
 end
 
-replicas = [get_head_nodes.length, node[:bcpc][:ceph][:images][:replicas]].min
+replicas = [get_all_nodes.length, node[:bcpc][:ceph][:images][:replicas]].min
 %w{data metadata rbd}.each do |pool|
     bash "set-#{pool}-rados-pool-replicas" do
         user "root"
