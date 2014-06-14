@@ -20,16 +20,16 @@ set _tilde 0
 #
 ############# end config ##############
 
-<% for @distro in ['precise', 'trusty'] %>
+<% for @distro in @node['bcpc']['mirror']['ubuntu-dist'] %>
 
 # repo for <%= @distro %>
 <% for @repo in [ '', '-security', '-updates', '-backports' ] %>
-deb http://us.archive.ubuntu.com/ubuntu <%= @distro %><%= @repo %> main restricted universe multiverse
-deb-i386 http://us.archive.ubuntu.com/ubuntu <%= @distro %><%= @repo %> main restricted universe multiverse
-deb http://us.archive.ubuntu.com/ubuntu <%= @distro %><%= @repo %> main/debian-installer restricted/debian-installer universe/debian-installer multiverse/debian-installer
+deb http://<%=@node['bcpc']['mirror']['ubuntu']%> <%= @distro %><%= @repo %> main restricted universe multiverse
+deb-i386 http://<%=@node['bcpc']['mirror']['ubuntu']%> <%= @distro %><%= @repo %> main restricted universe multiverse
+deb http://<%=@node['bcpc']['mirror']['ubuntu']%> <%= @distro %><%= @repo %> main/debian-installer restricted/debian-installer universe/debian-installer multiverse/debian-installer
 <% end %>
 
-<% for @ceph_ver in [ 'dumpling', 'firefly' ] %>
+<% for @ceph_ver in @node['bcpc']['mirror']['ceph-dist'] %>
 deb http://ceph.com/debian-<%= @ceph_ver %> <%= @distro %> main
 deb-i386 http://ceph.com/debian-<%= @ceph_ver %> <%= @distro %> main
 <% end %>
@@ -52,7 +52,7 @@ deb http://hwraid.le-vert.net/ubuntu precise main
 deb-i386 http://hwraid.le-vert.net/ubuntu precise main
 
 # no trusty packages until Trusty+Juno combo (20140529)
-<% for @os_distro in [ 'havana', 'icehouse' ] %>
+<% for @os_distro in @node['bcpc']['mirror']['os-dist'] %>
 <% for @repo in [ 'updates', 'proposed' ] %>
 deb http://ubuntu-cloud.archive.canonical.com/ubuntu precise-<%= @repo %>/<%= @os_distro %> main
 deb-i386 http://ubuntu-cloud.archive.canonical.com/ubuntu precise-<%= @repo %>/<%= @os_distro %> main
@@ -73,7 +73,7 @@ deb-i386 http://packages.treasure-data.com/precise precise contrib
 deb http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.16/repos/ubuntu12 HDP-UTILS main
 deb http://public-repo-1.hortonworks.com/HDP/ubuntu12/2.x HDP main
 
-clean http://us.archive.ubuntu.com/ubuntu
+clean http://<%=@node['bcpc']['mirror']['ubuntu']%>
 clean http://ceph.com
 clean http://gitbuilder.ceph.com
 clean http://hwraid.le-vert.net/ubuntu

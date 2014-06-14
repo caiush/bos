@@ -110,6 +110,23 @@ default['bcpc']['repos']['gridcentric'] = "http://downloads.gridcentric.com/pack
 
 ###########################################
 #
+# [Optional] If using apt-mirror to pull down repos, we use these settings.
+#
+###########################################
+# Note - us.archive.ubuntu.com tends to rate-limit pretty hard.
+# If you are on East Coast US, we recommend Columbia University in env file:
+# "mirror" : {
+#  "ubuntu": "mirror.cc.columbia.edu/pub/linux/ubuntu/archive"
+# }
+# For a complete list of Ubuntu mirrors, please see:
+# https://launchpad.net/ubuntu/+archivemirrors
+default['bcpc']['mirror']['ubuntu'] = "us.archive.ubuntu.com/ubuntu"
+default['bcpc']['mirror']['ubuntu-dist'] = [ 'precise' ]
+default['bcpc']['mirror']['ceph-dist'] = [ 'firefly' ]
+default['bcpc']['mirror']['os-dist'] = [ 'havana' ]
+
+###########################################
+#
 #  Default names for db's, pools, and users
 #
 ###########################################
