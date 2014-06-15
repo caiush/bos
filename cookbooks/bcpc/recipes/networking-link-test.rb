@@ -17,47 +17,34 @@
 # limitations under the License.
 #
 
-othernodes=[]
+othernodes = []
+float_addr = []
+storage_addr = []
 
 # prepare tests for ping testing peers
 ruby_block "setup-other-hosts" do
   block do
     get_all_nodes.each do |host|
-      host.roles.each do |role|
-        if role == "BCPC-Worknode" || role == "BCPC-Headnode" then
-          if host.hostname != node.hostname then
-            unless othernodes.include? host then
-              othernodes.push host
-              message = "Found a peer : " + host.hostname
-              Chef::Log.info(message)
-            end
-          end
-        end
+      if (host.roles.include? "BCPC-Worknode" or
+          host.roles.include? "BCPC-Headnode") and
+         host.hostname != node.hostname and
+         not othernodes.include? host then
+           Chef::Log.info("Found a peer : #{host.hostname}")
+           othernodes.push host
+           float_addr.push host[:bcpc][:floating][:ip]
+           storage_addr.push host[:bcpc][:storage][:ip]
       end
     end
     # if there are no other nodes, then I am the first. If so, ensure
     # the tests will still pass by referencing myself
     if othernodes.empty? then
-      message = "No peers, using self : " + node.hostname
-      Chef::Log.info(message)
+      Chef::Log.info("No peers, using self : #{node.hostname}")
       othernodes.push node
+      float_addr.push node[:bcpc][:floating][:ip]
+      storage_addr.push node[:bcpc][:storage][:ip]
     end
   end
 end
-
-template "/etc/floating-peers" do
-  source "floating-peers.erb"
-  mode 0644
-  variables( :servers => othernodes) 
-end
-
-
-template "/etc/storage-peers" do
-  source "storage-peers.erb"
-  mode 0644
-  variables( :servers => othernodes) 
-end
-
 
 # Run tests
 
@@ -78,63 +65,16 @@ end
 # once it has passed once. To re-enable, simply remove the success
 # file by hand
 
-bash "ping-storage-peers" do
-  code <<-EOH
-    SUCCESSFILE=/etc/storage-test-success
-    # bypass once this test has passed once
-    if [[ -f "$SUCCESSFILE" ]]; then
-      exit 0
-    fi
-    # return 0 if ANY IP address responds
-    while read IP; do
-      ping -c1 ${IP} > /dev/null 2>&1
-        if [[ $? = 0 ]]; then
-          # this IP responds, network link must work
-          touch "$SUCCESSFILE"
-          exit 0
-        fi
-    done < /etc/storage-peers
-    # if none found, cannot proceed
-    echo "-----------------------------------------------------------------------------"
-    echo "-----------------------------------------------------------------------------"
-    echo "- Network test failed : no storage peers respond, perhaps the cable is bad  -"
-    echo "-----------------------------------------------------------------------------"
-    echo "-----------------------------------------------------------------------------"
-    exit 1
-  EOH
+ruby_block "check-peers" do
+  block do
+    if not File.file?("/etc/storage-test-success")
+      ping_node_list("storage peers", storage_addr)
+      FileUtils.touch("/etc/storage-test-success")
+    end
+
+    if not File.file?("/etc/floating-test-success")
+      ping_node_list("floating peers", float_addr)
+      FileUtils.touch("/etc/floating-test-success")
+    end
+  end
 end
-
-#
-# Test that we can ping at least one floating network peer.
-#
-# This test also self-disables after passing (see previous comments)
-#
-bash "ping-floating-peers" do
-  code <<-EOH
-    SUCCESSFILE=/etc/floating-test-success
-    # bypass once this test has passed once
-    if [[ -f "$SUCCESSFILE" ]]; then
-      exit 0
-    fi
-    # return 0 if ANY IP address responds
-    while read IP; do
-      ping -c1 ${IP} > /dev/null 2>&1
-        if [[ $? = 0 ]]; then
-          # this IP responds, network link must work
-          touch "$SUCCESSFILE"
-          exit 0
-        fi
-    done < /etc/floating-peers
-    # if none found, cannot proceed
-    echo "-----------------------------------------------------------------------------"
-    echo "-----------------------------------------------------------------------------"
-    echo "- Network test failed : no floating peers respond, perhaps the cable is bad -"
-    echo "-----------------------------------------------------------------------------"
-    echo "-----------------------------------------------------------------------------"
-    exit 1
-  EOH
-end
-
-
-
-
