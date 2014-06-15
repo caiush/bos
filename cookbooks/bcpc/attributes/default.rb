@@ -39,6 +39,7 @@ default['bcpc']['fixed']['vlan_interface'] = node[:bcpc][:floating][:interface]
 #  Ceph settings for the cluster
 #
 ###########################################
+default['bcpc']['ceph']['chooseleaf'] = "host"
 default['bcpc']['ceph']['pgs_per_node'] = 1024
 # The 'portion' parameters should add up to ~100 across all pools
 default['bcpc']['ceph']['rgw']['replicas'] = 3
