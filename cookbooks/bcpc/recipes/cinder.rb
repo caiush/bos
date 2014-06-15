@@ -108,6 +108,7 @@ node[:bcpc][:ceph][:enabled_pools].each do |type|
             optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:volumes][:replicas]*node[:bcpc][:ceph][:volumes][:portion]/100/node[:bcpc][:ceph][:enabled_pools].length)
             code "ceph osd pool set #{node[:bcpc][:ceph][:volumes][:name]}-#{type} #{pg} #{optimal}"
             not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:volumes][:name]}-#{type} #{pg} | awk '{print $2}'` >= #{optimal}))"
+            notifies :run, "bash[wait-for-pgs-creating]", :immediately
         end
     end
 

@@ -58,3 +58,9 @@ template '/etc/ceph/ceph.conf' do
     mode '0644'
     variables( :servers => get_head_nodes )
 end
+
+bash "wait-for-pgs-creating" do
+    action :nothing
+    user "root"
+    code "while ceph -s | grep creating >/dev/null 2>&1; do echo Waiting for new pgs to create...; sleep 1; done"
+end
