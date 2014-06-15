@@ -22,6 +22,7 @@ default['bcpc']['vms_key'] = nil
 default['bcpc']['encrypt_data_bag'] = false
 default['bcpc']['host_firewall'] = true
 default['bcpc']['keepalived']['checks'] = true
+default['bcpc']['apt_upgrade'] = false
 
 # This can be either 'sql' or 'ldap' to either store identities
 # in the mysql DB or the LDAP server
