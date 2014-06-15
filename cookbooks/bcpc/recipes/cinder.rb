@@ -102,11 +102,13 @@ node[:bcpc][:ceph][:enabled_pools].each do |type|
         not_if "ceph osd pool get #{node[:bcpc][:ceph][:volumes][:name]}-#{type} size | grep #{node[:bcpc][:ceph][:volumes][:replicas]}"
     end
 
-    bash "set-cinder-rados-pool-pgs-#{type}" do
-        user "root"
-        optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:volumes][:replicas]*node[:bcpc][:ceph][:volumes][:portion]/100/node[:bcpc][:ceph][:enabled_pools].length)
-        code "ceph osd pool set #{node[:bcpc][:ceph][:volumes][:name]}-#{type} pg_num #{optimal}"
-        not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:volumes][:name]}-#{type} pg_num | awk '{print $2}'` >= #{optimal}))"
+    %w{pg_num pgp_num}.each do |pg|
+        bash "set-cinder-rados-pool-#{pg}-#{type}" do
+            user "root"
+            optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:volumes][:replicas]*node[:bcpc][:ceph][:volumes][:portion]/100/node[:bcpc][:ceph][:enabled_pools].length)
+            code "ceph osd pool set #{node[:bcpc][:ceph][:volumes][:name]}-#{type} #{pg} #{optimal}"
+            not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:volumes][:name]}-#{type} #{pg} | awk '{print $2}'` >= #{optimal}))"
+        end
     end
 
     bash "cinder-make-type-#{type}" do
