@@ -20,7 +20,7 @@ rule ssd {
     min_size 1
     max_size 10
     step take ssd
-    step chooseleaf firstn 0 type rack
+    step chooseleaf firstn 0 type host
     step emit
 }
 
@@ -30,6 +30,6 @@ rule hdd {
     min_size 1
     max_size 10
     step take hdd
-    step chooseleaf firstn 0 type rack
+    step chooseleaf firstn 0 type host
     step emit
 }
