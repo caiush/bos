@@ -41,6 +41,8 @@ default['bcpc']['fixed']['vlan_interface'] = node[:bcpc][:floating][:interface]
 ###########################################
 default['bcpc']['ceph']['pgs_per_node'] = 1024
 # The 'portion' parameters should add up to ~100 across all pools
+default['bcpc']['ceph']['default']['replicas'] = 2
+default['bcpc']['ceph']['default']['type'] = 'hdd'
 default['bcpc']['ceph']['rgw']['replicas'] = 3
 default['bcpc']['ceph']['rgw']['portion'] = 33
 default['bcpc']['ceph']['rgw']['type'] = 'hdd'

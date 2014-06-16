@@ -152,7 +152,7 @@ bash "ceph-add-crush-rules" do
 end
 
 if get_head_nodes.length == 1; then
-    rule = (node[:bcpc][:ceph][:ssd_disks].length > 0) ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]
+    rule = (node[:bcpc][:ceph][:default][:type] == "ssd") ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]
     %w{data metadata rbd}.each do |pool|
         bash "move-#{pool}-rados-pool" do
             user "root"
@@ -161,7 +161,7 @@ if get_head_nodes.length == 1; then
     end
 end
 
-replicas = [get_all_nodes.length, node[:bcpc][:ceph][:images][:replicas]].min
+replicas = [get_all_nodes.length, node[:bcpc][:ceph][:default][:replicas]].min
 %w{data metadata rbd}.each do |pool|
     bash "set-#{pool}-rados-pool-replicas" do
         user "root"
