@@ -102,7 +102,7 @@ node[:bcpc][:ceph][:enabled_pools].each do |type|
         not_if "ceph osd pool get #{node[:bcpc][:ceph][:volumes][:name]}-#{type} size | grep #{node[:bcpc][:ceph][:volumes][:replicas]}"
     end
 
-    %w{pg_num pgp_num}.each do |pg|
+    (node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
         bash "set-cinder-rados-pool-#{pg}-#{type}" do
             user "root"
             optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:volumes][:replicas]*node[:bcpc][:ceph][:volumes][:portion]/100/node[:bcpc][:ceph][:enabled_pools].length)

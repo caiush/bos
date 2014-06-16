@@ -116,7 +116,7 @@ bash "set-glance-rados-pool-replicas" do
     not_if "ceph osd pool get #{node[:bcpc][:ceph][:images][:name]} size | grep #{node[:bcpc][:ceph][:images][:replicas]}"
 end
 
-%w{pg_num pgp_num}.each do |pg|
+(node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
     bash "set-glance-rados-pool-#{pg}" do
         user "root"
         optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:images][:replicas]*node[:bcpc][:ceph][:images][:portion]/100)

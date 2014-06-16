@@ -72,7 +72,7 @@ rgw_crush_ruleset = (node[:bcpc][:ceph][:rgw][:type] == "ssd") ? 3 : 4
 end
 
 # check to see if we should up the number of pg's now for the core buckets pool
-%w{pg_num pgp_num}.each do |pg|
+(node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
     bash "update-rgw-buckets-#{pg}" do
         user "root"
         code "ceph osd pool set .rgw.buckets #{pg} #{rgw_optimal_pg}"

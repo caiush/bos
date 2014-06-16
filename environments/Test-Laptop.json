@@ -4,6 +4,7 @@
     "bcpc": {
       "virt_type" : "qemu",
       "ceph": {
+        "pgp_auto_adjust" : true,
         "hdd_disks" : [ "sdb", "sdc" ],
         "ssd_disks" : [ "sdd", "sde" ]
       },
