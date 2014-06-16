@@ -82,6 +82,8 @@ libvirt_images_rbd_pool=<%="#{node['bcpc']['ceph']['images']['name']}"%>
 libvirt_images_rbd_ceph_conf=/etc/ceph/ceph.conf
 rbd_user=admin
 rbd_secret_uuid=<%="#{get_config('libvirt-secret-uuid')}"%>
+# do not allow libvirt to try to inject into the local partition
+libvirt_inject_partition=-2
 
 # Live migration settings
 # live_migration_uri=qemu+ssh://%s/system
