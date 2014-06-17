@@ -77,10 +77,13 @@ rgw_crush_ruleset = (node[:bcpc][:ceph][:rgw][:type] == "ssd") ? node[:bcpc][:ce
 end
 
 # check to see if we should up the number of pg's now for the core buckets pool
-bash "update-rgw-buckets-pgs" do
-    user "root"
-    code "ceph osd pool set .rgw.buckets pg_num #{rgw_optimal_pg}"
-    not_if "((`ceph osd pool get .rgw.buckets pg_num | awk '{print $2}'` >= #{rgw_optimal_pg}))"
+(node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
+    bash "update-rgw-buckets-#{pg}" do
+        user "root"
+        code "ceph osd pool set .rgw.buckets #{pg} #{rgw_optimal_pg}"
+        not_if "((`ceph osd pool get .rgw.buckets #{pg} | awk '{print $2}'` >= #{rgw_optimal_pg}))"
+        notifies :run, "bash[wait-for-pgs-creating]", :immediately
+    end
 end
 
 file "/var/www/s3gw.fcgi" do

@@ -109,11 +109,14 @@ if not node["bcpc"]["vms_key"].nil?
         not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} size | grep #{replicas}"
     end
 
-    bash "set-vms-disk-rados-pool-pgs" do
-        user "root"
-        optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_disk][:replicas]*node[:bcpc][:ceph][:vms_disk][:portion]/100)
-        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} pg_num #{optimal}"
-        not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} pg_num | awk '{print $2}'` >= #{optimal}))"
+    (node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
+        bash "set-vms-disk-rados-pool-#{pg}" do
+            user "root"
+            optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_disk][:replicas]*node[:bcpc][:ceph][:vms_disk][:portion]/100)
+            code "ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} #{pg} #{optimal}"
+            not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} #{pg} | awk '{print $2}'` >= #{optimal}))"
+            notifies :run, "bash[wait-for-pgs-creating]", :immediately
+        end
     end
 
     bash "create-vms-mem-rados-pool" do
@@ -133,10 +136,13 @@ if not node["bcpc"]["vms_key"].nil?
         not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} size | grep #{replicas}"
     end
 
-    bash "set-vms-mem-rados-pool-pgs" do
-        user "root"
-        optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_mem][:replicas]*node[:bcpc][:ceph][:vms_mem][:portion]/100)
-        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} pg_num #{optimal}"
-        not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} pg_num | awk '{print $2}'` >= #{optimal}))"
+    (node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
+        bash "set-vms-mem-rados-pool-#{pg}" do
+            user "root"
+            optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_mem][:replicas]*node[:bcpc][:ceph][:vms_mem][:portion]/100)
+            code "ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} #{pg} #{optimal}"
+            not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} #{pg} | awk '{print $2}'` >= #{optimal}))"
+            notifies :run, "bash[wait-for-pgs-creating]", :immediately
+        end
     end
 end
