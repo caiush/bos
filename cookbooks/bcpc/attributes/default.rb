@@ -40,6 +40,7 @@ default['bcpc']['fixed']['vlan_interface'] = node[:bcpc][:floating][:interface]
 #
 ###########################################
 default['bcpc']['ceph']['chooseleaf'] = "rack"
+default['bcpc']['ceph']['pgp_auto_adjust'] = false
 default['bcpc']['ceph']['pgs_per_node'] = 1024
 # The 'portion' parameters should add up to ~100 across all pools
 default['bcpc']['ceph']['default']['replicas'] = 2
