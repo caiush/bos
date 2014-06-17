@@ -5,7 +5,8 @@
       "virt_type" : "qemu",
       "ceph": {
         "hdd_disks" : [ "sdb", "sdc" ],
-        "ssd_disks" : [ "sdd", "sde" ]
+        "ssd_disks" : [ "sdd", "sde" ],
+        "chooseleaf" : "host"
       },
       "domain_name" : "bcpc.example.com",
       "management": {
