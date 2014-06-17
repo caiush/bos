@@ -97,15 +97,16 @@ if not node["bcpc"]["vms_key"].nil?
         optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_disk][:replicas]*node[:bcpc][:ceph][:vms_disk][:portion]/100)
         code <<-EOH
             ceph osd pool create #{node[:bcpc][:ceph][:vms_disk][:name]} #{optimal}
-            ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} crush_ruleset #{(node[:bcpc][:ceph][:vms_disk][:type]=="ssd")?3:4}
+            ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} crush_ruleset #{(node[:bcpc][:ceph][:vms_disk][:type]=="ssd") ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]}
         EOH
         not_if "rados lspools | grep #{node[:bcpc][:ceph][:vms_disk][:name]}"
     end
 
     bash "set-vms-disk-rados-pool-replicas" do
         user "root"
-        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} size #{node[:bcpc][:ceph][:vms_disk][:replicas]}"
-        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} size | grep #{node[:bcpc][:ceph][:vms_disk][:replicas]}"
+        replicas = [get_all_nodes.length, node[:bcpc][:ceph][:vms_disk][:replicas]].min
+        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} size #{replicas}"
+        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} size | grep #{replicas}"
     end
 
     bash "set-vms-disk-rados-pool-pgs" do
@@ -120,15 +121,16 @@ if not node["bcpc"]["vms_key"].nil?
         optimal = power_of_2(get_cepg_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_mem][:replicas]*node[:bcpc][:ceph][:vms_mem][:portion]/100)
         code <<-EOH
             ceph osd pool create #{node[:bcpc][:ceph][:vms_mem][:name]} #{optimal}
-            ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} crush_ruleset #{(node[:bcpc][:ceph][:vms_mem][:type]=="ssd")?3:4}
+            ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} crush_ruleset #{(node[:bcpc][:ceph][:vms_mem][:type]=="ssd") ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]}
         EOH
         not_if "rados lspools | grep #{node[:bcpc][:ceph][:vms_mem][:name]}"
     end
 
     bash "set-vms-mem-rados-pool-replicas" do
         user "root"
-        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} size #{node[:bcpc][:ceph][:vms_mem][:replicas]}"
-        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} size | grep #{node[:bcpc][:ceph][:vms_mem][:replicas]}"
+        replicas = [get_all_nodes.length, node[:bcpc][:ceph][:vms_mem][:replicas]].min
+        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} size #{replicas}"
+        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} size | grep #{replicas}"
     end
 
     bash "set-vms-mem-rados-pool-pgs" do

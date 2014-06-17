@@ -37,4 +37,10 @@ node.set['bcpc']['node_number'] = mgmt_hostaddr.to_i.to_s
 node.set['bcpc']['storage']['ip'] = ((IPAddr.new(node['bcpc']['storage']['cidr'])>>(32-stor_bitlen)<<(32-stor_bitlen))|stor_hostaddr).to_s
 node.set['bcpc']['floating']['ip'] = ((IPAddr.new(node['bcpc']['floating']['cidr'])>>(32-flot_bitlen)<<(32-flot_bitlen))|flot_hostaddr).to_s
 
+# Take a guess at the rack name or default to 'rack'
+if node['bcpc']['rack_name'].nil? then
+	rack_guess = node[:hostname].match /.*-r(\d+)[a-d]?n\d+$/
+	node.set['bcpc']['rack_name'] = (rack_guess.nil?) ? "rack" : "rack-#{rack_guess[1].to_i}"
+end
+
 node.save rescue nil

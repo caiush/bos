@@ -41,6 +41,8 @@ default['bcpc']['fixed']['vlan_interface'] = node[:bcpc][:floating][:interface]
 ###########################################
 default['bcpc']['ceph']['pgs_per_node'] = 1024
 # The 'portion' parameters should add up to ~100 across all pools
+default['bcpc']['ceph']['default']['replicas'] = 2
+default['bcpc']['ceph']['default']['type'] = 'hdd'
 default['bcpc']['ceph']['rgw']['replicas'] = 3
 default['bcpc']['ceph']['rgw']['portion'] = 33
 default['bcpc']['ceph']['rgw']['type'] = 'hdd'
@@ -59,6 +61,8 @@ default['bcpc']['ceph']['vms_mem']['replicas'] = 3
 default['bcpc']['ceph']['vms_mem']['portion'] = 10
 default['bcpc']['ceph']['vms_mem']['type'] = 'ssd'
 default['bcpc']['ceph']['vms_mem']['name'] = "vmsmem"
+default['bcpc']['ceph']['ssd']['ruleset'] = 1
+default['bcpc']['ceph']['hdd']['ruleset'] = 2
 
 ###########################################
 #
@@ -95,7 +99,7 @@ default['bcpc']['dns_servers'] = [ "8.8.8.8", "8.8.4.4" ]
 #  Repos for things we rely on
 #
 ###########################################
-default['bcpc']['repos']['ceph'] = "http://www.ceph.com/debian-dumpling"
+default['bcpc']['repos']['ceph'] = "http://www.ceph.com/debian-firefly"
 default['bcpc']['repos']['ceph-extras'] = "http://www.ceph.com/packages/ceph-extras/debian"
 default['bcpc']['repos']['ceph-el6-x86_64'] = "http://ceph.com/rpm-dumpling/el6/x86_64"
 default['bcpc']['repos']['ceph-el6-noarch'] = "http://ceph.com/rpm-dumpling/el6/noarch"

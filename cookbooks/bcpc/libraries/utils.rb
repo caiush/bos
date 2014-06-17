@@ -64,7 +64,7 @@ def get_config(key)
 end
 
 def get_all_nodes
-	results = search(:node, "role:BCPC* AND chef_environment:#{node.chef_environment}")
+	results = search(:node, "(role:BCPC-Headnode OR role:BCPC-Worknode) AND chef_environment:#{node.chef_environment}")
 	if results.any?{|x| x['hostname'] == node[:hostname]}
 		results.map!{|x| x['hostname'] == node[:hostname] ? node : x}
 	else
