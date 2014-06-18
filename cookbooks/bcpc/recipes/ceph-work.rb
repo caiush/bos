@@ -26,6 +26,7 @@ bash "write-client-admin-key" do
             --create-keyring \
             --name=client.admin \
             --add-key="$ADMIN_KEY"
+        chmod 644 /etc/ceph/ceph.client.admin.keyring
     EOH
     not_if "test -f /etc/ceph/ceph.client.admin.keyring && chmod 644 /etc/ceph/ceph.client.admin.keyring"
 end
