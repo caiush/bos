@@ -12,6 +12,7 @@ SSHCMD="./nodessh.sh $ENVIRONMENT $IP"
 
 echo "copy files..."
 $SCPCMD zap-ceph-disks.sh ubuntu@$IP:/home/ubuntu
+$SCPCMD cookbooks/bcpc/files/default/bins/chef-client.deb ubuntu@$IP:/home/ubuntu
 $SCPCMD install-chef.sh   ubuntu@$IP:/home/ubuntu
 $SCPCMD finish-worker.sh  ubuntu@$IP:/home/ubuntu
 $SCPCMD finish-head.sh    ubuntu@$IP:/home/ubuntu

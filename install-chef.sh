@@ -10,15 +10,22 @@
 # change the following IP address to match your bootstrap node
 
 if dpkg -s opscode-keyring 2>/dev/null | grep -q Status.*installed; then
-  echo opscode-keyring is installed
+    echo opscode-keyring is installed
 else 
-  apt-get update
-  apt-get --allow-unauthenticated -y install opscode-keyring
-  apt-get update
+    apt-get update
+    apt-get --allow-unauthenticated -y install opscode-keyring
+    apt-get update
 fi
 
 if dpkg -s chef 2>/dev/null | grep -q Status.*installed; then
-  echo chef is installed
+    echo chef is installed
 else
-  DEBCONF_DB_FALLBACK=File{$(pwd)/debconf-chef.conf} DEBIAN_FRONTEND=noninteractive apt-get -y --force-yes install chef
+    if [ -f chef-client.deb ]; then
+        # previously copied over by chefit.sh
+        # normally produced by build_bins.sh
+	    dpkg -i chef-client.deb
+    else
+        echo "Warning: chef-client.deb not found"
+        echo "chef bootstrap will attempt chef-client install"
+    fi
 fi
