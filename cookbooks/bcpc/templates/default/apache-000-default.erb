@@ -4,15 +4,15 @@
 #
 ################################################
 
-<VirtualHost <%="#{node[:bcpc][:management][:ip]}"%>:80>
+<VirtualHost <%="#{node['bcpc']['management']['ip']}"%>:80>
     ServerAdmin webmaster@localhost
 
     Include vhost-root.d/*.conf
 </VirtualHost>
 
-<VirtualHost <%="#{node[:bcpc][:management][:ip]}"%>:443>
-    ServerAlias <%="#{node[:bcpc][:management][:vip]}"%>
-    ServerAlias <%="#{node[:bcpc][:management][:ip]}"%>
+<VirtualHost <%="#{node['bcpc']['management']['ip']}"%>:443>
+    ServerAlias <%="#{node['bcpc']['management']['vip']}"%>
+    ServerAlias <%="#{node['bcpc']['management']['ip']}"%>
 
     SSLEngine on
     SSLCertificateFile /etc/ssl/certs/ssl-bcpc.pem

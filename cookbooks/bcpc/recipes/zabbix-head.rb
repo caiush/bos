@@ -155,7 +155,7 @@ ruby_block "zabbix-api-auto-discovery-register" do
     end
 end
 
-include_recipe "bcpc:'zabbix'-work"
+include_recipe "bcpc::zabbix-work"
 
 template "/usr/local/etc/zabbix_agentd.conf.d/zabbix-openstack.conf" do
     source "zabbix_openstack.conf.erb"

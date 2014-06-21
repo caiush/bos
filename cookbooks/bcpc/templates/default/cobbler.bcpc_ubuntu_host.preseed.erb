@@ -13,7 +13,7 @@ d-i     debian-installer/splash boolean false
 d-i     console-setup/ask_detect        boolean false
 d-i     console-setup/layoutcode        string us
 d-i     console-setup/variantcode       string 
-d-i     netcfg/get_nameservers  string <%= @node[:bcpc][:dns_servers].join(' ') %>
+d-i     netcfg/get_nameservers  string <%= @node['bcpc']['dns_servers'].join(' ') %>
 d-i     netcfg/get_ipaddress    string 
 d-i     netcfg/get_netmask      string 255.255.255.0
 d-i     netcfg/get_gateway      string 
@@ -47,7 +47,7 @@ d-i     partman/default_filesystem string ext4
 
 d-i     clock-setup/utc boolean true
 d-i     clock-setup/ntp boolean true
-d-i     clock-setup/ntp-server  string <%= @node[:ntp][:servers].first %>
+d-i     clock-setup/ntp-server  string <%= @node['ntp']['servers'].first %>
 # This will install the base 12.04 kernel image.  If you comment out the
 # following line, it will install the upgraded kernel LTS stack.
 d-i     base-installer/kernel/image     string linux-server
@@ -61,12 +61,12 @@ d-i     user-setup/allow-password-weak  boolean false
 d-i     user-setup/encrypt-home boolean false
 d-i     passwd/user-default-groups      string adm cdrom dialout lpadmin plugdev sambashare
 d-i     apt-setup/services-select       multiselect security
-<% if @node[:bcpc][:bootstrap][:proxy].nil? %>
+<% if @node['bcpc']['bootstrap']['proxy'].nil? %>
 d-i     mirror/http/proxy string
 <% else %>
-d-i     mirror/http/proxy string <%= @node[:bcpc][:bootstrap][:proxy] %>
+d-i     mirror/http/proxy string <%= @node['bcpc']['bootstrap']['proxy'] %>
 <% end %>
-<% if @node[:bcpc][:bootstrap][:mirror].nil? %>
+<% if @node['bcpc']['bootstrap']['mirror'].nil? %>
 d-i     apt-setup/security_host string security.ubuntu.com
 d-i     apt-setup/security_path string /ubuntu
 d-i     apt-setup/local0/comment string OpsCode Repo
@@ -74,13 +74,13 @@ d-i     apt-setup/local0/repository string \
           deb http://apt.opscode.com/chef precise-0.10 main
 <% else %>
 d-i     mirror/country string manual
-d-i     mirror/http/hostname string <%= @node[:bcpc][:bootstrap][:mirror] %>
+d-i     mirror/http/hostname string <%= @node['bcpc']['bootstrap']['mirror'] %>
 d-i     mirror/http/directory string /ubuntu
-d-i     apt-setup/security_host <%= @node[:bcpc][:bootstrap][:mirror] %>
+d-i     apt-setup/security_host <%= @node['bcpc']['bootstrap']['mirror'] %>
 d-i     apt-setup/security_path string /ubuntu
 d-i     apt-setup/local0/comment string OpsCode Repo
 d-i     apt-setup/local0/repository string \
-          deb http://<%= @node[:bcpc][:bootstrap][:mirror] %>/chef precise-0.10 main
+          deb http://<%= @node['bcpc']['bootstrap']['mirror'] %>/chef precise-0.10 main
 <% end %>
 
 d-i     debian-installer/allow_unauthenticated  string false

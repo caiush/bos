@@ -35,7 +35,7 @@
 # Cluster name identifies your cluster for auto-discovery. If you're running
 # multiple clusters on the same network, make sure you're using unique names.
 #
-cluster.name: <%="#{node[:bcpc][:region_name]}"%>
+cluster.name: <%="#{node['bcpc']['region_name']}"%>
 
 
 #################################### Node #####################################
@@ -43,7 +43,7 @@ cluster.name: <%="#{node[:bcpc][:region_name]}"%>
 # Node names are generated dynamically on startup, so you're relieved
 # from configuring them manually. You can tie this node to a specific name:
 #
-node.name: "<%="#{node[:hostname]}"%>"
+node.name: "<%="#{node['hostname']}"%>"
 
 # Every node can be configured to allow or deny being eligible as the master,
 # and to allow or deny to store the data.
@@ -213,7 +213,7 @@ index.number_of_replicas: <%="#{@min_quorum-1}"%>
 
 # Set both 'bind_host' and 'publish_host':
 #
-network.host: <%="#{node[:bcpc][:management][:ip]}"%>
+network.host: <%="#{node['bcpc']['management']['ip']}"%>
 
 # Set a custom port for the node to node communication (9300 by default):
 #

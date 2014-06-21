@@ -53,7 +53,7 @@ LogFile=/var/log/zabbix/zabbix_agentd.log
 #
 # Mandatory: no
 # Default:
-SourceIP=<%="#{node[:bcpc][:management][:ip]}"%>
+SourceIP=<%="#{node['bcpc']['management']['ip']}"%>
 
 ### Option: EnableRemoteCommands
 #   Whether remote commands from Zabbix server are allowed.
@@ -83,7 +83,7 @@ LogRemoteCommands=1
 #
 # Mandatory: no
 # Default:
-Server=<%="#{node[:bcpc][:management][:vip]}"%>
+Server=<%="#{node['bcpc']['management']['vip']}"%>
 
 ### Option: ListenPort
 #   Agent will listen on this port for connections from the server.
@@ -99,7 +99,7 @@ Server=<%="#{node[:bcpc][:management][:vip]}"%>
 #
 # Mandatory: no
 # Default:
-ListenIP=<%="#{node[:bcpc][:management][:ip]}"%>
+ListenIP=<%="#{node['bcpc']['management']['ip']}"%>
 
 ### Option: StartAgents
 #   Number of pre-forked instances of zabbix_agentd that process passive checks.
@@ -122,7 +122,7 @@ StartAgents=3
 #
 # Mandatory: no
 # Default:
-ServerActive=<%="#{node[:bcpc][:management][:vip]}"%>
+ServerActive=<%="#{node['bcpc']['management']['vip']}"%>
 
 ### Option: Hostname
 #   Unique, case sensitive hostname.
@@ -131,7 +131,7 @@ ServerActive=<%="#{node[:bcpc][:management][:vip]}"%>
 #
 # Mandatory: no
 # Default:
-Hostname=<%="#{node[:hostname]}"%>
+Hostname=<%="#{node['hostname']}"%>
 
 ### Option: HostnameItem
 #   Item used for generating Hostname if it is undefined.

@@ -60,7 +60,7 @@ DATABASES = {
         'NAME': '<%="#{node['bcpc']['horizon_dbname']}"%>',
         'USER': '<%="#{get_config('mysql-horizon-user')}"%>',
         'PASSWORD': '<%="#{get_config('mysql-horizon-password')}"%>',
-        'HOST': '<%="#{node[:bcpc][:management][:vip]}"%>',
+        'HOST': '<%="#{node['bcpc']['management']['vip']}"%>',
         'default-character-set': 'utf8'
     },
 }
@@ -117,7 +117,7 @@ SECRET_KEY = '<%="#{get_config('horizon-secret-key')}"%>'
 CACHES = {
     'default': {
         'BACKEND' : 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION' : '<%="#{node[:bcpc][:management][:vip]}"%>:11211'
+        'LOCATION' : '<%="#{node['bcpc']['management']['vip']}"%>:11211'
     }
 }
 
@@ -138,9 +138,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #     ('http://cluster2.example.com:5000/v2.0', 'cluster2'),
 # ]
 
-OPENSTACK_HOST = "<%="#{node[:bcpc][:management][:vip]}"%>"
+OPENSTACK_HOST = "<%="#{node['bcpc']['management']['vip']}"%>"
 OPENSTACK_KEYSTONE_URL = "https://%s:5000/v2.0" % OPENSTACK_HOST
-OPENSTACK_KEYSTONE_DEFAULT_ROLE = "<%="#{node[:bcpc][:member_role]}"%>"
+OPENSTACK_KEYSTONE_DEFAULT_ROLE = "<%="#{node['bcpc']['member_role']}"%>"
 
 # Disable SSL certificate checks (useful for self-signed certificates):
 OPENSTACK_SSL_NO_VERIFY = True
@@ -480,7 +480,7 @@ LOGIN_REDIRECT_URL='/horizon'
 # the node-less package and enable the following option.
 COMPRESS_OFFLINE = True
 
-<% if not node[:bcpc][:vms_key].nil? %>
+<% if not node['bcpc']['vms_key'].nil? %>
 mod = sys.modules['openstack_dashboard.settings']
 mod.INSTALLED_APPS += ('cobalt.horizon',)
 <% end %>

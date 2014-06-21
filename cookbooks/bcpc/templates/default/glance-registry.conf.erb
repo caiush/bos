@@ -12,7 +12,7 @@ verbose = False
 debug = False
 
 # Address to bind the registry server
-bind_host = <%="#{node[:bcpc][:management][:ip]}"%>
+bind_host = <%="#{node['bcpc']['management']['ip']}"%>
 
 # Port the bind the registry server to
 bind_port = 9191
@@ -35,7 +35,7 @@ backlog = 4096
 # SQLAlchemy connection string for the reference implementation
 # registry server. Any valid SQLAlchemy connection string is fine.
 # See: http://www.sqlalchemy.org/docs/05/reference/sqlalchemy/connections.html#sqlalchemy.create_engine
-sql_connection = mysql://<%="#{get_config('mysql-glance-user')}"%>:<%="#{get_config('mysql-glance-password')}"%>@<%="#{node[:bcpc][:management][:vip]}"%>/<%="#{node['bcpc']['glance_dbname']}"%>
+sql_connection = mysql://<%="#{get_config('mysql-glance-user')}"%>:<%="#{get_config('mysql-glance-password')}"%>@<%="#{node['bcpc']['management']['vip']}"%>/<%="#{node['bcpc']['glance_dbname']}"%>
 
 # Period in seconds after which SQLAlchemy should reestablish its connection
 # to the database.
@@ -55,7 +55,7 @@ api_limit_max = 1000
 limit_param_default = 25
 
 # Role used to identify an authenticated user as administrator
-admin_role = <%="#{node[:bcpc][:admin_role]}"%>
+admin_role = <%="#{node['bcpc']['admin_role']}"%>
 
 # Whether to automatically create the database tables.
 # Default: False
@@ -87,10 +87,10 @@ use_syslog = False
 #ca_file = /path/to/cafile
 
 [keystone_authtoken]
-auth_host = <%="#{node[:bcpc][:management][:vip]}"%>
+auth_host = <%="#{node['bcpc']['management']['vip']}"%>
 auth_port = 35357
 auth_protocol = https
-admin_tenant_name = <%="#{node[:bcpc][:admin_tenant]}"%>
+admin_tenant_name = <%="#{node['bcpc']['admin_tenant']}"%>
 admin_user = <%="#{get_config('keystone-admin-user')}"%>
 admin_password = <%="#{get_config('keystone-admin-password')}"%>
 

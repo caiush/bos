@@ -7,7 +7,7 @@ the host that currently claims the vip (arroding to arp).
 Used by zabbix monitoring to alert when the vip changes. 
 """
 
-vip = "<%="#{node[:bcpc][:management][:vip]}"%>"
+vip = "<%="#{node['bcpc']['management']['vip']}"%>"
 
 import subprocess
 import sys
