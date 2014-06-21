@@ -20,12 +20,12 @@ $servers = new Datastore();
 
 $servers->newServer('ldap_pla');
 
-$servers->setValue('server','name','<%="#{node['bcpc']['region_name']}"%>');
+$servers->setValue('server','name','<%=node['bcpc']['region_name']%>');
 
-$servers->setValue('server','host','<%="#{node['bcpc']['management']['vip']}"%>');
+$servers->setValue('server','host','<%=node['bcpc']['management']['vip']%>');
 
 $servers->setValue('login','auth_type','session');
 
-$servers->setValue('login','bind_id','<%="#{get_config('389ds-rootdn-user')}"%>');
+$servers->setValue('login','bind_id','<%=get_config('389ds-rootdn-user')%>');
 
 ?>

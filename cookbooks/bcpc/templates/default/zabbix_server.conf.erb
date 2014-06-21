@@ -32,7 +32,7 @@
 #
 # Mandatory: no
 # Default:
-SourceIP=<%="#{node['bcpc']['management']['vip']}"%>
+SourceIP=<%=node['bcpc']['management']['vip']%>
 
 ### Option: LogFile
 #   Name of log file.
@@ -80,7 +80,7 @@ LogFile=/var/log/zabbix/zabbix_server.log
 #
 # Mandatory: no
 # Default:
-DBHost=<%="#{node['bcpc']['management']['vip']}"%>
+DBHost=<%=node['bcpc']['management']['vip']%>
 
 ### Option: DBName
 #   Database name.
@@ -88,7 +88,7 @@ DBHost=<%="#{node['bcpc']['management']['vip']}"%>
 #
 # Mandatory: yes
 # Default:
-DBName=<%="#{node['bcpc']['zabbix_dbname']}"%>
+DBName=<%=node['bcpc']['zabbix_dbname']%>
 
 ### Option: DBSchema
 #   Schema name. Used for IBM DB2.
@@ -102,7 +102,7 @@ DBName=<%="#{node['bcpc']['zabbix_dbname']}"%>
 #
 # Mandatory: no
 # Default:
-DBUser=<%="#{get_config('mysql-zabbix-user')}"%>
+DBUser=<%=get_config('mysql-zabbix-user')%>
 
 ### Option: DBPassword
 #   Database password. Ignored for SQLite.
@@ -110,7 +110,7 @@ DBUser=<%="#{get_config('mysql-zabbix-user')}"%>
 #
 # Mandatory: no
 # Default:
-DBPassword=<%="#{get_config('mysql-zabbix-password')}"%>
+DBPassword=<%=get_config('mysql-zabbix-password')%>
 
 ### Option: DBSocket
 #   Path to MySQL socket.
@@ -233,7 +233,7 @@ DBPassword=<%="#{get_config('mysql-zabbix-password')}"%>
 #
 # Mandatory: no
 # Default:
-ListenIP=<%="#{node['bcpc']['management']['vip']}"%>
+ListenIP=<%=node['bcpc']['management']['vip']%>
 
 ### Option: HousekeepingFrequency
 #   How often Zabbix will perform housekeeping procedure (in hours).

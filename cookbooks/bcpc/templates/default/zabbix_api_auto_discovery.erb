@@ -8,12 +8,12 @@ headers = {'content-type': 'application/json'}
 login_api = {
     "jsonrpc": "2.0", "method": "user.login",
     "params": {
-      "user": "<%="#{get_config('zabbix-admin-user')}"%>",
-      "password": "<%="#{get_config('zabbix-admin-password')}"%>"
+      "user": "<%=get_config('zabbix-admin-user')%>",
+      "password": "<%=get_config('zabbix-admin-password')%>"
     },
     "id": 1 }
 
-status = requests.post("https://<%="#{node['bcpc']['management']['vip']}"%>:7777/api_jsonrpc.php", data=json.dumps(login_api), verify=False, headers=headers)
+status = requests.post("https://<%=node['bcpc']['management']['vip']%>:7777/api_jsonrpc.php", data=json.dumps(login_api), verify=False, headers=headers)
 api_login = status.json()['result']
 
 exists_api = {
@@ -25,7 +25,7 @@ exists_api = {
    "auth": api_login,
    "id": 1 }
 
-status = requests.post("https://<%="#{node['bcpc']['management']['vip']}"%>:7777/api_jsonrpc.php", data=json.dumps(exists_api), verify=False, headers=headers)
+status = requests.post("https://<%=node['bcpc']['management']['vip']%>:7777/api_jsonrpc.php", data=json.dumps(exists_api), verify=False, headers=headers)
 
 if not status.json()['result']:
   create_api = {
@@ -57,4 +57,4 @@ if not status.json()['result']:
      "auth": api_login,
      "id": 1
    }
-  status = requests.post("https://<%="#{node['bcpc']['management']['vip']}"%>:7777/api_jsonrpc.php", data=json.dumps(create_api), verify=False, headers=headers)
+  status = requests.post("https://<%=node['bcpc']['management']['vip']%>:7777/api_jsonrpc.php", data=json.dumps(create_api), verify=False, headers=headers)

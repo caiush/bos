@@ -11,7 +11,7 @@ firewall --enabled
 firstboot --disable
 keyboard us
 lang en_US
-rootpw --iscrypted <%="#{get_config('cobbler-root-password-salted')}"%>
+rootpw --iscrypted <%=get_config('cobbler-root-password-salted')%>
 selinux --disabled
 skipx
 #timezone --utc

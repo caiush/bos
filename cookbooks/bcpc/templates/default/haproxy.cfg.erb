@@ -14,7 +14,7 @@ global
 defaults
   log  global
   maxconn  8000
-  source <%="#{node['bcpc']['management']['vip']}"%>
+  source <%=node['bcpc']['management']['vip']%>
   mode  http
   option httpclose
   option abortonclose
@@ -35,24 +35,24 @@ listen stats 127.0.0.1:1936
   stats enable
   stats uri /
 
-listen stats <%="#{node['bcpc']['management']['ip']}"%>:1936
+listen stats <%=node['bcpc']['management']['ip']%>:1936
   mode http
   stats enable
   stats uri /
   stats hide-version
   stats realm Haproxy\ Statistics
-  stats auth <%="#{get_config('haproxy-stats-user')}"%>:<%="#{get_config('haproxy-stats-password')}"%>
+  stats auth <%=get_config('haproxy-stats-user')%>:<%=get_config('haproxy-stats-password')%>
 
-listen stats-vip <%="#{node['bcpc']['management']['vip']}"%>:1936
+listen stats-vip <%=node['bcpc']['management']['vip']%>:1936
   mode http
-  server myself <%="#{node['bcpc']['management']['ip']}"%>:1936
+  server myself <%=node['bcpc']['management']['ip']%>:1936
 
-listen memcached <%="#{node['bcpc']['management']['vip']}"%>:11211
+listen memcached <%=node['bcpc']['management']['vip']%>:11211
   mode tcp
   option tcpka
   server myself 127.0.0.1:11211
 
-listen mysql-galera <%="#{node['bcpc']['management']['vip']}"%>:3306
+listen mysql-galera <%=node['bcpc']['management']['vip']%>:3306
   timeout  client 24h
   timeout  server 24h
   mode tcp
@@ -64,7 +64,7 @@ listen mysql-galera <%="#{node['bcpc']['management']['vip']}"%>:3306
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:3306 check port 3307 inter 1s rise 1 fall 1 observe layer4 backup" %>
 <% end -%>
 
-listen rabbitmq-amqp <%="#{node['bcpc']['management']['vip']}"%>:5672
+listen rabbitmq-amqp <%=node['bcpc']['management']['vip']%>:5672
   timeout  client 24h
   timeout  server 24h
   mode tcp
@@ -76,7 +76,7 @@ listen rabbitmq-amqp <%="#{node['bcpc']['management']['vip']}"%>:5672
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:5672 check port 5673 inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
-listen rabbitmq-web <%="#{node['bcpc']['management']['vip']}"%>:55672
+listen rabbitmq-web <%=node['bcpc']['management']['vip']%>:55672
   balance  source
   option  tcplog
   option httpchk GET /
@@ -85,7 +85,7 @@ listen rabbitmq-web <%="#{node['bcpc']['management']['vip']}"%>:55672
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:55672 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen ldap-389ds <%="#{node['bcpc']['management']['vip']}"%>:389
+listen ldap-389ds <%=node['bcpc']['management']['vip']%>:389
   timeout  client 1h
   timeout  server 1h
   mode tcp
@@ -96,7 +96,7 @@ listen ldap-389ds <%="#{node['bcpc']['management']['vip']}"%>:389
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:389 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
-listen keystone-api-ssl <%="#{node['bcpc']['management']['vip']}"%>:5000
+listen keystone-api-ssl <%=node['bcpc']['management']['vip']%>:5000
   mode tcp
   balance source
   option  tcplog
@@ -105,7 +105,7 @@ listen keystone-api-ssl <%="#{node['bcpc']['management']['vip']}"%>:5000
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:5000 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
-listen keystone-admin-ssl <%="#{node['bcpc']['management']['vip']}"%>:35357
+listen keystone-admin-ssl <%=node['bcpc']['management']['vip']%>:35357
   mode tcp
   balance source
   option  tcplog
@@ -114,7 +114,7 @@ listen keystone-admin-ssl <%="#{node['bcpc']['management']['vip']}"%>:35357
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:35357 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
-listen glance-api <%="#{node['bcpc']['management']['vip']}"%>:9292
+listen glance-api <%=node['bcpc']['management']['vip']%>:9292
   balance  source
   option  tcplog
   option httpchk GET /
@@ -123,7 +123,7 @@ listen glance-api <%="#{node['bcpc']['management']['vip']}"%>:9292
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9292 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen glance-registry <%="#{node['bcpc']['management']['vip']}"%>:9191
+listen glance-registry <%=node['bcpc']['management']['vip']%>:9191
   balance  source
   option  tcplog
   option httpchk GET /
@@ -132,7 +132,7 @@ listen glance-registry <%="#{node['bcpc']['management']['vip']}"%>:9191
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9191 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen cinder-api <%="#{node['bcpc']['management']['vip']}"%>:8776
+listen cinder-api <%=node['bcpc']['management']['vip']%>:8776
   balance  source
   option  tcplog
   option httpchk GET /
@@ -141,7 +141,7 @@ listen cinder-api <%="#{node['bcpc']['management']['vip']}"%>:8776
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8776 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen nova-ec2 <%="#{node['bcpc']['management']['vip']}"%>:8773
+listen nova-ec2 <%=node['bcpc']['management']['vip']%>:8773
   balance  source
   option  tcplog
   option httpchk GET /
@@ -150,7 +150,7 @@ listen nova-ec2 <%="#{node['bcpc']['management']['vip']}"%>:8773
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8773 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen nova-compute <%="#{node['bcpc']['management']['vip']}"%>:8774
+listen nova-compute <%=node['bcpc']['management']['vip']%>:8774
   balance  source
   option  tcplog
   option httpchk GET /
@@ -159,7 +159,7 @@ listen nova-compute <%="#{node['bcpc']['management']['vip']}"%>:8774
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8774 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen heat-api <%="#{node['bcpc']['management']['vip']}"%>:8004
+listen heat-api <%=node['bcpc']['management']['vip']%>:8004
   balance  source
   option  tcplog
   option httpchk GET /
@@ -168,7 +168,7 @@ listen heat-api <%="#{node['bcpc']['management']['vip']}"%>:8004
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8004 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen heat-api-cfn <%="#{node['bcpc']['management']['vip']}"%>:8000
+listen heat-api-cfn <%=node['bcpc']['management']['vip']%>:8000
   balance  source
   option  tcplog
   option httpchk GET /
@@ -177,7 +177,7 @@ listen heat-api-cfn <%="#{node['bcpc']['management']['vip']}"%>:8000
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8000 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen ceilometer-api <%="#{node['bcpc']['management']['vip']}"%>:8777
+listen ceilometer-api <%=node['bcpc']['management']['vip']%>:8777
   balance  source
   option  tcplog
   option httpchk GET /
@@ -186,7 +186,7 @@ listen ceilometer-api <%="#{node['bcpc']['management']['vip']}"%>:8777
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8777 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen horizon-http <%="#{node['bcpc']['management']['vip']}"%>:80
+listen horizon-http <%=node['bcpc']['management']['vip']%>:80
   balance  source
   option  tcplog
   option httpchk GET /
@@ -195,7 +195,7 @@ listen horizon-http <%="#{node['bcpc']['management']['vip']}"%>:80
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:80 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen horizon-https <%="#{node['bcpc']['management']['vip']}"%>:443
+listen horizon-https <%=node['bcpc']['management']['vip']%>:443
   mode tcp
   balance source
   option  tcplog
@@ -206,7 +206,7 @@ listen horizon-https <%="#{node['bcpc']['management']['vip']}"%>:443
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:443 check port 80 inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
-listen elasticsearch <%="#{node['bcpc']['management']['vip']}"%>:9200
+listen elasticsearch <%=node['bcpc']['management']['vip']%>:9200
   balance  source
   option  tcplog
   option httpchk GET /
@@ -220,7 +220,7 @@ listen radosgw-passthru-http  <%="#{node['bcpc']['floating']['vip']}:#{node['bcp
   option tcplog
   option httpchk GET /
   http-check expect status 200
-  source <%="#{node['bcpc']['floating']['vip']}"%>
+  source <%=node['bcpc']['floating']['vip']%>
 <% @all_servers.each do |server| -%>
   <%= "server #{server['hostname']} #{server['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']} check inter 1s rise 1 fall 1 observe layer7" %>
 <% end -%>
@@ -232,7 +232,7 @@ listen radosgw-passthru-https  <%="#{node['bcpc']['floating']['vip']}:#{node['bc
   option tcpka
   option httpchk GET /
   http-check expect status 200
-  source <%="#{node['bcpc']['floating']['vip']}"%>
+  source <%=node['bcpc']['floating']['vip']%>
 <% @all_servers.each do |server| -%>
   <%= "server #{server['hostname']} #{server['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']} check port #{node['bcpc']['ports']['apache']['radosgw']} inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
