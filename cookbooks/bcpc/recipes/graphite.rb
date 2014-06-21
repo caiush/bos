@@ -36,7 +36,7 @@ end
         mode 00444
     end
 
-    package "#{pkg}" do
+    package pkg do
         provider Chef::Provider::Package::Dpkg
         source "/tmp/#{pkg}"
         action :install
@@ -159,7 +159,7 @@ end
         group "root"
         mode 00755
         notifies :restart, "service[carbon-#{pkg}]", :delayed
-        variables( :daemon => "#{pkg}" )
+        variables( :daemon => pkg )
     end
     service "carbon-#{pkg}" do
         action [ :enable, :start ]
