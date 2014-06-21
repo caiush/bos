@@ -38,7 +38,7 @@ CONF(project='keystone')
 config.setup_logging(CONF)
 
 environment.use_stdlib()
-name = '<%="#{@name}"%>'
+name = '<%= @name %>'
 
 if CONF.debug:
     CONF.log_opt_values(log.getLogger(CONF.prog), logging.DEBUG)

@@ -80,7 +80,7 @@ auth_strategy=keystone
 
 # Libvirt domain type (valid options are: kvm, lxc, qemu, uml,
 # xen) (string value)
-libvirt_type=<%="#{node['bcpc']['virt_type']}"%>
+libvirt_type=<%=node['bcpc']['virt_type']%>
 
 # Override the default libvirt URI (which is dependent on
 # libvirt_type) (string value)
@@ -333,7 +333,7 @@ amqp_durable_queues=True
 
 # The RabbitMQ broker address where a single node is used
 # (string value)
-rabbit_host=<%="#{node['bcpc']['management']['vip']}"%>
+rabbit_host=<%=node['bcpc']['management']['vip']%>
 
 # The RabbitMQ broker port where a single node is used
 # (integer value)
@@ -349,7 +349,7 @@ rabbit_host=<%="#{node['bcpc']['management']['vip']}"%>
 #rabbit_userid=guest
 
 # the RabbitMQ password (string value)
-rabbit_password=<%="#{get_config('rabbitmq-password')}"%>
+rabbit_password=<%=get_config('rabbitmq-password')%>
 
 # the RabbitMQ virtual host (string value)
 #rabbit_virtual_host=/
@@ -492,7 +492,7 @@ rabbit_ha_queues=False
 #metering_topic=metering
 
 # Secret value for signing metering messages (string value)
-metering_secret=<%="#{get_config('ceilometer-secret')}"%>
+metering_secret=<%=get_config('ceilometer-secret')%>
 
 
 [ssl]
@@ -534,7 +534,7 @@ metering_secret=<%="#{get_config('ceilometer-secret')}"%>
 
 # The SQLAlchemy connection string used to connect to the
 # database (string value)
-connection = mysql://<%="#{get_config('mysql-ceilometer-user')}"%>:<%="#{get_config('mysql-ceilometer-password')}"%>@<%="#{node['bcpc']['management']['vip']}"%>/<%="#{node['bcpc']['ceilometer_dbname']}"%>
+connection = mysql://<%=get_config('mysql-ceilometer-user')%>:<%=get_config('mysql-ceilometer-password')%>@<%=node['bcpc']['management']['vip']%>/<%=node['bcpc']['ceilometer_dbname']%>
 
 # The SQLAlchemy connection string used to connect to the
 # slave database (string value)
@@ -657,7 +657,7 @@ connection = mysql://<%="#{get_config('mysql-ceilometer-user')}"%>:<%="#{get_con
 #port=8777
 
 # The listen IP for the ceilometer API server (string value)
-host=<%="#{node['bcpc']['management']['ip']}"%>
+host=<%=node['bcpc']['management']['ip']%>
 
 
 [service_credentials]
@@ -723,7 +723,7 @@ host=<%="#{node['bcpc']['management']['ip']}"%>
 
 # Host providing the admin Identity API endpoint (string
 # value)
-auth_host = <%="#{node['bcpc']['management']['vip']}"%>
+auth_host = <%=node['bcpc']['management']['vip']%>
 
 # Port of the admin Identity API endpoint (integer value)
 auth_port = 35357
@@ -757,17 +757,17 @@ auth_protocol = https
 # Single shared secret with the Keystone configuration used
 # for bootstrapping a Keystone installation, or otherwise
 # bypassing the normal authentication process. (string value)
-admin_token = <%="#{get_config('keystone-admin-token')}"%>
+admin_token = <%=get_config('keystone-admin-token')%>
 
 # Keystone account username (string value)
-admin_user = <%="#{get_config('keystone-admin-user')}"%>
+admin_user = <%=get_config('keystone-admin-user')%>
 
 # Keystone account password (string value)
-admin_password = <%="#{get_config('keystone-admin-password')}"%>
+admin_password = <%=get_config('keystone-admin-password')%>
 
 # Keystone service account tenant name to validate user tokens
 # (string value)
-admin_tenant_name = <%="#{node['bcpc']['admin_tenant']}"%>
+admin_tenant_name = <%=node['bcpc']['admin_tenant']%>
 
 # Env key for the swift cache (string value)
 #cache=<None>

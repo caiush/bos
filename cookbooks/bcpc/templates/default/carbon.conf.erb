@@ -62,17 +62,17 @@ MAX_UPDATES_PER_SECOND = 500
 # the files quickly but at the risk of slowing I/O down considerably for a while.
 MAX_CREATES_PER_MINUTE = inf
 
-LINE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['ip']}"%>
+LINE_RECEIVER_INTERFACE = <%=node['bcpc']['management']['ip']%>
 LINE_RECEIVER_PORT = 2003
 
 # Set this to True to enable the UDP listener. By default this is off
 # because it is very common to run multiple carbon daemons and managing
 # another (rarely used) port for every carbon instance is not fun.
 ENABLE_UDP_LISTENER = False
-UDP_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['ip']}"%>
+UDP_RECEIVER_INTERFACE = <%=node['bcpc']['management']['ip']%>
 UDP_RECEIVER_PORT = 2003
 
-PICKLE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['ip']}"%>
+PICKLE_RECEIVER_INTERFACE = <%=node['bcpc']['management']['ip']%>
 PICKLE_RECEIVER_PORT = 2004
 
 # Per security concerns outlined in Bug #817247 the pickle receiver
@@ -80,7 +80,7 @@ PICKLE_RECEIVER_PORT = 2004
 # Set this to True to revert to the old-fashioned insecure unpickler.
 USE_INSECURE_UNPICKLER = False
 
-CACHE_QUERY_INTERFACE = <%="#{node['bcpc']['management']['ip']}"%>
+CACHE_QUERY_INTERFACE = <%=node['bcpc']['management']['ip']%>
 CACHE_QUERY_PORT = 7002
 
 # Set this to False to drop datapoints received after the cache
@@ -171,9 +171,9 @@ WHISPER_AUTOFLUSH = False
 
 
 [relay]
-LINE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['vip']}"%>
+LINE_RECEIVER_INTERFACE = <%=node['bcpc']['management']['vip']%>
 LINE_RECEIVER_PORT = 2013
-PICKLE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['vip']}"%>
+PICKLE_RECEIVER_INTERFACE = <%=node['bcpc']['management']['vip']%>
 PICKLE_RECEIVER_PORT = 2014
 
 # To use consistent hashing instead of the user defined relay-rules.conf,
@@ -184,7 +184,7 @@ RELAY_METHOD = consistent-hashing
 # If you use consistent-hashing you may want to add redundancy
 # of your data by replicating every datapoint to more than
 # one machine.
-REPLICATION_FACTOR = <%="#{@min_quorum}"%>
+REPLICATION_FACTOR = <%= @min_quorum %>
 
 # This is a list of carbon daemons we will send any relayed or
 # generated metrics to. The default provided would send to a single
@@ -202,7 +202,7 @@ REPLICATION_FACTOR = <%="#{@min_quorum}"%>
 #
 # If using RELAY_METHOD = rules, all destinations used in relay-rules.conf
 # must be defined in this list
-DESTINATIONS = <%= "#{@servers.collect{|x| x['bcpc']['management']['ip']+':2004'}.sort.join(', ')}" %>
+DESTINATIONS = <%= @servers.collect{|x| x['bcpc']['management']['ip']+':2004'}.sort.join(', ') %>
 
 # This defines the maximum "message size" between carbon daemons.
 # You shouldn't need to tune this unless you really know what you're doing.
@@ -228,10 +228,10 @@ USE_FLOW_CONTROL = True
 
 
 [aggregator]
-LINE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['vip']}"%>
+LINE_RECEIVER_INTERFACE = <%=node['bcpc']['management']['vip']%>
 LINE_RECEIVER_PORT = 2023
 
-PICKLE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['vip']}"%>
+PICKLE_RECEIVER_INTERFACE = <%=node['bcpc']['management']['vip']%>
 PICKLE_RECEIVER_PORT = 2024
 
 # This is a list of carbon daemons we will send any relayed or
@@ -247,7 +247,7 @@ PICKLE_RECEIVER_PORT = 2024
 # Note that if the destinations are all carbon-caches then this should
 # exactly match the webapp's CARBONLINK_HOSTS setting in terms of
 # instances listed (order matters!).
-DESTINATIONS = <%= "#{@servers.collect{|x| x['bcpc']['management']['ip']+':2004'}.join(', ')}" %>
+DESTINATIONS = <%= @servers.collect{|x| x['bcpc']['management']['ip']+':2004'}.join(', ') %>
 
 # If you want to add redundancy to your data by replicating every
 # datapoint to more than one machine, increase this.

@@ -12,7 +12,7 @@ if [ -e /etc/rc.d/init.d/functions ]; then
     . /etc/rc.d/init.d/functions;
 fi;
 
-CARBON_DAEMON="<%="#{@daemon}"%>"
+CARBON_DAEMON="<%= @daemon %>"
 GRAPHITE_DIR="/opt/graphite"
 INSTANCES=`grep "^\[${CARBON_DAEMON}" ${GRAPHITE_DIR}/conf/carbon.conf | cut -d \[ -f 2 | cut -d \] -f 1 | cut -d : -f 2`
 

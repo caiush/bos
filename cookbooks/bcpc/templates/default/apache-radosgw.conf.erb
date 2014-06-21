@@ -16,10 +16,10 @@ FastCgiExternalServer /var/www/s3gw.fcgi -socket /var/lib/ceph/radosgw/rgw_fcgi.
 
 <VirtualHost  <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']}"%> >
 	    ServerName <%="s3.#{node['bcpc']['domain_name']}"%>
-        ServerAlias <%="#{node['hostname']}"%>
+        ServerAlias <%=node['hostname']%>
         ServerAlias <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']}"%>
 				ServerAlias <%="#{node['bcpc']['metadata']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']}"%>
-        ServerAdmin <%="#{node['bcpc']['admin_email']}"%>
+        ServerAdmin <%=node['bcpc']['admin_email']%>
         DocumentRoot /var/www
 	
         RewriteEngine On
@@ -44,10 +44,10 @@ NameVirtualHost <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['a
 
 <VirtualHost  <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']}"%> >
 	    ServerName <%="s3.#{node['bcpc']['domain_name']}"%>
-        ServerAlias <%="#{node['hostname']}"%>
+        ServerAlias <%=node['hostname']%>
         ServerAlias <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']}"%>
 				ServerAlias <%="#{node['bcpc']['metadata']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']}"%>
-        ServerAdmin <%="#{node['bcpc']['admin_email']}"%>
+        ServerAdmin <%=node['bcpc']['admin_email']%>
         DocumentRoot /var/www
 
 	    SSLEngine on

@@ -22,10 +22,10 @@ allow bootp;
 ignore client-updates;
 set vendorclass = option vendor-class-identifier;
 
-subnet <%= @subnet %> netmask <%="#{node['bcpc']['management']['netmask']}"%> {
-     option routers             <%="#{node['bcpc']['management']['gateway']}"%>;
-     option domain-name-servers <%="#{@node['bcpc']['dns_servers'].join(', ')}" %>;
-     option subnet-mask         <%="#{node['bcpc']['management']['netmask']}"%>;
+subnet <%= @subnet %> netmask <%=node['bcpc']['management']['netmask']%> {
+     option routers             <%=node['bcpc']['management']['gateway']%>;
+     option domain-name-servers <%=@node['bcpc']['dns_servers'].join(', ') %>;
+     option subnet-mask         <%=node['bcpc']['management']['netmask']%>;
      range dynamic-bootp        <%= @range %>;
      filename                   "/pxelinux.0";
      default-lease-time         21600;

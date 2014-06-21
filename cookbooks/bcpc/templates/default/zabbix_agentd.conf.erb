@@ -53,7 +53,7 @@ LogFile=/var/log/zabbix/zabbix_agentd.log
 #
 # Mandatory: no
 # Default:
-SourceIP=<%="#{node['bcpc']['management']['ip']}"%>
+SourceIP=<%=node['bcpc']['management']['ip']%>
 
 ### Option: EnableRemoteCommands
 #   Whether remote commands from Zabbix server are allowed.
@@ -83,7 +83,7 @@ LogRemoteCommands=1
 #
 # Mandatory: no
 # Default:
-Server=<%="#{node['bcpc']['management']['vip']}"%>
+Server=<%=node['bcpc']['management']['vip']%>
 
 ### Option: ListenPort
 #   Agent will listen on this port for connections from the server.
@@ -99,7 +99,7 @@ Server=<%="#{node['bcpc']['management']['vip']}"%>
 #
 # Mandatory: no
 # Default:
-ListenIP=<%="#{node['bcpc']['management']['ip']}"%>
+ListenIP=<%=node['bcpc']['management']['ip']%>
 
 ### Option: StartAgents
 #   Number of pre-forked instances of zabbix_agentd that process passive checks.
@@ -122,7 +122,7 @@ StartAgents=3
 #
 # Mandatory: no
 # Default:
-ServerActive=<%="#{node['bcpc']['management']['vip']}"%>
+ServerActive=<%=node['bcpc']['management']['vip']%>
 
 ### Option: Hostname
 #   Unique, case sensitive hostname.
@@ -131,7 +131,7 @@ ServerActive=<%="#{node['bcpc']['management']['vip']}"%>
 #
 # Mandatory: no
 # Default:
-Hostname=<%="#{node['hostname']}"%>
+Hostname=<%=node['hostname']%>
 
 ### Option: HostnameItem
 #   Item used for generating Hostname if it is undefined.
@@ -234,8 +234,8 @@ UnsafeUserParameters=1
 #
 # Mandatory: no
 # Default:
-UserParameter=mysql.status[*],echo "show global status where Variable_name='$1';" | mysql -N  -u<%="#{get_config('mysql-zabbix-user')}"%> --password=<%="#{get_config('mysql-zabbix-password')}"%> | awk '{print $$2}'
-UserParameter=mysql.size[*],echo "select sum($(case "$3" in both|"") echo "data_length+index_length";; data|index) echo "$3_length";; free) echo "data_free";; esac)) from information_schema.tables$([[ "$1" = "all" || ! "$1" ]] || echo " where table_schema='$1'")$([[ "$2" = "all" || ! "$2" ]] || echo "and table_name='$2'");" | HOME=/var/lib/zabbix mysql -N -u<%="#{get_config('mysql-zabbix-user')}"%> --password=<%="#{get_config('mysql-zabbix-password')}"%>
+UserParameter=mysql.status[*],echo "show global status where Variable_name='$1';" | mysql -N  -u<%=get_config('mysql-zabbix-user')%> --password=<%=get_config('mysql-zabbix-password')%> | awk '{print $$2}'
+UserParameter=mysql.size[*],echo "select sum($(case "$3" in both|"") echo "data_length+index_length";; data|index) echo "$3_length";; free) echo "data_free";; esac)) from information_schema.tables$([[ "$1" = "all" || ! "$1" ]] || echo " where table_schema='$1'")$([[ "$2" = "all" || ! "$2" ]] || echo "and table_name='$2'");" | HOME=/var/lib/zabbix mysql -N -u<%=get_config('mysql-zabbix-user')%> --password=<%=get_config('mysql-zabbix-password')%>
 
-UserParameter=mysql.ping,HOME=/var/lib/zabbix mysqladmin ping -u<%="#{get_config('mysql-zabbix-user')}"%> --password=<%="#{get_config('mysql-zabbix-password')}"%> | grep -c alive
+UserParameter=mysql.ping,HOME=/var/lib/zabbix mysqladmin ping -u<%=get_config('mysql-zabbix-user')%> --password=<%=get_config('mysql-zabbix-password')%> | grep -c alive
 UserParameter=mysql.version,mysql -V
