@@ -94,54 +94,54 @@ if not node["bcpc"]["vms_key"].nil?
 
     bash "create-vms-disk-rados-pool" do
         user "root"
-        optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_disk][:replicas]*node[:bcpc][:ceph][:vms_disk][:portion]/100)
+        optimal = power_of_2(get_ceph_osd_nodes.length*node['bcpc']['ceph']['pgs_per_node']/node['bcpc']['ceph']['vms_disk']['replicas']*node['bcpc']['ceph']['vms_disk']['portion']/100)
         code <<-EOH
-            ceph osd pool create #{node[:bcpc][:ceph][:vms_disk][:name]} #{optimal}
-            ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} crush_ruleset #{(node[:bcpc][:ceph][:vms_disk][:type]=="ssd") ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]}
+            ceph osd pool create #{node['bcpc']['ceph']['vms_disk']['name']} #{optimal}
+            ceph osd pool set #{node['bcpc']['ceph']['vms_disk']['name']} crush_ruleset #{(node['bcpc']['ceph']['vms_disk']['type']=="ssd") ? node['bcpc']['ceph']['ssd']['ruleset'] : node['bcpc']['ceph']['hdd']['ruleset']}
         EOH
-        not_if "rados lspools | grep #{node[:bcpc][:ceph][:vms_disk][:name]}"
+        not_if "rados lspools | grep #{node['bcpc']['ceph']['vms_disk']['name']}"
     end
 
     bash "set-vms-disk-rados-pool-replicas" do
         user "root"
-        replicas = [get_all_nodes.length, node[:bcpc][:ceph][:vms_disk][:replicas]].min
-        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} size #{replicas}"
-        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} size | grep #{replicas}"
+        replicas = [get_all_nodes.length, node['bcpc']['ceph']['vms_disk']['replicas']].min
+        code "ceph osd pool set #{node['bcpc']['ceph']['vms_disk']['name']} size #{replicas}"
+        not_if "ceph osd pool get #{node['bcpc']['ceph']['vms_disk']['name']} size | grep #{replicas}"
     end
 
-    (node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
+    (node['bcpc']['ceph']['pgp_auto_adjust'] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
         bash "set-vms-disk-rados-pool-#{pg}" do
             user "root"
-            optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_disk][:replicas]*node[:bcpc][:ceph][:vms_disk][:portion]/100)
-            code "ceph osd pool set #{node[:bcpc][:ceph][:vms_disk][:name]} #{pg} #{optimal}"
-            not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:vms_disk][:name]} #{pg} | awk '{print $2}'` >= #{optimal}))"
+            optimal = power_of_2(get_ceph_osd_nodes.length*node['bcpc']['ceph']['pgs_per_node']/node['bcpc']['ceph']['vms_disk']['replicas']*node['bcpc']['ceph']['vms_disk']['portion']/100)
+            code "ceph osd pool set #{node['bcpc']['ceph']['vms_disk']['name']} #{pg} #{optimal}"
+            not_if "((`ceph osd pool get #{node['bcpc']['ceph']['vms_disk']['name']} #{pg} | awk '{print $2}'` >= #{optimal}))"
             notifies :run, "bash[wait-for-pgs-creating]", :immediately
         end
     end
 
     bash "create-vms-mem-rados-pool" do
         user "root"
-        optimal = power_of_2(get_cepg_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_mem][:replicas]*node[:bcpc][:ceph][:vms_mem][:portion]/100)
+        optimal = power_of_2(get_cepg_osd_nodes.length*node['bcpc']['ceph']['pgs_per_node']/node['bcpc']['ceph']['vms_mem']['replicas']*node['bcpc']['ceph']['vms_mem']['portion']/100)
         code <<-EOH
-            ceph osd pool create #{node[:bcpc][:ceph][:vms_mem][:name]} #{optimal}
-            ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} crush_ruleset #{(node[:bcpc][:ceph][:vms_mem][:type]=="ssd") ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]}
+            ceph osd pool create #{node['bcpc']['ceph']['vms_mem']['name']} #{optimal}
+            ceph osd pool set #{node['bcpc']['ceph']['vms_mem']['name']} crush_ruleset #{(node['bcpc']['ceph']['vms_mem']['type']=="ssd") ? node['bcpc']['ceph']['ssd']['ruleset'] : node['bcpc']['ceph']['hdd']['ruleset']}
         EOH
-        not_if "rados lspools | grep #{node[:bcpc][:ceph][:vms_mem][:name]}"
+        not_if "rados lspools | grep #{node['bcpc']['ceph']['vms_mem']['name']}"
     end
 
     bash "set-vms-mem-rados-pool-replicas" do
         user "root"
-        replicas = [get_all_nodes.length, node[:bcpc][:ceph][:vms_mem][:replicas]].min
-        code "ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} size #{replicas}"
-        not_if "ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} size | grep #{replicas}"
+        replicas = [get_all_nodes.length, node['bcpc']['ceph']['vms_mem']['replicas']].min
+        code "ceph osd pool set #{node['bcpc']['ceph']['vms_mem']['name']} size #{replicas}"
+        not_if "ceph osd pool get #{node['bcpc']['ceph']['vms_mem']['name']} size | grep #{replicas}"
     end
 
-    (node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
+    (node['bcpc']['ceph']['pgp_auto_adjust'] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
         bash "set-vms-mem-rados-pool-#{pg}" do
             user "root"
-            optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:vms_mem][:replicas]*node[:bcpc][:ceph][:vms_mem][:portion]/100)
-            code "ceph osd pool set #{node[:bcpc][:ceph][:vms_mem][:name]} #{pg} #{optimal}"
-            not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:vms_mem][:name]} #{pg} | awk '{print $2}'` >= #{optimal}))"
+            optimal = power_of_2(get_ceph_osd_nodes.length*node['bcpc']['ceph']['pgs_per_node']/node['bcpc']['ceph']['vms_mem']['replicas']*node['bcpc']['ceph']['vms_mem']['portion']/100)
+            code "ceph osd pool set #{node['bcpc']['ceph']['vms_mem']['name']} #{pg} #{optimal}"
+            not_if "((`ceph osd pool get #{node['bcpc']['ceph']['vms_mem']['name']} #{pg} | awk '{print $2}'` >= #{optimal}))"
             notifies :run, "bash[wait-for-pgs-creating]", :immediately
         end
     end

@@ -34,7 +34,7 @@ bash "nova-floating-add" do
     user "root"
     code <<-EOH
         . /root/adminrc
-        nova-manage floating create --ip_range=#{node[:bcpc][:floating][:available_subnet]} --pool #{node[:bcpc][:region_name]}
+        nova-manage floating create --ip_range=#{node['bcpc']['floating']['available_subnet']} --pool #{node['bcpc']['region_name']}
     EOH
     only_if ". /root/adminrc; nova-manage floating list | grep \"No floating IP addresses have been defined\""
 end
@@ -43,7 +43,7 @@ bash "nova-fixed-add" do
     user "root"
     code <<-EOH
         . /root/adminrc
-        nova-manage network create --label fixed --fixed_range_v4=#{node[:bcpc][:fixed][:cidr]} --num_networks=#{node[:bcpc][:fixed][:num_networks]} --multi_host=T --network_size=#{node[:bcpc][:fixed][:network_size]} --vlan=#{node[:bcpc][:fixed][:vlan_start]}
+        nova-manage network create --label fixed --fixed_range_v4=#{node['bcpc']['fixed']['cidr']} --num_networks=#{node['bcpc']['fixed']['num_networks']} --multi_host=T --network_size=#{node['bcpc']['fixed']['network_size']} --vlan=#{node['bcpc']['fixed']['vlan_start']}
     EOH
     only_if ". /root/adminrc; nova-manage network list | grep \"No networks found\""
 end

@@ -45,16 +45,16 @@ bash "install-zabbix-server" do
     not_if "test -f /usr/local/sbin/zabbix_server"
 end
 
-user node[:bcpc][:zabbix][:user] do
+user node['bcpc']['zabbix']['user'] do
     shell "/bin/false"
     home "/var/log"
-    gid node[:bcpc][:zabbix][:group]
+    gid node['bcpc']['zabbix']['group']
     system true
 end
 
 directory "/var/log/zabbix" do
-    user node[:bcpc][:zabbix][:user]
-    group node[:bcpc][:zabbix][:group]
+    user node['bcpc']['zabbix']['user']
+    group node['bcpc']['zabbix']['group']
     mode 00755
 end
 
@@ -68,7 +68,7 @@ end
 
 template "/usr/local/etc/zabbix_server.conf" do
     source "zabbix_server.conf.erb"
-    owner node[:bcpc][:zabbix][:user]
+    owner node['bcpc']['zabbix']['user']
     group "root"
     mode 00600
     notifies :restart, "service[zabbix-server]", :delayed
@@ -119,7 +119,7 @@ end
 
 template "/usr/local/share/zabbix/php/conf/zabbix.conf.php" do
     source "zabbix.conf.php.erb"
-    user node[:bcpc][:zabbix][:user]
+    user node['bcpc']['zabbix']['user']
     group "www-data"
     mode 00640
     notifies :restart, "service[apache2]", :delayed
@@ -155,11 +155,11 @@ ruby_block "zabbix-api-auto-discovery-register" do
     end
 end
 
-include_recipe "bcpc::zabbix-work"
+include_recipe "bcpc:'zabbix'-work"
 
 template "/usr/local/etc/zabbix_agentd.conf.d/zabbix-openstack.conf" do
     source "zabbix_openstack.conf.erb"
-    owner node[:bcpc][:zabbix][:user]
+    owner node['bcpc']['zabbix']['user']
     group "root"
     mode 00600
     notifies :restart, "service[zabbix-agent]", :immediately
@@ -168,21 +168,21 @@ end
 
 directory "/usr/local/bin/checks" do
   action :create
-  owner  node[:bcpc][:zabbix][:user]
+  owner  node['bcpc']['zabbix']['user']
   group "root"
   mode 00775
 end 
 
 directory "/usr/local/etc/checks" do
   action  :create
-  owner  node[:bcpc][:zabbix][:user]
+  owner  node['bcpc']['zabbix']['user']
   group "root"
   mode 00775
 end 
 
 template  "/usr/local/etc/checks/default.yml" do
   source "checks/default.yml.erb"
-  owner node[:bcpc][:zabbix][:user]
+  owner node['bcpc']['zabbix']['user']
   group "root"
   mode 00640
 end
@@ -196,7 +196,7 @@ end
 %w{ nova rgw }.each do |cc| 
   template  "/usr/local/etc/checks/#{cc}.yml" do
     source "checks/#{cc}.yml.erb"
-    owner node[:bcpc][:zabbix][:user]
+    owner node['bcpc']['zabbix']['user']
     group "root"
     mode 00640
   end

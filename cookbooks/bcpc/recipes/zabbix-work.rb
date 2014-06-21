@@ -32,16 +32,16 @@ bash "install-zabbix-agent" do
     not_if "test -f /usr/local/sbin/zabbix_agentd"
 end
 
-user node[:bcpc][:zabbix][:user] do
+user node['bcpc']['zabbix']['user'] do
     shell "/bin/false"
     home "/var/log"
-    gid node[:bcpc][:zabbix][:group]
+    gid node['bcpc']['zabbix']['group']
     system true
 end
 
 directory "/var/log/zabbix" do
-    user node[:bcpc][:zabbix][:user]
-    group node[:bcpc][:zabbix][:group]
+    user node['bcpc']['zabbix']['user']
+    group node['bcpc']['zabbix']['group']
     mode 00755
 end
 
@@ -55,7 +55,7 @@ end
 
 template "/usr/local/etc/zabbix_agent.conf" do
     source "zabbix_agent.conf.erb"
-    owner node[:bcpc][:zabbix][:user]
+    owner node['bcpc']['zabbix']['user']
     group "root"
     mode 00600
     notifies :restart, "service[zabbix-agent]", :delayed
@@ -63,7 +63,7 @@ end
 
 template "/usr/local/etc/zabbix_agentd.conf" do
     source "zabbix_agentd.conf.erb"
-    owner node[:bcpc][:zabbix][:user]
+    owner node['bcpc']['zabbix']['user']
     group "root"
     mode 00600
     notifies :restart, "service[zabbix-agent]", :delayed
@@ -76,14 +76,14 @@ end
 
 directory "/usr/local/bin/checks" do
   action :create
-  owner  node[:bcpc][:zabbix][:user]
+  owner  node['bcpc']['zabbix']['user']
   group "root"
   mode 00775
 end 
 
 directory "/usr/local/etc/checks" do
   action  :create
-  owner  node[:bcpc][:zabbix][:user]
+  owner  node['bcpc']['zabbix']['user']
   group "root"
   mode 00775
 end 
@@ -91,7 +91,7 @@ end
 %w{ float_ips }.each do |cc| 
   template  "/usr/local/etc/checks/#{cc}.yml" do
     source "checks/#{cc}.yml.erb"
-    owner node[:bcpc][:zabbix][:user]
+    owner node['bcpc']['zabbix']['user']
     group "root"
     mode 00640
   end

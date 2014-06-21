@@ -100,7 +100,7 @@ service "rabbitmq-server" do
 end
 
 get_head_nodes.each do |server|
-    if server['hostname'] != node[:hostname]
+    if server['hostname'] != node['hostname']
         bash "rabbitmq-clustering-with-#{server['hostname']}" do
             code <<-EOH
                 rabbitmqctl stop_app

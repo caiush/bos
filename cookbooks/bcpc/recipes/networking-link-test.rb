@@ -31,8 +31,8 @@ ruby_block "setup-other-hosts" do
          not othernodes.include? host then
            Chef::Log.info("Found a peer : #{host.hostname}")
            othernodes.push host
-           float_addr.push host[:bcpc][:floating][:ip]
-           storage_addr.push host[:bcpc][:storage][:ip]
+           float_addr.push host['bcpc']['floating']['ip']
+           storage_addr.push host['bcpc']['storage']['ip']
       end
     end
     # if there are no other nodes, then I am the first. If so, ensure
@@ -40,8 +40,8 @@ ruby_block "setup-other-hosts" do
     if othernodes.empty? then
       Chef::Log.info("No peers, using self : #{node.hostname}")
       othernodes.push node
-      float_addr.push node[:bcpc][:floating][:ip]
-      storage_addr.push node[:bcpc][:storage][:ip]
+      float_addr.push node['bcpc']['floating']['ip']
+      storage_addr.push node['bcpc']['storage']['ip']
     end
   end
 end

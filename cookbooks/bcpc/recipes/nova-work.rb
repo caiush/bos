@@ -20,7 +20,7 @@
 include_recipe "bcpc::ceph-work"
 include_recipe "bcpc::nova-common"
 
-package "nova-compute-#{node[:bcpc][:virt_type]}" do
+package "nova-compute-#{node['bcpc']['virt_type']}" do
     action :upgrade
 end
 

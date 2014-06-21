@@ -32,7 +32,7 @@ default['bcpc']['ceph']['enabled_pools'] = [ "ssd", "hdd" ]
 default['bcpc']['management']['interface'] = "eth0"
 default['bcpc']['storage']['interface'] = "eth1"
 default['bcpc']['floating']['interface'] = "eth2"
-default['bcpc']['fixed']['vlan_interface'] = node[:bcpc][:floating][:interface]
+default['bcpc']['fixed']['vlan_interface'] = node['bcpc']['floating']['interface']
 
 ###########################################
 #
@@ -155,7 +155,7 @@ default['bcpc']['admin_email'] = "admin@localhost.com"
 default['bcpc']['zabbix']['user'] = "zabbix"
 default['bcpc']['zabbix']['group'] = "adm"
 
-default[:bcpc][:ports][:apache][:radosgw] = 8080
-default[:bcpc][:ports][:apache][:radosgw_https] = 8443
-default[:bcpc][:ports][:haproxy][:radosgw] = 80
-default[:bcpc][:ports][:haproxy][:radosgw_https] = 443
+default['bcpc']['ports']['apache']['radosgw'] = 8080
+default['bcpc']['ports']['apache']['radosgw_https'] = 8443
+default['bcpc']['ports']['haproxy']['radosgw'] = 80
+default['bcpc']['ports']['haproxy']['radosgw_https'] = 443

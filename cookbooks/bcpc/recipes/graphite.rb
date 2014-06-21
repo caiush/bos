@@ -147,7 +147,7 @@ bash "graphite-database-sync" do
     user "root"
     code <<-EOH
         python /opt/graphite/webapp/graphite/manage.py syncdb --noinput
-        python /opt/graphite/webapp/graphite/manage.py createsuperuser --username=admin --email=#{node[:bcpc][:admin_email]} --noinput
+        python /opt/graphite/webapp/graphite/manage.py createsuperuser --username=admin --email=#{node['bcpc']['admin_email']} --noinput
     EOH
     notifies :restart, "service[apache2]", :immediately
 end

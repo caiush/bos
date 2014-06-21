@@ -19,7 +19,7 @@
 
 ruby_block "check-gateways" do
   block do
-    ping_node("storage gateway", node[:bcpc][:storage][:gateway])
-    ping_node("floating gateway", node[:bcpc][:floating][:gateway])
+    ping_node("storage gateway", node['bcpc']['storage']['gateway'])
+    ping_node("floating gateway", node['bcpc']['floating']['gateway'])
   end
 end

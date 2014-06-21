@@ -18,7 +18,7 @@
 #
 
 include_recipe "bcpc::mysql"
-include_recipe "bcpc::ceph-head"
+include_recipe "bcpc:'ceph'-head"
 include_recipe "bcpc::openstack"
 
 ruby_block "initialize-glance-config" do
@@ -102,27 +102,27 @@ end
 
 bash "create-glance-rados-pool" do
     user "root"
-    optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:images][:replicas]*node[:bcpc][:ceph][:images][:portion]/100)
+    optimal = power_of_2(get_ceph_osd_nodes.length*node['bcpc']['ceph']['pgs_per_node']/node['bcpc']['ceph']['images']['replicas']*node['bcpc']['ceph']['images']['portion']/100)
     code <<-EOH
-        ceph osd pool create #{node[:bcpc][:ceph][:images][:name]} #{optimal}
-        ceph osd pool set #{node[:bcpc][:ceph][:images][:name]} crush_ruleset #{(node[:bcpc][:ceph][:images][:type]=="ssd") ? node[:bcpc][:ceph][:ssd][:ruleset] : node[:bcpc][:ceph][:hdd][:ruleset]}
+        ceph osd pool create #{node['bcpc']['ceph']['images']['name']} #{optimal}
+        ceph osd pool set #{node['bcpc']['ceph']['images']['name']} crush_ruleset #{(node['bcpc']['ceph']['images']['type']=="ssd") ? node['bcpc']['ceph']['ssd']['ruleset'] : node['bcpc']['ceph']['hdd']['ruleset']}
     EOH
-    not_if "rados lspools | grep #{node[:bcpc][:ceph][:images][:name]}"
+    not_if "rados lspools | grep #{node['bcpc']['ceph']['images']['name']}"
 end
 
 bash "set-glance-rados-pool-replicas" do
     user "root"
-    replicas = [get_all_nodes.length, node[:bcpc][:ceph][:images][:replicas]].min
-    code "ceph osd pool set #{node[:bcpc][:ceph][:images][:name]} size #{replicas}"
-    not_if "ceph osd pool get #{node[:bcpc][:ceph][:images][:name]} size | grep #{replicas}"
+    replicas = [get_all_nodes.length, node['bcpc']['ceph']['images']['replicas']].min
+    code "ceph osd pool set #{node['bcpc']['ceph']['images']['name']} size #{replicas}"
+    not_if "ceph osd pool get #{node['bcpc']['ceph']['images']['name']} size | grep #{replicas}"
 end
 
-(node[:bcpc][:ceph][:pgp_auto_adjust] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
+(node['bcpc']['ceph']['pgp_auto_adjust'] ? %w{pg_num pgp_num} : %w{pg_num}).each do |pg|
     bash "set-glance-rados-pool-#{pg}" do
         user "root"
-        optimal = power_of_2(get_ceph_osd_nodes.length*node[:bcpc][:ceph][:pgs_per_node]/node[:bcpc][:ceph][:images][:replicas]*node[:bcpc][:ceph][:images][:portion]/100)
-        code "ceph osd pool set #{node[:bcpc][:ceph][:images][:name]} #{pg} #{optimal}"
-        not_if "((`ceph osd pool get #{node[:bcpc][:ceph][:images][:name]} #{pg} | awk '{print $2}'` >= #{optimal}))"
+        optimal = power_of_2(get_ceph_osd_nodes.length*node['bcpc']['ceph']['pgs_per_node']/node['bcpc']['ceph']['images']['replicas']*node['bcpc']['ceph']['images']['portion']/100)
+        code "ceph osd pool set #{node['bcpc']['ceph']['images']['name']} #{pg} #{optimal}"
+        not_if "((`ceph osd pool get #{node['bcpc']['ceph']['images']['name']} #{pg} | awk '{print $2}'` >= #{optimal}))"
         notifies :run, "bash[wait-for-pgs-creating]", :immediately
     end
 end
