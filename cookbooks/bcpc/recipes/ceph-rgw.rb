@@ -108,8 +108,8 @@ bash "apache-enable-radosgw" do
     notifies :restart, "service[apache2]", :immediately
 end
 
-execute "radosgw-all-starter" do
-    command "start radosgw-all-starter"
+execute "radosgw-start" do
+    command "initctl emit radosgw id=radosgw.gateway"
 end
 
 ruby_block "initialize-radosgw-admin-user" do
