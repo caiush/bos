@@ -42,18 +42,18 @@ end
 bash "setup-allow-rules-ufw" do
     user "root"
     code <<-EOH
-      ufw allow 22/tcp
-      ufw allow 80/tcp
-      ufw allow 443/tcp
-      ufw allow 4000/tcp
-      ufw allow 4040/tcp
-      ufw allow in on #{node['bcpc']['bootstrap']['pxe_interface']} from any port 68 to any port 67 proto udp
-      ufw allow in on #{node['bcpc']['bootstrap']['pxe_interface']} from any to #{node['bcpc']['bootstrap']['server']} port tftp
-      ufw --force enable
+        ufw allow 22/tcp
+        ufw allow 80/tcp
+        ufw allow 443/tcp
+        ufw allow 4000/tcp
+        ufw allow 4040/tcp
+        ufw allow in on #{node['bcpc']['bootstrap']['pxe_interface']} from any port 68 to any port 67 proto udp
+        ufw allow in on #{node['bcpc']['bootstrap']['pxe_interface']} from any to #{node['bcpc']['bootstrap']['server']} port tftp
+        ufw --force enable
     EOH
     not_if "ufw status numbered | grep 22/tcp"
 end
 
 service "ufw" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end

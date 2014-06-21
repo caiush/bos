@@ -18,14 +18,14 @@
 #
 
 if platform?("debian", "ubuntu")
-  include_recipe "bcpc::networking"
+    include_recipe "bcpc::networking"
 end
 
 case node['platform']
-when "centos","redhat","fedora","suse","amazon","scientific"
-  include_recipe "bcpc::ceph-yum"
-when "debian","ubuntu"
-  include_recipe "bcpc::ceph-apt"
+when "centos", "redhat", "fedora", "suse", "amazon", "scientific"
+    include_recipe "bcpc::ceph-yum"
+when "debian", "ubuntu"
+    include_recipe "bcpc::ceph-apt"
 end
 
 %w{ceph python-ceph}.each do |pkg|
@@ -56,7 +56,7 @@ end
 template '/etc/ceph/ceph.conf' do
     source 'ceph.conf.erb'
     mode '0644'
-    variables( :servers => get_head_nodes )
+    variables(:servers => get_head_nodes)
 end
 
 bash "wait-for-pgs-creating" do

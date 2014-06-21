@@ -82,7 +82,7 @@ if not node["bcpc"]["vms_key"].nil?
     end
 
     service "cobalt-compute" do
-        action [ :enable, :start ]
+        action [:enable, :start]
     end
 
     bash "restart-cobalt" do

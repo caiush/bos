@@ -74,10 +74,10 @@ template "/etc/diamond/diamond.conf" do
     owner "diamond"
     group "root"
     mode 00600
-    variables( :servers => get_head_nodes )
+    variables(:servers => get_head_nodes)
     notifies :restart, "service[diamond]", :delayed
 end
 
 service "diamond" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end

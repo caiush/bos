@@ -20,13 +20,13 @@
 include_recipe "bcpc::ceph-common"
 
 package "apache2" do
-   action :upgrade
-   version "2.2.22-1ubuntu1-inktank1"
+    action :upgrade
+    version "2.2.22-1ubuntu1-inktank1"
 end
 
 package "libapache2-mod-fastcgi" do
-   action :upgrade
-   version "2.4.7~0910052141-1-inktank2"
+    action :upgrade
+    version "2.4.7~0910052141-1-inktank2"
 end
 
 %w{libapache2-mod-wsgi libapache2-mod-python libapache2-mod-php5}.each do |pkg|
@@ -45,17 +45,17 @@ end
 end
 
 directory "/etc/apache2/vhost-root.d" do
-  owner "root"
-  group "root"
-  mode 00755
-  action :create
+    owner "root"
+    group "root"
+    mode 00755
+    action :create
 end
 
 directory "/etc/apache2/vhost-ssl-root.d" do
-  owner "root"
-  group "root"
-  mode 00755
-  action :create
+    owner "root"
+    group "root"
+    mode 00755
+    action :create
 end
 
 template "/etc/apache2/vhost-root.d/000-default.conf" do
@@ -92,7 +92,7 @@ bash "set-apache-bind-address" do
 end
 
 service "apache2" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 template "/var/www/index.html" do

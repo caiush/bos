@@ -23,7 +23,7 @@ include_recipe "bcpc::certs"
 template "/etc/hosts" do
     source "hosts.erb"
     mode 00644
-    variables( :servers => get_all_nodes )
+    variables(:servers => get_all_nodes)
 end
 
 template "/etc/ssh/sshd_config" do
@@ -33,11 +33,11 @@ template "/etc/ssh/sshd_config" do
 end
 
 service "ssh" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 service "cron" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 # Core networking package
@@ -79,12 +79,12 @@ end
 bash "enable-mellanox" do
     user "root"
     code <<-EOH
-                if [ -z "`lsmod | grep mlx4_en`" ]; then
-                   modprobe mlx4_en
-                fi
-                if [ -z "`grep mlx4_en /etc/modules`" ]; then
-                   echo "mlx4_en" >> /etc/modules
-                fi
+        if [ -z "`lsmod | grep mlx4_en`" ]; then
+            modprobe mlx4_en
+        fi
+        if [ -z "`grep mlx4_en /etc/modules`" ]; then
+            echo "mlx4_en" >> /etc/modules
+        fi
     EOH
     only_if "lspci | grep Mellanox"
 end
@@ -100,34 +100,34 @@ bash "enable-8021q" do
 end
 
 directory "/etc/network/interfaces.d" do
-  owner "root"
-  group "root"
-  mode 00755
-  action :create
+    owner "root"
+    group "root"
+    mode 00755
+    action :create
 end
 
 bash "setup-interfaces-source" do
-  user "root"
-  code <<-EOH
-    echo "source /etc/network/interfaces.d/iface-*" >> /etc/network/interfaces
-  EOH
-  not_if "grep '^source /etc/network/interfaces.d/' /etc/network/interfaces"
+    user "root"
+    code <<-EOH
+        echo "source /etc/network/interfaces.d/iface-*" >> /etc/network/interfaces
+    EOH
+    not_if "grep '^source /etc/network/interfaces.d/' /etc/network/interfaces"
 end
 
-[ ['management', 100], ['storage', 300] ].each do |net, metric|
-  template "/etc/network/interfaces.d/iface-#{node['bcpc'][net]['interface']}" do
-    source "network.iface.erb"
-    owner "root"
-    group "root"
-    mode 00644
-    variables(
-      :interface => node['bcpc'][net]['interface'],
-      :ip => node['bcpc'][net]['ip'],
-      :netmask => node['bcpc'][net]['netmask'],
-      :gateway => node['bcpc'][net]['gateway'],
-      :metric => metric
-    )
-  end
+[['management', 100], ['storage', 300]].each do |net, metric|
+    template "/etc/network/interfaces.d/iface-#{node['bcpc'][net]['interface']}" do
+        source "network.iface.erb"
+        owner "root"
+        group "root"
+        mode 00644
+        variables(
+            :interface => node['bcpc'][net]['interface'],
+            :ip => node['bcpc'][net]['ip'],
+            :netmask => node['bcpc'][net]['netmask'],
+            :gateway => node['bcpc'][net]['gateway'],
+            :metric => metric
+        )
+    end
 end
 
 # set up the DNS resolvers
@@ -139,18 +139,18 @@ resolvers.push resolvers.shift
 resolvers.unshift node['bcpc']['management']['vip']
 
 template "/etc/network/interfaces.d/iface-#{node['bcpc']['floating']['interface']}" do
-  source "network.iface.erb"
-  owner "root"
-  group "root"
-  mode 00644
-  variables(
-    :interface => node['bcpc']['floating']['interface'],
-    :ip => node['bcpc']['floating']['ip'],
-    :netmask => node['bcpc']['floating']['netmask'],
-    :gateway => node['bcpc']['floating']['gateway'],
-    :dns => resolvers,
-    :metric => 200
-  )
+    source "network.iface.erb"
+    owner "root"
+    group "root"
+    mode 00644
+    variables(
+        :interface => node['bcpc']['floating']['interface'],
+        :ip => node['bcpc']['floating']['ip'],
+        :netmask => node['bcpc']['floating']['netmask'],
+        :gateway => node['bcpc']['floating']['gateway'],
+        :dns => resolvers,
+        :metric => 200
+    )
 end
 
 bash "interface-mgmt-make-static-if-dhcp" do
@@ -163,13 +163,13 @@ bash "interface-mgmt-make-static-if-dhcp" do
 end
 
 %w{ management storage floating }.each do |iface|
-  bash "#{iface} up" do
-    user "root"
-    code <<-EOH
-      ifup #{node['bcpc'][iface]['interface']}
-    EOH
-    not_if "ip link show up | grep #{node['bcpc'][iface]['interface']}"
-  end
+    bash "#{iface} up" do
+        user "root"
+        code <<-EOH
+            ifup #{node['bcpc'][iface]['interface']}
+        EOH
+        not_if "ip link show up | grep #{node['bcpc'][iface]['interface']}"
+    end
 end
 
 bash "routing-management" do

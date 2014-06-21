@@ -44,4 +44,3 @@ apt_repository "ceph-apache" do
     components ["main"]
     key "ceph-autobuild.key"
 end
-

@@ -36,7 +36,7 @@ package "elasticsearch" do
 end
 
 service "elasticsearch" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 template "/etc/elasticsearch/elasticsearch.yml" do
@@ -44,8 +44,10 @@ template "/etc/elasticsearch/elasticsearch.yml" do
     owner "root"
     group "root"
     mode 00644
-    variables( :servers => get_head_nodes,
-               :min_quorum => get_head_nodes.length/2 + 1 )
+    variables(
+        :servers => get_head_nodes,
+        :min_quorum => get_head_nodes.length/2 + 1
+    )
     notifies :restart, "service[elasticsearch]", :immediately
 end
 

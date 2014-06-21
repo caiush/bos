@@ -105,7 +105,7 @@ bash "apache-enable-keystone" do
 end
 
 service "keystone" do
-    action [ :disable, :stop ]
+    action [:disable, :stop]
     restart_command "(service keystone stop || true) && service keystone start && sleep 5"
 end
 
@@ -319,10 +319,10 @@ ruby_block "initialize-keystone-test-config" do
 end
 
 bash "keystone-create-test-tenants" do
-  code <<-EOH
+    code <<-EOH
         . /root/adminrc
         export KEYSTONE_ADMIN_TENANT_ID=`keystone tenant-get "#{node['bcpc']['admin_tenant']}" | grep " id " | awk '{print $4}'`
         keystone user-create --name #{get_config('keystone-test-user')} --tenant-id $KEYSTONE_ADMIN_TENANT_ID --pass  #{get_config('keystone-test-password')} --enabled true
-  EOH
-  only_if ". /root/keystonerc; . /root/adminrc; keystone user-get #{get_config('keystone-test-user')} 2>&1 | grep -e '^No user'"
+    EOH
+    only_if ". /root/keystonerc; . /root/adminrc; keystone user-get #{get_config('keystone-test-user')} 2>&1 | grep -e '^No user'"
 end

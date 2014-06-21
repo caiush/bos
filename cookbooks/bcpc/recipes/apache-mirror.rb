@@ -35,6 +35,5 @@ template "/etc/apache2/sites-available/default" do
 end
 
 service "apache2" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
-

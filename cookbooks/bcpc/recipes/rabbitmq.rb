@@ -96,7 +96,7 @@ end
 
 service "rabbitmq-server" do
     stop_command "service rabbitmq-server stop && epmd -kill"
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 get_head_nodes.each do |server|
@@ -154,12 +154,12 @@ template "/etc/xinetd.d/amqpchk" do
 end
 
 service "xinetd" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 ruby_block "reap-dead-rabbitmq-servers" do
     block do
-        head_names = get_head_nodes.collect{|x| x['hostname']}
+        head_names = get_head_nodes.collect { |x| x['hostname'] }
         status = %x[ rabbitmqctl cluster_status | grep nodes | grep disc ].strip
         status.scan(/(?:'rabbit@([a-zA-Z0-9-]+)',?)+?/).each do |server|
             if not head_names.include?(server[0])
