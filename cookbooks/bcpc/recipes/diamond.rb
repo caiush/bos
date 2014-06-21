@@ -37,7 +37,7 @@ package "diamond" do
     action :install
 end
 
-if node[:bcpc][:virt_type] == "kvm"
+if node['bcpc']['virt_type'] == "kvm"
     package "ipmitool" do
         action :upgrade
     end

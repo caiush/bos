@@ -12,5 +12,5 @@ iface <%= @interface %> inet static
  metric <%= @metric %>
 <% if @dns %>
  dns-nameservers <%= @dns.join(' ') %>
- dns-search <%="#{node[:bcpc][:domain_name]}"%>
+ dns-search <%="#{node['bcpc']['domain_name']}"%>
 <% end %>

@@ -99,7 +99,7 @@ lazy-recursion=yes
 #################################
 # local-address Local IP address to which we bind
 #
-local-address=<%="#{node[:bcpc][:management][:vip]}"%>
+local-address=<%="#{node['bcpc']['management']['vip']}"%>
 
 #################################
 # local-ipv6    Local IP address to which we bind
@@ -199,7 +199,7 @@ receiver-threads=3
 #################################
 # recursor  If recursion is desired, IP address of a recursing nameserver
 #
-recursor=<%="#{node[:bcpc][:dns_servers][0]}"%>
+recursor=<%="#{node['bcpc']['dns_servers'][0]}"%>
 
 #################################
 # setgid    If set, change group id to this gid for more security

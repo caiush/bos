@@ -114,30 +114,30 @@ bash "setup-interfaces-source" do
   not_if "grep '^source /etc/network/interfaces.d/' /etc/network/interfaces"
 end
 
-template "/etc/network/interfaces.d/iface-#{node[:bcpc][:management][:interface]}" do
+template "/etc/network/interfaces.d/iface-#{node['bcpc']['management']['interface']}" do
   source "network.iface.erb"
   owner "root"
   group "root"
   mode 00644
   variables(
-    :interface => node[:bcpc][:management][:interface],
-    :ip => node[:bcpc][:management][:ip],
-    :netmask => node[:bcpc][:management][:netmask],
-    :gateway => node[:bcpc][:management][:gateway],
+    :interface => node['bcpc']['management']['interface'],
+    :ip => node['bcpc']['management']['ip'],
+    :netmask => node['bcpc']['management']['netmask'],
+    :gateway => node['bcpc']['management']['gateway'],
     :metric => 100
   )
 end
 
-template "/etc/network/interfaces.d/iface-#{node[:bcpc][:storage][:interface]}" do
+template "/etc/network/interfaces.d/iface-#{node['bcpc']['storage']['interface']}" do
   source "network.iface.erb"
   owner "root"
   group "root"
   mode 00644
   variables(
-    :interface => node[:bcpc][:storage][:interface],
-    :ip => node[:bcpc][:storage][:ip],
-    :netmask => node[:bcpc][:storage][:netmask],
-    :gateway => node[:bcpc][:storage][:gateway],
+    :interface => node['bcpc']['storage']['interface'],
+    :ip => node['bcpc']['storage']['ip'],
+    :netmask => node['bcpc']['storage']['netmask'],
+    :gateway => node['bcpc']['storage']['gateway'],
     :metric => 300
   )
 end
@@ -146,20 +146,20 @@ end
 # we want the VIP which will be running powerdns to be first on the list
 # but the first entry in our master list is also the only one in pdns,
 # so make that the last entry to minimize double failures when upstream dies.
-resolvers=node[:bcpc][:dns_servers].dup
+resolvers=node['bcpc']['dns_servers'].dup
 resolvers.push resolvers.shift
-resolvers.unshift node[:bcpc][:management][:vip]
+resolvers.unshift node['bcpc']['management']['vip']
 
-template "/etc/network/interfaces.d/iface-#{node[:bcpc][:floating][:interface]}" do
+template "/etc/network/interfaces.d/iface-#{node['bcpc']['floating']['interface']}" do
   source "network.iface.erb"
   owner "root"
   group "root"
   mode 00644
   variables(
-    :interface => node[:bcpc][:floating][:interface],
-    :ip => node[:bcpc][:floating][:ip],
-    :netmask => node[:bcpc][:floating][:netmask],
-    :gateway => node[:bcpc][:floating][:gateway],
+    :interface => node['bcpc']['floating']['interface'],
+    :ip => node['bcpc']['floating']['ip'],
+    :netmask => node['bcpc']['floating']['netmask'],
+    :gateway => node['bcpc']['floating']['gateway'],
     :dns => resolvers,
     :metric => 200
   )
@@ -168,19 +168,19 @@ end
 bash "interface-mgmt-make-static-if-dhcp" do
     user "root"
     code <<-EOH
-        sed --in-place '/\\(.*#{node[:bcpc][:management][:interface]}.*\\)/d' /etc/network/interfaces
-        resolvconf -d #{node[:bcpc][:management][:interface]}.dhclient
+        sed --in-place '/\\(.*#{node['bcpc']['management']['interface']}.*\\)/d' /etc/network/interfaces
+        resolvconf -d #{node['bcpc']['management']['interface']}.dhclient
     EOH
-    only_if "cat /etc/network/interfaces | grep #{node[:bcpc][:management][:interface]} | grep dhcp"
+    only_if "cat /etc/network/interfaces | grep #{node['bcpc']['management']['interface']} | grep dhcp"
 end
 
 %w{ management storage floating }.each do |iface|
   bash "#{iface} up" do
     user "root"
     code <<-EOH
-      ifup #{node[:bcpc][iface][:interface]}
+      ifup #{node['bcpc'][iface]['interface']}
     EOH
-    not_if "ip link show up | grep #{node[:bcpc][iface][:interface]}"
+    not_if "ip link show up | grep #{node['bcpc'][iface]['interface']}"
   end
 end
 

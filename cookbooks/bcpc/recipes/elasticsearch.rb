@@ -75,7 +75,7 @@ end
 bash "set-elasticsearch-replicas" do
     min_quorum = get_head_nodes.length/2 + 1
     code <<-EOH
-        curl -XPUT '#{node[:bcpc][:management][:vip]}:9200/_settings' -d '
+        curl -XPUT '#{node['bcpc']['management']['vip']}:9200/_settings' -d '
         {
             "index" : {
                 "number_of_replicas" : #{min_quorum-1}

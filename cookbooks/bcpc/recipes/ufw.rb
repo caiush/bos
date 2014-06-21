@@ -47,8 +47,8 @@ bash "setup-allow-rules-ufw" do
       ufw allow 443/tcp
       ufw allow 4000/tcp
       ufw allow 4040/tcp
-      ufw allow in on #{node[:bcpc][:bootstrap][:pxe_interface]} from any port 68 to any port 67 proto udp
-      ufw allow in on #{node[:bcpc][:bootstrap][:pxe_interface]} from any to #{node[:bcpc][:bootstrap][:server]} port tftp
+      ufw allow in on #{node['bcpc']['bootstrap']['pxe_interface']} from any port 68 to any port 67 proto udp
+      ufw allow in on #{node['bcpc']['bootstrap']['pxe_interface']} from any to #{node['bcpc']['bootstrap']['server']} port tftp
       ufw --force enable
     EOH
     not_if "ufw status numbered | grep 22/tcp"

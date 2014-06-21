@@ -62,17 +62,17 @@ MAX_UPDATES_PER_SECOND = 500
 # the files quickly but at the risk of slowing I/O down considerably for a while.
 MAX_CREATES_PER_MINUTE = inf
 
-LINE_RECEIVER_INTERFACE = <%="#{node[:bcpc][:management][:ip]}"%>
+LINE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['ip']}"%>
 LINE_RECEIVER_PORT = 2003
 
 # Set this to True to enable the UDP listener. By default this is off
 # because it is very common to run multiple carbon daemons and managing
 # another (rarely used) port for every carbon instance is not fun.
 ENABLE_UDP_LISTENER = False
-UDP_RECEIVER_INTERFACE = <%="#{node[:bcpc][:management][:ip]}"%>
+UDP_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['ip']}"%>
 UDP_RECEIVER_PORT = 2003
 
-PICKLE_RECEIVER_INTERFACE = <%="#{node[:bcpc][:management][:ip]}"%>
+PICKLE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['ip']}"%>
 PICKLE_RECEIVER_PORT = 2004
 
 # Per security concerns outlined in Bug #817247 the pickle receiver
@@ -80,7 +80,7 @@ PICKLE_RECEIVER_PORT = 2004
 # Set this to True to revert to the old-fashioned insecure unpickler.
 USE_INSECURE_UNPICKLER = False
 
-CACHE_QUERY_INTERFACE = <%="#{node[:bcpc][:management][:ip]}"%>
+CACHE_QUERY_INTERFACE = <%="#{node['bcpc']['management']['ip']}"%>
 CACHE_QUERY_PORT = 7002
 
 # Set this to False to drop datapoints received after the cache
@@ -171,9 +171,9 @@ WHISPER_AUTOFLUSH = False
 
 
 [relay]
-LINE_RECEIVER_INTERFACE = <%="#{node[:bcpc][:management][:vip]}"%>
+LINE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['vip']}"%>
 LINE_RECEIVER_PORT = 2013
-PICKLE_RECEIVER_INTERFACE = <%="#{node[:bcpc][:management][:vip]}"%>
+PICKLE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['vip']}"%>
 PICKLE_RECEIVER_PORT = 2014
 
 # To use consistent hashing instead of the user defined relay-rules.conf,
@@ -228,10 +228,10 @@ USE_FLOW_CONTROL = True
 
 
 [aggregator]
-LINE_RECEIVER_INTERFACE = <%="#{node[:bcpc][:management][:vip]}"%>
+LINE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['vip']}"%>
 LINE_RECEIVER_PORT = 2023
 
-PICKLE_RECEIVER_INTERFACE = <%="#{node[:bcpc][:management][:vip]}"%>
+PICKLE_RECEIVER_INTERFACE = <%="#{node['bcpc']['management']['vip']}"%>
 PICKLE_RECEIVER_PORT = 2024
 
 # This is a list of carbon daemons we will send any relayed or

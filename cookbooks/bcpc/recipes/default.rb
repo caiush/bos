@@ -39,7 +39,7 @@ node.set['bcpc']['floating']['ip'] = ((IPAddr.new(node['bcpc']['floating']['cidr
 
 # Take a guess at the rack name or default to 'rack'
 if node['bcpc']['rack_name'].nil? then
-	rack_guess = node[:hostname].match /.*-r(\d+)[a-d]?n\d+$/
+	rack_guess = node['hostname'].match /.*-r(\d+)[a-d]?n\d+$/
 	node.set['bcpc']['rack_name'] = (rack_guess.nil?) ? "rack" : "rack-#{rack_guess[1].to_i}"
 end
 

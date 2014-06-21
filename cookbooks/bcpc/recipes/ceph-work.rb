@@ -52,7 +52,7 @@ end
                 INFO=`df -k | grep /dev/#{disk} | awk '{print $2,$6}' | sed -e 's/\\/var\\/lib\\/ceph\\/osd\\/ceph-//'`
                 OSD=${INFO#* }
                 WEIGHT=`echo "scale=4; ${INFO% *}/1000000000.0" | bc -q`
-                ceph osd crush create-or-move $OSD $WEIGHT root=#{type} rack=#{node[:bcpc][:rack_name]}-#{type} host=#{node[:hostname]}-#{type}
+                ceph osd crush create-or-move $OSD $WEIGHT root=#{type} rack=#{node['bcpc']['rack_name']}-#{type} host=#{node['hostname']}-#{type}
             EOH
             not_if "sgdisk -i1 /dev/#{disk} | grep -i 4fbd7e29-9d25-41b8-afd0-062c0ceff05d"
         end

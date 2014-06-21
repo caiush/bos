@@ -12,13 +12,13 @@ service amqpchk
         disable = no
         flags           = REUSE
         socket_type     = stream
-        bind            = <%="#{node[:bcpc][:management][:ip]}"%>
+        bind            = <%="#{node['bcpc']['management']['ip']}"%>
         port            = 5673
         wait            = no
         user            = rabbitmq
         server          = /usr/local/bin/rabbitmqcheck
         log_on_failure  += USERID
-        only_from       = <%="#{node[:bcpc][:management][:cidr]}"%>
+        only_from       = <%="#{node['bcpc']['management']['cidr']}"%>
         # recommended to put the IPs that need
         # to connect exclusively (security purposes)
         per_source      = UNLIMITED
