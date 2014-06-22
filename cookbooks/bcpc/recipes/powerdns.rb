@@ -351,10 +351,10 @@ end
 # bits of DNS will get stale. The command is guarded by if_vip so that it is present on all head 
 # nodes should one go away, but it will only execute if the current node is the VIP.
 cron "powerdns_populate_records" do
-  minute "*"
-  hour "*"
-  weekday "*"
-  command "if [ -n \"$(/usr/local/bin/if_vip echo Y)\" ] ; then echo \"call populate_records();\" | mysql -updns -p#{get_config('mysql-pdns-password')} #{node['bcpc']['pdns_dbname']} 2>&1 > /var/log/pdns_populate_records.last.log ; fi"
+    minute "*"
+    hour "*"
+    weekday "*"
+    command "if [ -n \"$(/usr/local/bin/if_vip echo Y)\" ] ; then echo \"call populate_records();\" | mysql -updns -p#{get_config('mysql-pdns-password')} #{node['bcpc']['pdns_dbname']} 2>&1 > /var/log/pdns_populate_records.last.log ; fi"
 end
 
 get_all_nodes.each do |server|
@@ -416,5 +416,5 @@ template "/etc/powerdns/pdns.d/pdns.local.gmysql" do
 end
 
 service "pdns" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end

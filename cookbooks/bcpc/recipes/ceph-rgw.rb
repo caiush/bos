@@ -24,24 +24,24 @@
 include_recipe "bcpc::apache2"
 
 package "radosgw" do
-   action :upgrade
+    action :upgrade
 end
 
 package "python-boto"
 
 directory "/var/lib/ceph/radosgw/ceph-radosgw.gateway" do
-  owner "root"
-  group "root"
-  mode 0755
-  action :create
-  recursive true
+    owner "root"
+    group "root"
+    mode 0755
+    action :create
+    recursive true
 end
 
 file "/var/lib/ceph/radosgw/ceph-radosgw.gateway/done" do
-  owner "root"
-  group "root"
-  mode "0644"
-  action :touch
+    owner "root"
+    group "root"
+    mode "0644"
+    action :touch
 end
 
 bash "write-client-radosgw-key" do
@@ -113,28 +113,28 @@ execute "radosgw-start" do
 end
 
 ruby_block "initialize-radosgw-admin-user" do
-  block do
-    make_config('radosgw-admin-user', "radosgw")
-    make_config('radosgw-admin-access-key', secure_password_alphanum_upper(20))
-    make_config('radosgw-admin-secret-key', secure_password(40))
-    rgw_admin = JSON.parse(%x[radosgw-admin user create --display-name="Admin" --uid="radosgw" --access_key=#{get_config('radosgw-admin-access-key')} --secret=#{get_config('radosgw-admin-secret-key')}])
-  end
-  not_if "radosgw-admin user info --uid='radosgw'"
+    block do
+        make_config('radosgw-admin-user', "radosgw")
+        make_config('radosgw-admin-access-key', secure_password_alphanum_upper(20))
+        make_config('radosgw-admin-secret-key', secure_password(40))
+        rgw_admin = JSON.parse(%x[radosgw-admin user create --display-name="Admin" --uid="radosgw" --access_key=#{get_config('radosgw-admin-access-key')} --secret=#{get_config('radosgw-admin-secret-key')}])
+    end
+    not_if "radosgw-admin user info --uid='radosgw'"
 end
 
 ruby_block "initialize-radosgw-test-user" do
-  block do
-    make_config('radosgw-test-user', "tester")
-    make_config('radosgw-test-access-key', secure_password_alphanum_upper(20))
-    make_config('radosgw-test-secret-key', secure_password(40))
-    rgw_admin = JSON.parse(%x[radosgw-admin user create --display-name="Tester" --uid="tester" --max-buckets=3 --access_key=#{get_config('radosgw-test-access-key')} --secret=#{get_config('radosgw-test-secret-key')} --caps="usage=read; user=read; bucket=read;" ])
-  end
-  not_if "radosgw-admin user info --uid='tester'"
+    block do
+        make_config('radosgw-test-user', "tester")
+        make_config('radosgw-test-access-key', secure_password_alphanum_upper(20))
+        make_config('radosgw-test-secret-key', secure_password(40))
+        rgw_admin = JSON.parse(%x[radosgw-admin user create --display-name="Tester" --uid="tester" --max-buckets=3 --access_key=#{get_config('radosgw-test-access-key')} --secret=#{get_config('radosgw-test-secret-key')} --caps="usage=read; user=read; bucket=read;" ])
+    end
+    not_if "radosgw-admin user info --uid='tester'"
 end
 
 template "/usr/local/bin/radosgw_check.py" do
-  source "radosgw_check.py.erb"
-  mode 0700
-  owner "root"
-  group "root"
+    source "radosgw_check.py.erb"
+    mode 0700
+    owner "root"
+    group "root"
 end

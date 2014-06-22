@@ -25,7 +25,7 @@ include_recipe "bcpc::ceilometer-common"
         action :upgrade
     end
     service pkg do
-        action [ :enable, :start ]
+        action [:enable, :start]
         subscribes :restart, "template[/etc/ceilometer/ceilometer.conf]", :delayed
     end
 end

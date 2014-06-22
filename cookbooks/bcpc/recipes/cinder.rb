@@ -34,7 +34,7 @@ end
         action :upgrade
     end
     service pkg do
-        action [ :enable, :start ]
+        action [:enable, :start]
     end
 end
 
@@ -125,5 +125,5 @@ node['bcpc']['ceph']['enabled_pools'].each do |type|
 end
 
 service "tgt" do
-    action [ :stop, :disable ]
+    action [:stop, :disable]
 end

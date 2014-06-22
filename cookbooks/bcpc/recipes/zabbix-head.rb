@@ -95,7 +95,7 @@ end
 
 service "zabbix-server" do
     provider Chef::Provider::Service::Upstart
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 %w{traceroute php5-mysql php5-gd python-requests}.each do |pkg|
@@ -167,53 +167,53 @@ end
 
 
 directory "/usr/local/bin/checks" do
-  action :create
-  owner  node['bcpc']['zabbix']['user']
-  group "root"
-  mode 00775
-end 
+    action :create
+    owner  node['bcpc']['zabbix']['user']
+    group "root"
+    mode 00775
+end
 
 directory "/usr/local/etc/checks" do
-  action  :create
-  owner  node['bcpc']['zabbix']['user']
-  group "root"
-  mode 00775
-end 
+    action  :create
+    owner  node['bcpc']['zabbix']['user']
+    group "root"
+    mode 00775
+end
 
 template  "/usr/local/etc/checks/default.yml" do
-  source "checks/default.yml.erb"
-  owner node['bcpc']['zabbix']['user']
-  group "root"
-  mode 00640
-end
-
-cookbook_file "/usr/local/bin/check" do
-  source "checks/check"
-  owner "root"
-  mode "00755"
-end
-
-%w{ nova rgw }.each do |cc| 
-  template  "/usr/local/etc/checks/#{cc}.yml" do
-    source "checks/#{cc}.yml.erb"
+    source "checks/default.yml.erb"
     owner node['bcpc']['zabbix']['user']
     group "root"
     mode 00640
-  end
-  
-  cookbook_file "/usr/local/bin/checks/#{cc}" do
-    source "checks/#{cc}"
+end
+
+cookbook_file "/usr/local/bin/check" do
+    source "checks/check"
     owner "root"
     mode "00755"
-  end
+end
 
-  cron "check-#{cc}" do
-    home "/var/lib/zabbix"
-    user "zabbix"
-    minute "0"
-    path "/usr/local/bin:/usr/bin:/bin"
-    command "zabbix_sender -c /usr/local/etc/zabbix_agentd.conf --key 'check.#{cc}' --value `check -f timeonly #{cc}` 2>&1 | /usr/bin/logger -p local0.notice"
-  end
+%w{ nova rgw }.each do |cc|
+    template  "/usr/local/etc/checks/#{cc}.yml" do
+        source "checks/#{cc}.yml.erb"
+        owner node['bcpc']['zabbix']['user']
+        group "root"
+        mode 00640
+    end
+
+    cookbook_file "/usr/local/bin/checks/#{cc}" do
+        source "checks/#{cc}"
+        owner "root"
+        mode "00755"
+    end
+
+    cron "check-#{cc}" do
+        home "/var/lib/zabbix"
+        user "zabbix"
+        minute "0"
+        path "/usr/local/bin:/usr/bin:/bin"
+        command "zabbix_sender -c /usr/local/etc/zabbix_agentd.conf --key 'check.#{cc}' --value `check -f timeonly #{cc}` 2>&1 | /usr/bin/logger -p local0.notice"
+    end
 end
 
 cookbook_file "/tmp/python-requests-aws_0.1.5_all.deb" do
@@ -229,9 +229,8 @@ package "requests-aws" do
 end
 
 template "/usr/local/bin/zabbix_bucket_stats" do
-  source "zabbix_bucket_stats.erb"
-  owner "root"
-  group "root"
-  mode "00755"
+    source "zabbix_bucket_stats.erb"
+    owner "root"
+    group "root"
+    mode "00755"
 end
-

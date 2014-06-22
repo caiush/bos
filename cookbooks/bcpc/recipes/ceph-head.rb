@@ -34,19 +34,20 @@ end
 ruby_block "add-ceph-mon-hints" do
     block do
         get_head_nodes.each do |server|
-            system "ceph --admin-daemon /var/run/ceph/ceph-mon.#{node['hostname']}.asok \
-                add_bootstrap_peer_hint #{server['bcpc']['storage']['ip']}:6789" 
+            system "ceph --admin-daemon /var/run/ceph/ceph-mon.#{node['hostname']}.asok " +
+                "add_bootstrap_peer_hint #{server['bcpc']['storage']['ip']}:6789"
         end
     end
 end
 
 ruby_block "wait-for-mon-quorum" do
     block do
-        begin
+        status = { 'state' => '' }
+        while not %w{leader peon}.include?(status['state']) do
             puts "Waiting for ceph-mon to get quorum..."
             status = JSON.parse(%x[ceph --admin-daemon /var/run/ceph/ceph-mon.#{node['hostname']}.asok mon_status])
             sleep 2 if not %w{leader peon}.include?(status['state'])
-        end while not %w{leader peon}.include?(status['state'])
+        end
     end
 end
 
@@ -68,9 +69,9 @@ end
 
 ruby_block "reap-dead-ceph-mon-servers" do
     block do
-        head_names = get_head_nodes.collect{|x| x['hostname']}
+        head_names = get_head_nodes.collect { |x| x['hostname'] }
         status = JSON.parse(%x[ceph --admin-daemon /var/run/ceph/ceph-mon.#{node['hostname']}.asok mon_status])
-        status['monmap']['mons'].collect{|x| x['name']}.each do |server|
+        status['monmap']['mons'].collect { |x| x['name'] }.each do |server|
             if not head_names.include?(server)
                 %x[ ceph mon remove #{server} ]
             end

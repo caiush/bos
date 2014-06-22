@@ -29,11 +29,10 @@ apt_repository "openstack" do
     components ["main"]
 end
 
-%w{python-novaclient python-cinderclient python-glanceclient python-nova python-memcache
-   python-keystoneclient python-nova-adminclient python-heatclient python-ceilometerclient python-mysqldb}.each do |pkg|
-        package pkg do
-            action :upgrade
-        end
+%w{python-novaclient python-cinderclient python-glanceclient python-nova python-memcache python-keystoneclient python-nova-adminclient python-heatclient python-ceilometerclient python-mysqldb}.each do |pkg|
+    package pkg do
+        action :upgrade
+    end
 end
 
 template "/usr/local/bin/hup_openstack" do
@@ -41,7 +40,7 @@ template "/usr/local/bin/hup_openstack" do
     mode 0755
     owner "root"
     group "root"
-    variables( :servers => get_head_nodes )
+    variables(:servers => get_head_nodes)
 end
 
 directory "/opt/openstack" do

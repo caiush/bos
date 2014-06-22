@@ -26,9 +26,9 @@ default['bcpc']['encrypt_data_bag'] = false
 #  Host-specific defaults for the cluster
 #
 ###########################################
-default['bcpc']['ceph']['hdd_disks'] = [ "sdb", "sdc" ]
-default['bcpc']['ceph']['ssd_disks'] = [ "sdd", "sde" ]
-default['bcpc']['ceph']['enabled_pools'] = [ "ssd", "hdd" ]
+default['bcpc']['ceph']['hdd_disks'] = ["sdb", "sdc"]
+default['bcpc']['ceph']['ssd_disks'] = ["sdd", "sde"]
+default['bcpc']['ceph']['enabled_pools'] = ["ssd", "hdd"]
 default['bcpc']['management']['interface'] = "eth0"
 default['bcpc']['storage']['interface'] = "eth1"
 default['bcpc']['floating']['interface'] = "eth2"
@@ -93,8 +93,8 @@ default['bcpc']['fixed']['num_networks'] = "100"
 default['bcpc']['fixed']['network_size'] = "256"
 default['bcpc']['fixed']['dhcp_lease_time'] = 3600
 
-default['bcpc']['ntp_servers'] = [ "pool.ntp.org" ]
-default['bcpc']['dns_servers'] = [ "8.8.8.8", "8.8.4.4" ]
+default['bcpc']['ntp_servers'] = ["pool.ntp.org"]
+default['bcpc']['dns_servers'] = ["8.8.8.8", "8.8.4.4"]
 
 ###########################################
 #
@@ -127,9 +127,9 @@ default['bcpc']['repos']['gridcentric'] = "http://downloads.gridcentric.com/pack
 # For a complete list of Ubuntu mirrors, please see:
 # https://launchpad.net/ubuntu/+archivemirrors
 default['bcpc']['mirror']['ubuntu'] = "us.archive.ubuntu.com/ubuntu"
-default['bcpc']['mirror']['ubuntu-dist'] = [ 'precise' ]
-default['bcpc']['mirror']['ceph-dist'] = [ 'firefly' ]
-default['bcpc']['mirror']['os-dist'] = [ 'havana' ]
+default['bcpc']['mirror']['ubuntu-dist'] = ['precise']
+default['bcpc']['mirror']['ceph-dist'] = ['firefly']
+default['bcpc']['mirror']['os-dist'] = ['havana']
 
 ###########################################
 #

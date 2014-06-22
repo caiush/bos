@@ -34,7 +34,7 @@ end
 
 %w{glance-api glance-registry}.each do |svc|
     service svc do
-        action [ :enable, :start ]
+        action [:enable, :start]
     end
 end
 

@@ -24,6 +24,6 @@ package "ceilometer-agent-compute" do
 end
 
 service "ceilometer-agent-compute" do
-    action [ :enable, :start ]
+    action [:enable, :start]
     subscribes :restart, "template[/etc/ceilometer/ceilometer.conf]", :delayed
 end

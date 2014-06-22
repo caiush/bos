@@ -31,7 +31,7 @@ ruby_block "initialize-ssh-keys" do
         require 'openssl'
         require 'net/ssh'
         key = OpenSSL::PKey::RSA.new 2048;
-        pubkey = "#{key.ssh_type} #{[ key.to_blob ].pack('m0')}"
+        pubkey = "#{key.ssh_type} #{[key.to_blob].pack('m0')}"
         make_config('ssh-private-key', key.to_pem)
         make_config('ssh-public-key', pubkey)
         if get_config('ssl-certificate').nil? then
@@ -76,7 +76,7 @@ template "/root/.ssh/known_hosts" do
     owner "root"
     group "root"
     mode 00644
-    variables( :servers => get_all_nodes )
+    variables(:servers => get_all_nodes)
 end
 
 template "/etc/ssl/certs/ssl-bcpc.pem" do
@@ -98,4 +98,3 @@ template "/etc/ssl/private/ssl-bcpc.key" do
     group "root"
     mode 00600
 end
-

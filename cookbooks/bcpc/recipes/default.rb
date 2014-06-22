@@ -19,7 +19,7 @@
 
 require 'ipaddr'
 
-node.set['bcpc']['management']['ip'] = node['network']['interfaces'][node['bcpc']['management']['interface']]['addresses'].select {|k,v| v['family'] == "inet" and k != node['bcpc']['management']['vip'] }[0].first
+node.set['bcpc']['management']['ip'] = node['network']['interfaces'][node['bcpc']['management']['interface']]['addresses'].select { |k, v| v['family'] == "inet" and k != node['bcpc']['management']['vip'] }[0].first
 
 mgmt_bitlen = (node['bcpc']['management']['cidr'].match /\d+\.\d+\.\d+\.\d+\/(\d+)/)[1].to_i
 mgmt_hostaddr = IPAddr.new(node['bcpc']['management']['ip'])<<mgmt_bitlen>>mgmt_bitlen
@@ -39,8 +39,8 @@ node.set['bcpc']['floating']['ip'] = ((IPAddr.new(node['bcpc']['floating']['cidr
 
 # Take a guess at the rack name or default to 'rack'
 if node['bcpc']['rack_name'].nil? then
-	rack_guess = node['hostname'].match /.*-r(\d+)[a-d]?n\d+$/
-	node.set['bcpc']['rack_name'] = (rack_guess.nil?) ? "rack" : "rack-#{rack_guess[1].to_i}"
+    rack_guess = node['hostname'].match /.*-r(\d+)[a-d]?n\d+$/
+    node.set['bcpc']['rack_name'] = (rack_guess.nil?) ? "rack" : "rack-#{rack_guess[1].to_i}"
 end
 
 node.save rescue nil

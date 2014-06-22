@@ -54,8 +54,10 @@ template "/opt/graphite/conf/carbon.conf" do
     owner "root"
     group "root"
     mode 00644
-    variables( :servers => get_head_nodes,
-               :min_quorum => get_head_nodes.length/2 + 1 )
+    variables(
+        :servers => get_head_nodes,
+        :min_quorum => get_head_nodes.length/2 + 1
+    )
     notifies :restart, "service[carbon-cache]", :delayed
     notifies :restart, "service[carbon-relay]", :delayed
 end
@@ -81,7 +83,7 @@ template "/opt/graphite/conf/relay-rules.conf" do
     owner "root"
     group "root"
     mode 00644
-    variables( :servers => get_head_nodes )
+    variables(:servers => get_head_nodes)
     notifies :restart, "service[carbon-relay]", :delayed
 end
 
@@ -112,7 +114,7 @@ template "/opt/graphite/webapp/graphite/local_settings.py" do
     owner "root"
     group "root"
     mode 00644
-    variables( :servers => get_head_nodes )
+    variables(:servers => get_head_nodes)
     notifies :restart, "service[apache2]", :delayed
 end
 
@@ -159,9 +161,9 @@ end
         group "root"
         mode 00755
         notifies :restart, "service[carbon-#{pkg}]", :delayed
-        variables( :daemon => pkg )
+        variables(:daemon => pkg)
     end
     service "carbon-#{pkg}" do
-        action [ :enable, :start ]
+        action [:enable, :start]
     end
 end

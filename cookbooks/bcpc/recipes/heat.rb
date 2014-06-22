@@ -32,7 +32,7 @@ end
         action :upgrade
     end
     service pkg do
-        action [ :enable, :start ]
+        action [:enable, :start]
     end
 end
 

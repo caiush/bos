@@ -29,7 +29,7 @@ end
         action :upgrade
     end
     service pkg do
-        action [ :enable, :start ]
+        action [:enable, :start]
         subscribes :restart, "template[/etc/nova/nova.conf]", :delayed
         subscribes :restart, "template[/etc/nova/api-paste.ini]", :delayed
         subscribes :restart, "template[/etc/nova/policy.json]", :delayed
@@ -81,7 +81,7 @@ template "/var/lib/nova/.ssh/known_hosts" do
     owner "nova"
     group "nova"
     mode 00644
-    variables( :servers => get_all_nodes )
+    variables(:servers => get_all_nodes)
 end
 
 template "/var/lib/nova/.ssh/id_rsa" do
@@ -117,7 +117,7 @@ template "/etc/libvirt/libvirtd.conf" do
 end
 
 service "libvirt-bin" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 template "/etc/nova/virsh-secret.xml" do

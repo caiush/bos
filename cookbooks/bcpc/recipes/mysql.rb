@@ -91,9 +91,11 @@ template "/etc/mysql/conf.d/wsrep.cnf" do
         # Commented out to prevent mysql from always restarting when 1 head-node
         notifies :run, "bash[remove-bare-gcomm]", :delayed
     end
-    variables( :seed => seed,
-               :max_connections => [get_head_nodes.length*50+get_all_nodes.length*5, 200].max,
-               :servers => results )
+    variables(
+        :seed => seed,
+        :max_connections => [get_head_nodes.length*50+get_all_nodes.length*5, 200].max,
+        :servers => results
+    )
 end
 
 bash "remove-bare-gcomm" do
@@ -105,7 +107,7 @@ bash "remove-bare-gcomm" do
 end
 
 service "mysql" do
-    action [ :enable, :start ]
+    action [:enable, :start]
     start_command "service mysql start || true"
 end
 
@@ -130,7 +132,7 @@ template "/etc/xinetd.d/mysqlchk" do
 end
 
 service "xinetd" do
-    action [ :enable, :start ]
+    action [:enable, :start]
 end
 
 package "debconf-utils"

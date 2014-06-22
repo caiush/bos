@@ -42,11 +42,14 @@ end
 template "/etc/haproxy/haproxy.cfg" do
     source "haproxy.cfg.erb"
     mode 00644
-	variables( :servers => get_head_nodes, :all_servers => get_ceph_osd_nodes )
-	notifies :restart, "service[haproxy]", :immediately
+    variables(
+        :servers => get_head_nodes,
+        :all_servers => get_ceph_osd_nodes
+    )
+    notifies :restart, "service[haproxy]", :immediately
 end
 
 service "haproxy" do
     restart_command "service haproxy stop && service haproxy start && sleep 5"
-    action [ :enable, :start ]
+    action [:enable, :start]
 end

@@ -18,5 +18,5 @@
 #
 
 service "chef-client" do
-  action [:disable, :stop]
+    action [:disable, :stop]
 end

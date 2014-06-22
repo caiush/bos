@@ -23,27 +23,30 @@ storage_addr = []
 
 # prepare tests for ping testing peers
 ruby_block "setup-other-hosts" do
-  block do
-    get_all_nodes.each do |host|
-      if (host.roles.include? "BCPC-Worknode" or
-          host.roles.include? "BCPC-Headnode") and
-         host['hostname'] != node['hostname'] and
-         not othernodes.include? host then
-           Chef::Log.info("Found a peer : #{host.hostname}")
-           othernodes.push host
-           float_addr.push host['bcpc']['floating']['ip']
-           storage_addr.push host['bcpc']['storage']['ip']
-      end
+    block do
+        get_all_nodes.each do |host|
+            if (
+                not othernodes.include? host and (
+                    host.roles.include? "BCPC-Worknode" or
+                    host.roles.include? "BCPC-Headnode"
+                ) and
+                host['hostname'] != node['hostname']
+            ) then
+                Chef::Log.info("Found a peer : #{host.hostname}")
+                othernodes.push host
+                float_addr.push host['bcpc']['floating']['ip']
+                storage_addr.push host['bcpc']['storage']['ip']
+            end
+        end
+        # if there are no other nodes, then I am the first. If so, ensure
+        # the tests will still pass by referencing myself
+        if othernodes.empty? then
+            Chef::Log.info("No peers, using self : #{node['hostname']}")
+            othernodes.push node
+            float_addr.push node['bcpc']['floating']['ip']
+            storage_addr.push node['bcpc']['storage']['ip']
+        end
     end
-    # if there are no other nodes, then I am the first. If so, ensure
-    # the tests will still pass by referencing myself
-    if othernodes.empty? then
-      Chef::Log.info("No peers, using self : #{node['hostname']}")
-      othernodes.push node
-      float_addr.push node['bcpc']['floating']['ip']
-      storage_addr.push node['bcpc']['storage']['ip']
-    end
-  end
 end
 
 # Run tests
@@ -66,15 +69,15 @@ end
 # file by hand
 
 ruby_block "check-peers" do
-  block do
-    if not File.file?("/etc/storage-test-success")
-      ping_node_list("storage peers", storage_addr)
-      FileUtils.touch("/etc/storage-test-success")
-    end
+    block do
+        if not File.file?("/etc/storage-test-success")
+            ping_node_list("storage peers", storage_addr)
+            FileUtils.touch("/etc/storage-test-success")
+        end
 
-    if not File.file?("/etc/floating-test-success")
-      ping_node_list("floating peers", float_addr)
-      FileUtils.touch("/etc/floating-test-success")
+        if not File.file?("/etc/floating-test-success")
+            ping_node_list("floating peers", float_addr)
+            FileUtils.touch("/etc/floating-test-success")
+        end
     end
-  end
 end
