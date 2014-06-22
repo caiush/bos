@@ -7,21 +7,24 @@
 # cluster.txt can be used by the cluster-*.sh tools for various
 # cluster automation tasks, see cluster-readme.txt
 #
-#set -x
 
 # bash imports
 source ./virtualbox_env.sh
 
 if [[ -z "$1" ]]; then
-	echo "Usage: $0 domain"
+	echo "Usage: $0 domain (environment)"
 	exit
 fi
 
-DOMAIN=$1
+DOMAIN="$1"
+ENVIRONMENT="$2"
 
 function getvminfo {
+
+    HOSTNAME="$1"
+
 	# extract the first mac address for this VM
-	MAC1=`$VBM showvminfo $1 | grep "NIC 1" | grep MAC | awk '{print $4}' | awk '{print substr($0, 1, length() -1)}'`
+	MAC1=`$VBM showvminfo $HOSTNAME | grep "NIC 1" | grep MAC | awk '{print $4}' | awk '{print substr($0, 1, length() -1)}'`
 	# add the customary colons in
 	MAC1=`echo $MAC1 | sed -e 's/^\([0-9A-Fa-f]\{2\}\)/\1_/'  \
 		-e 's/_\([0-9A-Fa-f]\{2\}\)/:\1_/' \
@@ -30,17 +33,34 @@ function getvminfo {
 		-e 's/_\([0-9A-Fa-f]\{2\}\)/:\1_/' \
 		-e 's/_\([0-9A-Fa-f]\{2\}\)/:\1/'`
 	# now get the IP address
-	PROPERTY=`$VBM guestproperty get $1 "/VirtualBox/GuestInfo/Net/0/V4/IP"`
+	PROPERTY=`$VBM guestproperty get $HOSTNAME "/VirtualBox/GuestInfo/Net/0/V4/IP"`
 	if [[ "$PROPERTY" = "No value set!" ]]; then
 	    echo "$VM not booted yet" >&2
 	    IP="IP unavailable - has this VM been booted?"
 	else
 	    IP=`echo $PROPERTY | awk '{print $2}'`
 	fi
+
 	# there's no IP address for the ILO for VMs, instead use
 	# VirtualBox's graphical console
 	ILOIPADDR="-"
-	echo "$1 $MAC1 $IP $ILOIPADDR $DOMAIN unknown"
+
+    # We can deduce roles only for the standard pattern recommended
+    # for the Test-Laptop sample virtual machine cluster build
+    if [[ "$ENVIRONMENT" = "Test-Laptop" ]]; then
+        if [[ "$HOSTNAME" = "bcpc-vm1" ]]; then
+            ROLE="head"
+        elif [[ "$HOSTNAME" = "bcpc-vm2" || "$HOSTNAME" = "bcpc-vm3" ]]; then
+            ROLE="work"
+        elif [[ "$HOSTNAME" = "bcpc-bootstrap" ]]; then
+            BOOTSTRAPIP="10.0.100.3"
+            IP="$BOOTSTRAPIP"
+            ROLE="bootstrap"
+        else
+            ROLE="unknown"
+        fi
+    fi
+	echo "$HOSTNAME $MAC1 $IP $ILOIPADDR $DOMAIN $ROLE"
 }
 
 if [[ -f cluster.txt ]]; then
@@ -57,4 +77,9 @@ for V in $VMLIST; do
 	fi
 done
 echo "end" >> cluster.txt
-echo "cluster.txt created. Please assign roles"
+if [[ "$ENVIRONMENT" = "Test-Laptop" ]]; then
+    echo "cluster.txt created. Default roles for Test-Laptop have been assigned"
+    sshpass -p ubuntu scp cluster.txt ubuntu@${BOOTSTRAPIP}:/home/ubuntu/chef-bcpc
+else
+    echo "cluster.txt created. Please assign roles"
+fi
