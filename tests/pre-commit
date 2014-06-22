@@ -15,10 +15,6 @@ echo "---- Checking whitespace"
 git diff-index --check --cached HEAD --
 check_exit
 
-echo "---- Checking knife cookbook tests"
-knife cookbook test bcpc -o "$COOKBOOKS"
-check_exit
-
 echo "---- Checking for 'tailor' in PATH"
 TAILOR=`which tailor`
 check_exit
@@ -30,10 +26,17 @@ git diff-index --name-only --diff-filter=ACM HEAD -- '*.rb' | while read file; d
 done
 check_exit
 
-echo "---- Checking for 'foodcritic' in PATH"
-FOODCRITIC=`which foodcritic`
-check_exit
+TEST=`git diff-index --name-only HEAD -- "*cookbooks/bcpc/*" | wc -l`
+if (($TEST>0)); then
+	echo "---- Checking knife cookbook tests"
+	knife cookbook test bcpc -o "$COOKBOOKS"
+	check_exit
 
-echo "---- Checking for clean foodcritic scan"
-$FOODCRITIC -f any -t ~FC014 -t ~FC048 "$COOKBOOKS/bcpc"
-check_exit
+	echo "---- Checking for 'foodcritic' in PATH"
+	FOODCRITIC=`which foodcritic`
+	check_exit
+
+	echo "---- Checking for clean foodcritic scan"
+	$FOODCRITIC -f any -t ~FC014 -t ~FC048 "$COOKBOOKS/bcpc"
+	check_exit
+fi
