@@ -22,7 +22,7 @@ if platform?("debian", "ubuntu")
 end
 
 case node['platform']
-when "centos","redhat","fedora","suse"
+when "centos","redhat","fedora","suse","amazon","scientific"
   include_recipe "bcpc::ceph-yum"
 when "debian","ubuntu"
   include_recipe "bcpc::ceph-apt"

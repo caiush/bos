@@ -27,7 +27,7 @@ ruby_block "setup-other-hosts" do
     get_all_nodes.each do |host|
       if (host.roles.include? "BCPC-Worknode" or
           host.roles.include? "BCPC-Headnode") and
-         host.hostname != node.hostname and
+         host['hostname'] != node['hostname'] and
          not othernodes.include? host then
            Chef::Log.info("Found a peer : #{host.hostname}")
            othernodes.push host
@@ -38,7 +38,7 @@ ruby_block "setup-other-hosts" do
     # if there are no other nodes, then I am the first. If so, ensure
     # the tests will still pass by referencing myself
     if othernodes.empty? then
-      Chef::Log.info("No peers, using self : #{node.hostname}")
+      Chef::Log.info("No peers, using self : #{node['hostname']}")
       othernodes.push node
       float_addr.push node['bcpc']['floating']['ip']
       storage_addr.push node['bcpc']['storage']['ip']

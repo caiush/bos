@@ -34,11 +34,10 @@ package "openstack-dashboard" do
     action :upgrade
 end
 
-if not node["bcpc"]["vms_key"].nil?
-    package "cobalt-horizon" do
-        action :upgrade
-        options "-o APT::Install-Recommends=0 -o Dpkg::Options::='--force-confnew'"
-    end
+package "cobalt-horizon" do
+    only_if { not node["bcpc"]["vms_key"].nil? }
+    action :upgrade
+    options "-o APT::Install-Recommends=0 -o Dpkg::Options::='--force-confnew'"
 end
 
 package "openstack-dashboard-ubuntu-theme" do

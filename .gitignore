@@ -4,6 +4,7 @@ id_rsa
 secret_file
 cookbooks/apt/
 cookbooks/chef-client/
+cookbooks/chef-solo-search/
 cookbooks/cron/
 cookbooks/ntp/
 cookbooks/ubuntu/
