@@ -17,7 +17,11 @@ check_exit
 
 echo "---- Checking for 'tailor' in PATH"
 TAILOR=`which tailor`
-check_exit
+if (($?)); then
+    echo "---- Checking for 'tailor-2.5' in PATH"
+    TAILOR=`which tailor-2.5`
+    check_exit
+fi
 
 echo "---- Checking for clean tailor scan"
 git diff-index --name-only --diff-filter=ACM HEAD -- '*.rb' | while read file; do
