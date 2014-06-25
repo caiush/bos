@@ -92,6 +92,8 @@ paste.filter_factory = nova.api.openstack.auth:NoAuthMiddlewareV3.factory
 
 [filter:ratelimit]
 paste.filter_factory = nova.api.openstack.compute.limits:RateLimitingMiddleware.factory
+limits =(POST, "*", .*, 120, MINUTE);(POST, "*/servers", ^/servers, 120, MINUTE);(PUT, "*", .*, 120, MINUTE);(GET, "*changes-since*", .*changes-since.*, 120, MINUTE);(DELETE, "*", .*, 120, MINUTE);(GET, "*/os-fping", ^/os-fping, 12, MINUTE)
+
 
 [filter:ratelimit_v3]
 paste.filter_factory = nova.api.openstack.compute.plugins.v3.limits:RateLimitingMiddleware.factory
