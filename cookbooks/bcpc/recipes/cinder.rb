@@ -94,6 +94,7 @@ node['bcpc']['ceph']['enabled_pools'].each do |type|
             ceph osd pool set #{node['bcpc']['ceph']['volumes']['name']}-#{type} crush_ruleset #{(type=="ssd") ? node['bcpc']['ceph']['ssd']['ruleset'] : node['bcpc']['ceph']['hdd']['ruleset']}
         EOH
         not_if "rados lspools | grep #{node['bcpc']['ceph']['volumes']['name']}-#{type}"
+        notifies :run, "bash[wait-for-pgs-creating]", :immediately
     end
 
     bash "set-cinder-rados-pool-replicas-#{type}" do

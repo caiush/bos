@@ -67,6 +67,7 @@ rgw_crush_ruleset = (node['bcpc']['ceph']['rgw']['type'] == "ssd") ? node['bcpc'
             ceph osd pool set #{pool} crush_ruleset #{rgw_crush_ruleset}
         EOH
         not_if "rados lspools | grep ^#{pool}$"
+        notifies :run, "bash[wait-for-pgs-creating]", :immediately
     end
     bash "set-#{pool}-rados-pool-replicas" do
         user "root"

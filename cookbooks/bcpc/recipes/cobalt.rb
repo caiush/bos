@@ -100,6 +100,7 @@ if not node["bcpc"]["vms_key"].nil?
             ceph osd pool set #{node['bcpc']['ceph']['vms_disk']['name']} crush_ruleset #{(node['bcpc']['ceph']['vms_disk']['type']=="ssd") ? node['bcpc']['ceph']['ssd']['ruleset'] : node['bcpc']['ceph']['hdd']['ruleset']}
         EOH
         not_if "rados lspools | grep #{node['bcpc']['ceph']['vms_disk']['name']}"
+        notifies :run, "bash[wait-for-pgs-creating]", :immediately
     end
 
     bash "set-vms-disk-rados-pool-replicas" do
@@ -127,6 +128,7 @@ if not node["bcpc"]["vms_key"].nil?
             ceph osd pool set #{node['bcpc']['ceph']['vms_mem']['name']} crush_ruleset #{(node['bcpc']['ceph']['vms_mem']['type']=="ssd") ? node['bcpc']['ceph']['ssd']['ruleset'] : node['bcpc']['ceph']['hdd']['ruleset']}
         EOH
         not_if "rados lspools | grep #{node['bcpc']['ceph']['vms_mem']['name']}"
+        notifies :run, "bash[wait-for-pgs-creating]", :immediately
     end
 
     bash "set-vms-mem-rados-pool-replicas" do

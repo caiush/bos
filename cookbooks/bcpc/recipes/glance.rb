@@ -108,6 +108,7 @@ bash "create-glance-rados-pool" do
         ceph osd pool set #{node['bcpc']['ceph']['images']['name']} crush_ruleset #{(node['bcpc']['ceph']['images']['type']=="ssd") ? node['bcpc']['ceph']['ssd']['ruleset'] : node['bcpc']['ceph']['hdd']['ruleset']}
     EOH
     not_if "rados lspools | grep #{node['bcpc']['ceph']['images']['name']}"
+    notifies :run, "bash[wait-for-pgs-creating]", :immediately
 end
 
 bash "set-glance-rados-pool-replicas" do
