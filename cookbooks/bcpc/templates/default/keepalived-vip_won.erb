@@ -18,6 +18,6 @@
 # For this reason this is the one place we break our
 # active-active HA model. This must die.
 #
-service zabbix-server start
+initctl emit --no-wait vip_won
 
 

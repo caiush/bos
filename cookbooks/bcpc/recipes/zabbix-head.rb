@@ -94,8 +94,13 @@ ruby_block "zabbix-database-creation" do
 end
 
 service "zabbix-server" do
-    provider Chef::Provider::Service::Upstart
-    action [:enable, :start]
+  if is_vip? 
+    action[:enable, :start]
+  else
+    action[:stop]
+  end
+  restart_command "if_vip restart zabbix-server"
+  provider Chef::Provider::Service::Upstart  
 end
 
 %w{traceroute php5-mysql php5-gd python-requests}.each do |pkg|
