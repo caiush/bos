@@ -22,6 +22,11 @@ require 'base64'
 require 'thread'
 require 'ipaddr'
 
+def is_vip?
+  ipaddr = `ip addr show dev #{node['bcpc']['management']['interface']}`
+  return ipaddr.include? node['bcpc']['management']['vip']
+end
+
 def init_config
     if not Chef::DataBag.list.key?('configs')
         puts "************ Creating data_bag \"configs\""
