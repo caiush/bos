@@ -7,7 +7,7 @@
 description     "Zabbix Server"
 author          "S. CANCHON"
 start on vip_won
-stop on (runlevel [016] or  vip_lost)
+stop on (runlevel [016] or vip_lost)
 respawn
 expect daemon
 exec /usr/local/sbin/zabbix_server -c /usr/local/etc/zabbix_server.conf
