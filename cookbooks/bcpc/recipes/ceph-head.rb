@@ -138,7 +138,11 @@ end
 
 bash "ceph-get-crush-map" do
     code <<-EOH
-        ceph osd getcrushmap -o /tmp/crush-map
+        false; while (($?!=0)); do
+            echo Trying to get crush map...
+            sleep 1
+            ceph osd getcrushmap -o /tmp/crush-map
+        done
         crushtool -d /tmp/crush-map -o /tmp/crush-map.txt
     EOH
 end
