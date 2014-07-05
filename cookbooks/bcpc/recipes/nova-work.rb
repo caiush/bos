@@ -37,7 +37,7 @@ end
 end
 
 service "nova-api" do
-    restart_command "(service nova-api stop || true) && service nova-api start && sleep 5"
+    restart_command "service nova-api restart; sleep 5"
 end
 
 cookbook_file "/tmp/havana-ephemeral-rbd.patch" do

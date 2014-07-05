@@ -106,11 +106,11 @@ end
 
 service "keystone" do
     action [:disable, :stop]
-    restart_command "(service keystone stop || true) && service keystone start && sleep 5"
+    restart_command "service keystone restart; sleep 5"
 end
 
 service "apache2" do
-    restart_command "(service apache2 stop || true) && service apache2 start && sleep 5"
+    restart_command "service apache2 restart; sleep 5"
 end
 
 ruby_block "keystone-database-creation" do

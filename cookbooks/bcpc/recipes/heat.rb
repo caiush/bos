@@ -37,7 +37,7 @@ end
 end
 
 service "heat-api" do
-    restart_command "(service heat-api stop || true) && service heat-api start && sleep 5"
+    restart_command "service heat-api restart; sleep 5"
 end
 
 template "/etc/heat/heat.conf" do
