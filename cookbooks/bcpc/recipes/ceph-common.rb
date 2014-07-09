@@ -28,6 +28,19 @@ when "debian", "ubuntu"
     include_recipe "bcpc::ceph-apt"
 end
 
+cookbook_file "/usr/local/bin/apt-pkg-check-version" do
+    source "apt-pkg-check-version"
+    owner "root"
+    mode 00755
+end
+
+bash "check-ceph-version" do
+    code <<-EOH
+        /usr/local/bin/apt-pkg-check-version ceph 0.80
+        exit $?
+	EOH
+end
+
 %w{ceph python-ceph}.each do |pkg|
     package pkg do
         action :upgrade
