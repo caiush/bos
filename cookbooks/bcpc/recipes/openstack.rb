@@ -55,3 +55,19 @@ end
         variables(:servers => get_head_nodes)
     end
 end
+
+cookbook_file "/tmp/heatclient.patch" do
+    source "heatclient.patch"
+    owner "root"
+    mode 0644
+end
+
+bash "patch-for-heatclient-bugs" do
+    user "root"
+    code <<-EOH
+        cd /usr/lib/python2.7/dist-packages/heatclient
+        patch < /tmp/heatclient.patch
+        cp /tmp/heatclient.patch .
+    EOH
+    not_if "test -f /usr/lib/python2.7/dist-packages/heatclient/heatclient.patch"
+end
