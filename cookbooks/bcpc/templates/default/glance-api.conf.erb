@@ -651,6 +651,7 @@ node['bcpc']['management']['vip']%>/<%=node['bcpc']['glance_dbname']%>
 #db_max_retries = 20
 
 [keystone_authtoken]
+cafile = /etc/ssl/certs/ssl-bcpc.pem
 auth_uri = <%=node['bcpc']['protocol']['keystone']%>://<%=node['bcpc']['management']['vip']%>:5000/v2.0/
 auth_host = <%=node['bcpc']['management']['vip']%>
 auth_port = 35357

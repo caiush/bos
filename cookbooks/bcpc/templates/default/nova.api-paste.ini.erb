@@ -121,6 +121,7 @@ paste.filter_factory = nova.api.auth:NovaKeystoneContext.factory
 
 [filter:authtoken]
 paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
+cafile = /etc/ssl/certs/ssl-bcpc.pem
 auth_uri = <%=node['bcpc']['protocol']['keystone']%>://<%=node['bcpc']['management']['vip']%>:5000/v2.0/
 auth_host = <%=node['bcpc']['management']['vip']%>
 auth_port = 35357
