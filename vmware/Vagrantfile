@@ -1,0 +1,91 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# This is a Vagrant to automatically provision a bootstrap node with a
+# Chef server.
+# See http://www.vagrantup.com/ for info on Vagrant.
+
+$local_environment = "Test-Laptop"
+$local_mirror = nil
+#$local_mirror = "10.0.100.4"
+
+if $local_mirror.nil?
+  $repos_script = <<EOH
+EOH
+else
+  $repos_script = <<EOH
+    sed -i s/archive.ubuntu.com/#{$local_mirror}/g /etc/apt/sources.list
+    sed -i s/security.ubuntu.com/#{$local_mirror}/g /etc/apt/sources.list
+    sed -i s/^deb-src/\#deb-src/g /etc/apt/sources.list
+EOH
+end
+
+Vagrant.configure("2") do |config|
+
+  bootstrap_memory = ( ENV["BOOTSTRAP_VM_MEM"] or "1536" )
+  bootstrap_cpus = ( ENV["BOOTSTRAP_VM_CPUs"] or "1" )
+
+  mirror_memory = ( ENV["MIRROR_VM_MEM"] or "384" )
+  mirror_cpus = ( ENV["MIRROR_VM_CPUs"] or "1" )
+
+  cluster_memory = ( ENV["CLUSTER_VM_MEM"] or "2560" )
+  cluster_cpus = ( ENV["CLUSTER_VM_CPUs"] or "2" )
+
+  config.vm.define :bootstrap, primary: true do |bootstrap|
+    bootstrap.vm.hostname = "bcpc-bootstrap"
+
+    bootstrap.vm.network :private_network, ip: "10.0.100.3", netmask: "255.255.255.0", adapter_ip: "10.0.100.2"
+    bootstrap.vm.network :private_network, ip: "172.16.100.3", netmask: "255.255.255.0", adapter_ip: "172.16.100.2"
+    bootstrap.vm.network :private_network, ip: "192.168.100.3", netmask: "255.255.255.0", adapter_ip: "192.168.100.2"
+
+    bootstrap.vm.synced_folder "../", "/chef-bcpc-host"
+
+    # set up repositories
+    bootstrap.vm.provision :shell, :inline => $repos_script
+
+    bootstrap.vm.provider :vmware_fusion do |vm|
+      vm.vmx["memsize"] = bootstrap_memory
+      vm.vmx["numvcpus"] = bootstrap_cpus
+    end
+  end
+
+  config.vm.define :mirror, autostart: false do |mirror|
+    mirror.vm.hostname = "bcpc-mirror-vagrant"
+
+    mirror.vm.network :private_network, ip: "10.0.100.4", netmask: "255.255.255.0"
+    mirror.vm.network :private_network, ip: "172.16.100.4", netmask: "255.255.255.0"
+    mirror.vm.network :private_network, ip: "192.168.100.4", netmask: "255.255.255.0"
+    mirror.vm.provider :vmware_fusion do |vm|
+      vm.vmx["memsize"] = mirror_memory
+      vm.vmx["numvcpus"] = mirror_cpus
+    end
+  end
+
+  (1..3).each do |i|
+    config.vm.define "bcpc_vm#{i}", autostart: true do |cluster|
+      cluster.vm.hostname = "bcpc-vm#{i}"
+
+      cluster.vm.network :private_network, ip: "10.0.100.1#{i}", netmask: "255.255.255.0"
+      cluster.vm.network :private_network, ip: "172.16.100.1#{i}", netmask: "255.255.255.0"
+      cluster.vm.network :private_network, ip: "192.168.100.1#{i}", netmask: "255.255.255.0"
+      cluster.vm.provider :vmware_fusion do |vm|
+        vm.vmx["memsize"] = cluster_memory
+        vm.vmx["numvcpus"] = cluster_cpus
+        # Enable nested virtualization and perf counters
+        vm.vmx["vhv.enable"] = "TRUE"
+        vm.vmx["vpmc.enable"] = "TRUE"
+      end
+    end
+  end
+
+  config.vm.box = "precise64_vmware"
+  #config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+  config.vm.box_url = "precise64_vmware.box"
+
+  # Global settings
+  config.vm.provider :vmware_fusion do |vm, override|
+     # Don't boot with headless mode
+     vm.gui = true
+  end
+
+end
