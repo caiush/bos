@@ -52,16 +52,6 @@ template "/etc/cinder/cinder.conf" do
     notifies :restart, "service[cinder-scheduler]", :delayed
 end
 
-template "/etc/cinder/api-paste.ini" do
-    source "cinder.api-paste.ini.erb"
-    owner "cinder"
-    group "cinder"
-    mode 00600
-    notifies :restart, "service[cinder-api]", :delayed
-    notifies :restart, "service[cinder-volume]", :delayed
-    notifies :restart, "service[cinder-scheduler]", :delayed
-end
-
 ruby_block "cinder-database-creation" do
     block do
         if not system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = \"#{node['bcpc']['cinder_dbname']}\"'|grep \"#{node['bcpc']['cinder_dbname']}\"" then

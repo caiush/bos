@@ -49,6 +49,19 @@ enabled_backends=<%= node['bcpc']['ceph']['enabled_pools'].map {|type| type.upca
 control_exchange = cinder
 notification_driver = cinder.openstack.common.notifier.rpc_notifier
 
+[keystone_authtoken]
+cafile = /etc/ssl/certs/ssl-bcpc.pem
+auth_uri = <%=node['bcpc']['protocol']['keystone']%>://<%=node['bcpc']['management']['vip']%>:5000/v2.0/
+auth_host = <%=node['bcpc']['management']['vip']%>
+auth_port = 35357
+auth_protocol = <%=node['bcpc']['protocol']['keystone']%>
+auth_version = v2.0
+admin_tenant_name = <%=node['bcpc']['admin_tenant']%>
+admin_user = <%=get_config('keystone-admin-user')%>
+admin_password = <%=get_config('keystone-admin-password')%>
+admin_token = <%=get_config('keystone-admin-token')%>
+signing_dir = /var/lib/cinder
+
 <% node['bcpc']['ceph']['enabled_pools'].each do |type| -%>
 [<%= type.upcase %>]
 volume_driver=cinder.volume.drivers.rbd.RBDDriver

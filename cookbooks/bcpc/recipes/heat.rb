@@ -50,16 +50,6 @@ template "/etc/heat/heat.conf" do
     notifies :restart, "service[heat-engine]", :delayed
 end
 
-template "/etc/heat/api-paste.ini" do
-    source "heat.api-paste.ini.erb"
-    owner "heat"
-    group "heat"
-    mode 00600
-    notifies :restart, "service[heat-api]", :delayed
-    notifies :restart, "service[heat-api-cfn]", :delayed
-    notifies :restart, "service[heat-engine]", :delayed
-end
-
 directory "/etc/heat/environment.d" do
     user "heat"
     group "heat"
