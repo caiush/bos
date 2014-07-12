@@ -21,12 +21,12 @@ admin_token = <%=get_config('keystone-admin-token')%>
 # The IP Address of the network interface to for the public
 # service to listen on. (string value)
 # Deprecated group/name - [DEFAULT]/bind_host
-public_bind_host = 127.0.0.1
+public_bind_host = <%= (node['bcpc']['protocol']['keystone'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
 
 # The IP Address of the network interface to for the admin
 # service to listen on. (string value)
 # Deprecated group/name - [DEFAULT]/bind_host
-admin_bind_host = 127.0.0.1
+admin_bind_host = <%= (node['bcpc']['protocol']['keystone'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
 
 # The port which the OpenStack Compute service listens on.
 # (integer value)

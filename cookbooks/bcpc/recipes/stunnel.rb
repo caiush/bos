@@ -32,8 +32,8 @@ bash "enable-defaults-stunnel4" do
     not_if "grep -e '^ENABLED=1' /etc/default/stunnel4"
 end
 
-template "/etc/stunnel/keystone.conf" do
-    source "stunnel-keystone.conf.erb"
+template "/etc/stunnel/stunnel.conf" do
+    source "stunnel.conf.erb"
     mode 00644
     notifies :restart, "service[stunnel4]", :immediately
 end

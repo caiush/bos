@@ -38,6 +38,7 @@ options = CIPHER_SERVER_PREFERENCE
 
 ; Example SSL server mode services
 
+<% if node['bcpc']['protocol']['keystone'] == 'https' -%>
 [keystone]
 accept  = <%=node['bcpc']['management']['ip']%>:5000
 connect = 127.0.0.1:5000
@@ -45,3 +46,4 @@ connect = 127.0.0.1:5000
 [keystone-admin]
 accept  = <%=node['bcpc']['management']['ip']%>:35357
 connect = 127.0.0.1:35357
+<% end -%>
