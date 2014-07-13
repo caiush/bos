@@ -105,7 +105,7 @@ EOF
 }
 
 function install_cluster {
-  environment=${1-Test-Laptop}
+  environment=${1-Test-Laptop-VMware}
   ip=${2-10.0.100.3}
   pushd $P
   # N.B. As of Aug 2013, grub-pc gets confused and wants to prompt re: 3-way

@@ -5,7 +5,7 @@
 # Chef server.
 # See http://www.vagrantup.com/ for info on Vagrant.
 
-$local_environment = "Test-Laptop"
+$local_environment = "Test-Laptop-VMware"
 $local_mirror = nil
 #$local_mirror = "10.0.100.4"
 
