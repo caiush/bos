@@ -142,21 +142,21 @@ listen cinder-api <%=node['bcpc']['management']['vip']%>:8776
 <% end -%>
 
 listen nova-ec2 <%=node['bcpc']['management']['vip']%>:8773
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 404
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8773 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8773 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen nova-compute <%=node['bcpc']['management']['vip']%>:8774
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 200
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8774 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8774 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen heat-api <%=node['bcpc']['management']['vip']%>:8004

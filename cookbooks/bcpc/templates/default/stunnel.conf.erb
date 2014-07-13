@@ -47,3 +47,13 @@ connect = 127.0.0.1:5000
 accept  = <%=node['bcpc']['management']['ip']%>:35357
 connect = 127.0.0.1:35357
 <% end -%>
+
+<% if node['bcpc']['protocol']['nova'] == 'https' -%>
+[nova-api]
+accept  = <%=node['bcpc']['management']['ip']%>:8774
+connect = 127.0.0.1:8774
+
+[nova-ec2]
+accept  = <%=node['bcpc']['management']['ip']%>:8773
+connect = 127.0.0.1:8773
+<% end -%>
