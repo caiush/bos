@@ -18,7 +18,7 @@ state_path = /var/lib/cinder
 logdir=/var/log/cinder
 
 # Bind to mgt IP only
-osapi_volume_listen=<%=node['bcpc']['management']['ip']%>
+osapi_volume_listen=<%= (node['bcpc']['protocol']['cinder'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
 osapi_volume_workers=1
 
 # MySQL Connection
@@ -48,6 +48,9 @@ enabled_backends=<%= node['bcpc']['ceph']['enabled_pools'].map {|type| type.upca
 # Ceilometer metrics
 control_exchange = cinder
 notification_driver = cinder.openstack.common.notifier.rpc_notifier
+
+[ssl]
+ca_file = /etc/ssl/certs/ssl-bcpc.pem
 
 [keystone_authtoken]
 cafile = /etc/ssl/certs/ssl-bcpc.pem

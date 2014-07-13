@@ -12,7 +12,7 @@
 #debug = False
 
 # Address to bind the registry server
-bind_host = <%=node['bcpc']['management']['ip']%>
+bind_host = <%= (node['bcpc']['protocol']['glance'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
 
 # Port the bind the registry server to
 bind_port = 9191
@@ -77,7 +77,7 @@ admin_role = <%=node['bcpc']['admin_role']%>
 #key_file = /path/to/keyfile
 
 # CA certificate file to use to verify connecting clients
-#ca_file = /path/to/cafile
+ca_file = /etc/ssl/certs/ssl-bcpc.pem
 
 # ================= Database Options ==========================
 

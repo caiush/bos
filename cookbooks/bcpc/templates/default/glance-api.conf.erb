@@ -38,7 +38,7 @@ default_store = rbd
 #image_size_cap = 1099511627776
 
 # Address to bind the API server
-bind_host = <%=node['bcpc']['management']['ip']%>
+bind_host = <%= (node['bcpc']['protocol']['glance'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
 
 # Port the bind the API server to
 bind_port = 9292
@@ -154,7 +154,7 @@ show_image_direct_url = True
 #key_file = /path/to/keyfile
 
 # CA certificate file to use to verify connecting clients
-#ca_file = /path/to/cafile
+ca_file = /etc/ssl/certs/ssl-bcpc.pem
 
 # ================= Security Options ==========================
 
@@ -173,7 +173,7 @@ registry_port = 9191
 
 # What protocol to use when connecting to the registry server?
 # Set to https for secure HTTP communication
-registry_client_protocol = http
+registry_client_protocol = <%= node['bcpc']['protocol']['glance'] %>
 
 # The path to the key file to use in SSL connections to the
 # registry server, if any. Alternately, you may set the
@@ -188,7 +188,7 @@ registry_client_protocol = http
 # The path to the certifying authority cert file to use in SSL connections
 # to the registry server, if any. Alternately, you may set the
 # GLANCE_CLIENT_CA_FILE environ variable to a filepath of the CA cert file
-#registry_client_ca_file = /path/to/ca/file
+registry_client_ca_file = /etc/ssl/certs/ssl-bcpc.pem
 
 # When using SSL in connections to the registry server, do not require
 # validation via a certifying authority. This is the registry's equivalent of
@@ -462,7 +462,7 @@ sheepdog_store_chunk_size = 64
 
 # Location of ca certicates file to use for cinder client requests
 # (string value)
-#cinder_ca_certificates_file = <None>
+cinder_ca_certificates_file = /etc/ssl/certs/ssl-bcpc.pem
 
 # Number of cinderclient retries on failed http calls (integer value)
 #cinder_http_retries = 3

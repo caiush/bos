@@ -57,3 +57,19 @@ connect = 127.0.0.1:8774
 accept  = <%=node['bcpc']['management']['ip']%>:8773
 connect = 127.0.0.1:8773
 <% end -%>
+
+<% if node['bcpc']['protocol']['cinder'] == 'https' -%>
+[cinder-api]
+accept  = <%=node['bcpc']['management']['ip']%>:8776
+connect = 127.0.0.1:8776
+<% end -%>
+
+<% if node['bcpc']['protocol']['glance'] == 'https' -%>
+[glance-api]
+accept  = <%=node['bcpc']['management']['ip']%>:9292
+connect = 127.0.0.1:9292
+
+[glance-registry]
+accept  = <%=node['bcpc']['management']['ip']%>:9191
+connect = 127.0.0.1:9191
+<% end -%>
