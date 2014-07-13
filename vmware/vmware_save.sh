@@ -10,5 +10,6 @@ for i in `seq 1 3`; do
     echo "Unable to find VM $i - $VMX_PATH! Exiting."
     exit 1
   fi
+  echo "Saving bcpc-vm${i} to snapshot"
   "$VMRUN" snapshot $VMX_PATH initial-install
 done

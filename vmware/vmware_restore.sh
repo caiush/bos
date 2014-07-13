@@ -11,6 +11,7 @@ for i in `seq 1 3`; do
     exit 1
   fi
 
+  echo "Restoring bcpc-vm${i} from snapshot"
   "$VMRUN" stop $VMX_PATH
   "$VMRUN" revertToSnapshot $VMX_PATH initial-install
   vagrant ssh -c "cd chef-bcpc && knife client delete -y bcpc-vm$i.local.lan" || true
