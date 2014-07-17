@@ -153,6 +153,17 @@ template "/etc/network/interfaces.d/iface-#{node['bcpc']['floating']['interface'
     )
 end
 
+# This puts DNS/Search order changes into effect immediately, rather than at next boot. 
+# Restarting the 'networking' service does not do this. An ifdown/ifup is more simple,
+# but would drop connections. This should be non-disruptive. 
+bash "update-host-etc-resolvconf" do
+    user "root"
+    code <<-EOH
+        egrep "search|nameservers" "/etc/network/interfaces.d/iface-#{node['bcpc']['floating']['interface']}"  \
+            | resolvconf -a "#{node['bcpc']['floating']['interface']}.inet"
+    EOH
+end
+
 bash "interface-mgmt-make-static-if-dhcp" do
     user "root"
     code <<-EOH
