@@ -162,7 +162,7 @@ default['bcpc']['ports']['haproxy']['radosgw_https'] = 443
 
 # Can be set to 'http' or 'https'
 default['bcpc']['protocol']['keystone'] = "https"
-default['bcpc']['protocol']['glance'] = "http"
+default['bcpc']['protocol']['glance'] = "https"
 default['bcpc']['protocol']['nova'] = "https"
 default['bcpc']['protocol']['cinder'] = "https"
 default['bcpc']['protocol']['heat'] = "https"

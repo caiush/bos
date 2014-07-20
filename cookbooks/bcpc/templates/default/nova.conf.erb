@@ -100,7 +100,8 @@ memcached_servers=<%=node['bcpc']['management']['vip']%>:11211
 
 # Glance settings
 image_service=nova.image.glance.GlanceImageService
-glance_api_servers=<%=node['bcpc']['management']['vip']%>:9292
+glance_api_servers=<%=node['bcpc']['protocol']['glance']%>://<%=node['bcpc']['management']['vip']%>:9292
+glance_api_insecure=True
 
 # Cloudpipe
 vpn_image_id=<%=get_config('glance-cloudpipe-uuid')%>

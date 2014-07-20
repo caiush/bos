@@ -38,8 +38,8 @@ rabbit_durable_queues=True
 #qpid_password=<%=get_config('rabbitmq-password')%>
 
 # Other service endpoints
-glance_host=<%=node['bcpc']['management']['vip']%>
-glance_api_servers=<%=node['bcpc']['management']['vip']%>:9292
+glance_api_servers=<%=node['bcpc']['protocol']['glance']%>://<%=node['bcpc']['management']['vip']%>:9292
+glance_api_insecure=True
 glance_api_version=2
 
 # Volume driver settings for RBD
