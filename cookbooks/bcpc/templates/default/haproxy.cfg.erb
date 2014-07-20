@@ -160,21 +160,21 @@ listen nova-compute <%=node['bcpc']['management']['vip']%>:8774
 <% end -%>
 
 listen heat-api <%=node['bcpc']['management']['vip']%>:8004
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 300
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8004 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8004 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen heat-api-cfn <%=node['bcpc']['management']['vip']%>:8000
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 300
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8000 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8000 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen ceilometer-api <%=node['bcpc']['management']['vip']%>:8777

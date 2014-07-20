@@ -73,3 +73,13 @@ connect = 127.0.0.1:9292
 accept  = <%=node['bcpc']['management']['ip']%>:9191
 connect = 127.0.0.1:9191
 <% end -%>
+
+<% if node['bcpc']['protocol']['heat'] == 'https' -%>
+[heat-api]
+accept  = <%=node['bcpc']['management']['ip']%>:8004
+connect = 127.0.0.1:8004
+
+[heat-api-cfn]
+accept  = <%=node['bcpc']['management']['ip']%>:8000
+connect = 127.0.0.1:8000
+<% end -%>
