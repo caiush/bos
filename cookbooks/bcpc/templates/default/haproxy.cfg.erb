@@ -115,66 +115,66 @@ listen keystone-admin-ssl <%=node['bcpc']['management']['vip']%>:35357
 <% end -%>
 
 listen glance-api <%=node['bcpc']['management']['vip']%>:9292
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 300
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9292 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9292 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen glance-registry <%=node['bcpc']['management']['vip']%>:9191
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 401
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9191 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9191 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen cinder-api <%=node['bcpc']['management']['vip']%>:8776
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 200
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8776 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8776 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen nova-ec2 <%=node['bcpc']['management']['vip']%>:8773
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 404
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8773 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8773 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen nova-compute <%=node['bcpc']['management']['vip']%>:8774
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 200
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8774 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8774 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen heat-api <%=node['bcpc']['management']['vip']%>:8004
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 300
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8004 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8004 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen heat-api-cfn <%=node['bcpc']['management']['vip']%>:8000
-  balance  source
+  mode tcp
+  balance source
   option  tcplog
-  option httpchk GET /
-  http-check expect status 300
+  option tcpka
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8000 check inter 1s rise 1 fall 1" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8000 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
 listen ceilometer-api <%=node['bcpc']['management']['vip']%>:8777

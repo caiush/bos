@@ -20,6 +20,10 @@
 include_recipe "bcpc::mysql"
 include_recipe "bcpc::openstack"
 
+if node['bcpc']['protocol']['heat'] == 'https' then
+    include_recipe "bcpc::stunnel"
+end
+
 ruby_block "initialize-heat-config" do
     block do
         make_config('mysql-heat-user', "heat")
@@ -42,16 +46,6 @@ end
 
 template "/etc/heat/heat.conf" do
     source "heat.conf.erb"
-    owner "heat"
-    group "heat"
-    mode 00600
-    notifies :restart, "service[heat-api]", :delayed
-    notifies :restart, "service[heat-api-cfn]", :delayed
-    notifies :restart, "service[heat-engine]", :delayed
-end
-
-template "/etc/heat/api-paste.ini" do
-    source "heat.api-paste.ini.erb"
     owner "heat"
     group "heat"
     mode 00600

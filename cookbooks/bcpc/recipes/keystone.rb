@@ -19,7 +19,10 @@
 
 include_recipe "bcpc::mysql"
 include_recipe "bcpc::openstack"
-include_recipe "bcpc::apache2"
+
+if node['bcpc']['protocol']['keystone'] == 'https' then
+    include_recipe "bcpc::stunnel"
+end
 
 ruby_block "initialize-keystone-config" do
     block do
@@ -46,7 +49,7 @@ template "/etc/keystone/keystone.conf" do
     owner "keystone"
     group "keystone"
     mode 00600
-    notifies :restart, "service[apache2]", :delayed
+    notifies :restart, "service[keystone]", :delayed
 end
 
 template "/etc/keystone/cert.pem" do
@@ -54,7 +57,7 @@ template "/etc/keystone/cert.pem" do
     owner "keystone"
     group "keystone"
     mode 00644
-    notifies :restart, "service[apache2]", :delayed
+    notifies :restart, "service[keystone]", :delayed
 end
 
 template "/etc/keystone/key.pem" do
@@ -62,7 +65,7 @@ template "/etc/keystone/key.pem" do
     owner "keystone"
     group "keystone"
     mode 00600
-    notifies :restart, "service[apache2]", :delayed
+    notifies :restart, "service[keystone]", :delayed
 end
 
 template "/root/adminrc" do
@@ -79,38 +82,9 @@ template "/root/keystonerc" do
     mode 00600
 end
 
-%w{main admin}.each do |api|
-    template "/opt/openstack/keystone-#{api}.cgi" do
-        source "wsgi-keystone.erb"
-        owner "root"
-        group "root"
-        mode 00755
-        variables(:name => api)
-    end
-end
-
-template "/etc/apache2/sites-available/keystone" do
-    source "apache-keystone.conf.erb"
-    owner "root"
-    group "root"
-    mode 00644
-    notifies :restart, "service[apache2]", :delayed
-end
-
-bash "apache-enable-keystone" do
-    user "root"
-    code "a2ensite keystone"
-    not_if "test -r /etc/apache2/sites-enabled/keystone"
-    notifies :restart, "service[apache2]", :immediately
-end
-
 service "keystone" do
-    action [:disable, :stop]
+    action [:enable, :start]
     restart_command "service keystone restart; sleep 5"
-end
-
-service "apache2" do
-    restart_command "service apache2 restart; sleep 5"
 end
 
 ruby_block "keystone-database-creation" do
@@ -131,7 +105,7 @@ bash "keystone-database-sync" do
     action :nothing
     user "root"
     code "keystone-manage db_sync"
-    notifies :restart, "service[apache2]", :immediately
+    notifies :restart, "service[keystone]", :immediately
 end
 
 bash "keystone-service-catalog-keystone" do
@@ -140,9 +114,9 @@ bash "keystone-service-catalog-keystone" do
         . /root/keystonerc
         export KEYSTONE_ID=`keystone service-create --name=keystone --type=identity --description="Identity Service" | grep " id " | awk '{print $4}'`
         keystone endpoint-create --region #{node['bcpc']['region_name']} --service_id $KEYSTONE_ID \
-            --publicurl   "https://#{node['bcpc']['management']['vip']}:5000/v2.0" \
-            --adminurl    "https://#{node['bcpc']['management']['vip']}:35357/v2.0" \
-            --internalurl "https://#{node['bcpc']['management']['vip']}:5000/v2.0"
+            --publicurl   "#{node['bcpc']['protocol']['keystone']}://#{node['bcpc']['management']['vip']}:5000/v2.0" \
+            --adminurl    "#{node['bcpc']['protocol']['keystone']}://#{node['bcpc']['management']['vip']}:35357/v2.0" \
+            --internalurl "#{node['bcpc']['protocol']['keystone']}://#{node['bcpc']['management']['vip']}:5000/v2.0"
     EOH
     only_if ". /root/keystonerc; keystone service-get keystone 2>&1 | grep -e '^No service'"
 end
@@ -153,9 +127,9 @@ bash "keystone-service-catalog-glance" do
         . /root/keystonerc
         export GLANCE_ID=`keystone service-create --name=glance --type=image --description="Image Service" | grep " id " | awk '{print $4}'`
         keystone endpoint-create --region #{node['bcpc']['region_name']} --service_id $GLANCE_ID \
-            --publicurl   "http://#{node['bcpc']['management']['vip']}:9292/v1" \
-            --adminurl    "http://#{node['bcpc']['management']['vip']}:9292/v1" \
-            --internalurl "http://#{node['bcpc']['management']['vip']}:9292/v1"
+            --publicurl   "#{node['bcpc']['protocol']['glance']}://#{node['bcpc']['management']['vip']}:9292/v1" \
+            --adminurl    "#{node['bcpc']['protocol']['glance']}://#{node['bcpc']['management']['vip']}:9292/v1" \
+            --internalurl "#{node['bcpc']['protocol']['glance']}://#{node['bcpc']['management']['vip']}:9292/v1"
     EOH
     only_if ". /root/keystonerc; keystone service-get glance 2>&1 | grep -e '^No service'"
 end
@@ -166,9 +140,9 @@ bash "keystone-service-catalog-nova" do
         . /root/keystonerc
         export NOVA_ID=`keystone service-create --name=nova --type=compute --description="Compute Service" | grep " id " | awk '{print $4}'`
         keystone endpoint-create --region #{node['bcpc']['region_name']} --service_id $NOVA_ID \
-            --publicurl   "http://#{node['bcpc']['management']['vip']}:8774/v1.1/\\\$(tenant_id)s" \
-            --adminurl    "http://#{node['bcpc']['management']['vip']}:8774/v1.1/\\\$(tenant_id)s" \
-            --internalurl "http://#{node['bcpc']['management']['vip']}:8774/v1.1/\\\$(tenant_id)s"
+            --publicurl   "#{node['bcpc']['protocol']['nova']}://#{node['bcpc']['management']['vip']}:8774/v1.1/\\\$(tenant_id)s" \
+            --adminurl    "#{node['bcpc']['protocol']['nova']}://#{node['bcpc']['management']['vip']}:8774/v1.1/\\\$(tenant_id)s" \
+            --internalurl "#{node['bcpc']['protocol']['nova']}://#{node['bcpc']['management']['vip']}:8774/v1.1/\\\$(tenant_id)s"
     EOH
     only_if ". /root/keystonerc; keystone service-get nova 2>&1 | grep -e '^No service'"
 end
@@ -179,9 +153,9 @@ bash "keystone-service-catalog-cinder" do
         . /root/keystonerc
         export CINDER_ID=`keystone service-create --name=cinder --type=volume --description="Volume Service" | grep " id " | awk '{print $4}'`
         keystone endpoint-create --region #{node['bcpc']['region_name']} --service_id $CINDER_ID \
-            --publicurl   "http://#{node['bcpc']['management']['vip']}:8776/v1/\\\$(tenant_id)s" \
-            --adminurl    "http://#{node['bcpc']['management']['vip']}:8776/v1/\\\$(tenant_id)s" \
-            --internalurl "http://#{node['bcpc']['management']['vip']}:8776/v1/\\\$(tenant_id)s"
+            --publicurl   "#{node['bcpc']['protocol']['cinder']}://#{node['bcpc']['management']['vip']}:8776/v1/\\\$(tenant_id)s" \
+            --adminurl    "#{node['bcpc']['protocol']['cinder']}://#{node['bcpc']['management']['vip']}:8776/v1/\\\$(tenant_id)s" \
+            --internalurl "#{node['bcpc']['protocol']['cinder']}://#{node['bcpc']['management']['vip']}:8776/v1/\\\$(tenant_id)s"
     EOH
     only_if ". /root/keystonerc; keystone service-get cinder 2>&1 | grep -e '^No service'"
 end
@@ -192,9 +166,9 @@ bash "keystone-service-catalog-ec2" do
         . /root/keystonerc
         export EC2_ID=`keystone service-create --name=ec2 --type=ec2 --description="EC2 Service" | grep " id " | awk '{print $4}'`
         keystone endpoint-create --region #{node['bcpc']['region_name']} --service_id $EC2_ID \
-            --publicurl   "http://#{node['bcpc']['management']['vip']}:8773/services/Cloud" \
-            --adminurl    "http://#{node['bcpc']['management']['vip']}:8773/services/Admin" \
-            --internalurl "http://#{node['bcpc']['management']['vip']}:8773/services/Cloud"
+            --publicurl   "#{node['bcpc']['protocol']['nova']}://#{node['bcpc']['management']['vip']}:8773/services/Cloud" \
+            --adminurl    "#{node['bcpc']['protocol']['nova']}://#{node['bcpc']['management']['vip']}:8773/services/Admin" \
+            --internalurl "#{node['bcpc']['protocol']['nova']}://#{node['bcpc']['management']['vip']}:8773/services/Cloud"
     EOH
     only_if ". /root/keystonerc; keystone service-get ec2 2>&1 | grep -e '^No service'"
 end
@@ -205,9 +179,9 @@ bash "keystone-service-catalog-heat" do
         . /root/keystonerc
         export HEAT_ID=`keystone service-create --name=heat --type=orchestration --description="Heat Orchestration API" | grep " id " | awk '{print $4}'`
         keystone endpoint-create --region #{node['bcpc']['region_name']} --service_id $HEAT_ID \
-            --publicurl   "http://#{node['bcpc']['management']['vip']}:8004/v1/\\\$(tenant_id)s" \
-            --adminurl    "http://#{node['bcpc']['management']['vip']}:8004/v1/\\\$(tenant_id)s" \
-            --internalurl "http://#{node['bcpc']['management']['vip']}:8004/v1/\\\$(tenant_id)s"
+            --publicurl   "#{node['bcpc']['protocol']['heat']}://#{node['bcpc']['management']['vip']}:8004/v1/\\\$(tenant_id)s" \
+            --adminurl    "#{node['bcpc']['protocol']['heat']}://#{node['bcpc']['management']['vip']}:8004/v1/\\\$(tenant_id)s" \
+            --internalurl "#{node['bcpc']['protocol']['heat']}://#{node['bcpc']['management']['vip']}:8004/v1/\\\$(tenant_id)s"
     EOH
     only_if ". /root/keystonerc; keystone service-get heat 2>&1 | grep -e '^No service'"
 end
@@ -218,9 +192,9 @@ bash "keystone-service-catalog-heat-cfn" do
         . /root/keystonerc
         export HEAT_CFN_ID=`keystone service-create --name=heat-cfn --type=cloudformation --description="Heat CloudFormation API" | grep " id " | awk '{print $4}'`
         keystone endpoint-create --region #{node['bcpc']['region_name']} --service_id $HEAT_CFN_ID \
-            --publicurl   "http://#{node['bcpc']['management']['vip']}:8000/v1" \
-            --adminurl    "http://#{node['bcpc']['management']['vip']}:8000/v1" \
-            --internalurl "http://#{node['bcpc']['management']['vip']}:8000/v1"
+            --publicurl   "#{node['bcpc']['protocol']['heat']}://#{node['bcpc']['management']['vip']}:8000/v1" \
+            --adminurl    "#{node['bcpc']['protocol']['heat']}://#{node['bcpc']['management']['vip']}:8000/v1" \
+            --internalurl "#{node['bcpc']['protocol']['heat']}://#{node['bcpc']['management']['vip']}:8000/v1"
     EOH
     only_if ". /root/keystonerc; keystone service-get heat-cfn 2>&1 | grep -e '^No service'"
 end

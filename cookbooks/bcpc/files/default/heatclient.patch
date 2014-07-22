@@ -1,30 +1,26 @@
---- shell.py.orig       2013-11-28 09:21:18.549667830 -0500
-+++ shell.py    2013-11-28 09:31:03.286806741 -0500
-@@ -166,6 +166,12 @@
-         parser.add_argument('--os_endpoint_type',
-                             help=argparse.SUPPRESS)
+--- shell.py    2014-03-02 17:38:31.000000000 -0500
++++ shell-new.py        2014-07-12 14:34:55.473819753 -0400
+@@ -83,6 +83,7 @@
+                             ' prepended to your cert file.')
 
-+        parser.add_argument('--os-cacert',
+         parser.add_argument('--ca-file',
 +                            default=utils.env('OS_CACERT'),
-+                            help="Specify a CA bundle file to use in "
-+                            "verifying a TLS (https) server certificate. "
-+                            "Defaults to env[OS_CACERT]")
-+
-         parser.add_argument('-t', '--token-only',
-                             default=bool(False),
-                             action='store_true',
-@@ -220,6 +226,7 @@
-                                tenant_id=kwargs.get('tenant_id'),
-                                tenant_name=kwargs.get('tenant_name'),
-                                auth_url=kwargs.get('auth_url'),
-+                               cacert=kwargs.get('cacert'),
-                                insecure=kwargs.get('insecure'))
+                             help='Path of CA SSL certificate(s) used to verify'
+                             ' the remote server\'s certificate. Without this'
+                             ' option the client looks'
+@@ -244,6 +245,7 @@
+         :param token: token to use instead of username/password
+         """
+         kc_args = {'auth_url': kwargs.get('auth_url'),
++                   'cacert': kwargs.get('cacert'),
+                    'insecure': kwargs.get('insecure')}
 
-     def _get_endpoint(self, client, **kwargs):
-@@ -296,6 +303,7 @@
-             'auth_url': args.os_auth_url,
-             'service_type': args.os_service_type,
-             'endpoint_type': args.os_endpoint_type,
-+            'cacert': args.os_cacert,
-             'insecure': args.insecure
-         }
+         if kwargs.get('tenant_id'):
+@@ -343,6 +345,7 @@
+                                        " env[OS_AUTH_URL]")
+
+         kwargs = {
++            'cacert': args.ca_file,
+             'username': args.os_username,
+             'password': args.os_password,
+             'token': args.os_auth_token,

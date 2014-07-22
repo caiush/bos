@@ -18,7 +18,8 @@ state_path = /var/lib/cinder
 logdir=/var/log/cinder
 
 # Bind to mgt IP only
-osapi_volume_listen=<%=node['bcpc']['management']['ip']%>
+osapi_volume_listen=<%= (node['bcpc']['protocol']['cinder'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
+osapi_volume_workers=1
 
 # MySQL Connection
 sql_connection=mysql://<%=get_config('mysql-cinder-user')%>:<%=get_config('mysql-cinder-password')%>@<%=node['bcpc']['management']['vip']%>/<%=node['bcpc']['cinder_dbname']%>
@@ -37,8 +38,8 @@ rabbit_durable_queues=True
 #qpid_password=<%=get_config('rabbitmq-password')%>
 
 # Other service endpoints
-glance_host=<%=node['bcpc']['management']['vip']%>
-glance_api_servers=<%=node['bcpc']['management']['vip']%>:9292
+glance_api_servers=<%=node['bcpc']['protocol']['glance']%>://<%=node['bcpc']['management']['vip']%>:9292
+glance_api_insecure=True
 glance_api_version=2
 
 # Volume driver settings for RBD
@@ -47,6 +48,22 @@ enabled_backends=<%= node['bcpc']['ceph']['enabled_pools'].map {|type| type.upca
 # Ceilometer metrics
 control_exchange = cinder
 notification_driver = cinder.openstack.common.notifier.rpc_notifier
+
+[ssl]
+ca_file = /etc/ssl/certs/ssl-bcpc.pem
+
+[keystone_authtoken]
+cafile = /etc/ssl/certs/ssl-bcpc.pem
+auth_uri = <%=node['bcpc']['protocol']['keystone']%>://<%=node['bcpc']['management']['vip']%>:5000/v2.0/
+auth_host = <%=node['bcpc']['management']['vip']%>
+auth_port = 35357
+auth_protocol = <%=node['bcpc']['protocol']['keystone']%>
+auth_version = v2.0
+admin_tenant_name = <%=node['bcpc']['admin_tenant']%>
+admin_user = <%=get_config('keystone-admin-user')%>
+admin_password = <%=get_config('keystone-admin-password')%>
+admin_token = <%=get_config('keystone-admin-token')%>
+signing_dir = /var/lib/cinder
 
 <% node['bcpc']['ceph']['enabled_pools'].each do |type| -%>
 [<%= type.upcase %>]

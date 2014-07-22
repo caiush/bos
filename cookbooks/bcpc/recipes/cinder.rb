@@ -21,6 +21,10 @@ include_recipe "bcpc::mysql"
 include_recipe "bcpc::ceph-head"
 include_recipe "bcpc::openstack"
 
+if node['bcpc']['protocol']['cinder'] == 'https' then
+    include_recipe "bcpc::stunnel"
+end
+
 ruby_block "initialize-cinder-config" do
     block do
         make_config('mysql-cinder-user', "cinder")
@@ -44,16 +48,6 @@ end
 
 template "/etc/cinder/cinder.conf" do
     source "cinder.conf.erb"
-    owner "cinder"
-    group "cinder"
-    mode 00600
-    notifies :restart, "service[cinder-api]", :delayed
-    notifies :restart, "service[cinder-volume]", :delayed
-    notifies :restart, "service[cinder-scheduler]", :delayed
-end
-
-template "/etc/cinder/api-paste.ini" do
-    source "cinder.api-paste.ini.erb"
     owner "cinder"
     group "cinder"
     mode 00600
