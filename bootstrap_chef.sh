@@ -6,6 +6,7 @@
 # $3 is the optional knife recipe name, default "Test-Laptop"
 
 source ./virtualbox_env.sh
+source ./vmware/vmware_env.sh
 
 if [[ $OSTYPE == msys || $OSTYPE == cygwin ]]; then
   # try to fix permission mismatch between windows and real unix
@@ -14,24 +15,38 @@ fi
 
 set -e
 
+DIR=`dirname $0`
+
 if [[ $# -gt 1 ]]; then
   KEYFILE="bootstrap_chef.id_rsa"
   IP="$2"
   BCPC_DIR="chef-bcpc"
   VAGRANT=""
+  VMWARE=""
+  VBOX=""
   # override the ssh-user and keyfile if using Vagrant
   if [[ $1 == "--vagrant-local" ]]; then
     echo "Running on the local Vagrant VM"
     VAGRANT="true"
+    VBOX="true"
     BCPC_DIR="~vagrant/chef-bcpc"
     SSH_USER="$USER"
     SSH_CMD="bash -c"
   elif [[ $1 == "--vagrant-remote" ]]; then
     echo "SSHing to the Vagrant VM"
     VAGRANT="true"
+    VBOX="true"
     BCPC_DIR="~vagrant/chef-bcpc"
     SSH_USER="vagrant"
     SSH_CMD="vagrant ssh -c"
+  elif [[ $1 == "--vagrant-vmware" ]]; then
+    echo "SSHing to the Vagrant VM (on VMware)"
+    VAGRANT="true"
+    VMWARE="true"
+    BCPC_DIR="~vagrant/chef-bcpc"
+    SSH_USER="vagrant"
+    SSH_CMD="vagrant ssh -c"
+    DIR=$DIR/vmware
   else
     SSH_USER="$1"
     SSH_CMD="ssh -t -i $KEYFILE ${SSH_USER}@${IP}" 
@@ -44,12 +59,9 @@ if [[ $# -gt 1 ]]; then
   fi
   echo "Chef environment: ${CHEF_ENVIRONMENT}"
 else
-  echo "Usage: `basename $0` --vagrant-local|--vagrant-remote|<user name> IP-Address [chef environment]" >> /dev/stderr
+  echo "Usage: `basename $0` --vagrant-local|--vagrant-remote|--vagrant-vmware|<user name> IP-Address [chef environment]" >> /dev/stderr
   exit
 fi
-
-DIR=`dirname $0`
-pushd $DIR
 
 # protect against rsyncing to the wrong bootstrap node
 if [[ ! -f "environments/${CHEF_ENVIRONMENT}.json" ]]; then
@@ -57,27 +69,36 @@ if [[ ! -f "environments/${CHEF_ENVIRONMENT}.json" ]]; then
     exit
 fi
 
+pushd $DIR
 
 if [[ -z $VAGRANT ]]; then
   if [[ ! -f $KEYFILE ]]; then
     ssh-keygen -N "" -f $KEYFILE
   fi
   echo "Running rsync of non-Vagrant install"
-  rsync  $RSYNCEXTRA -avP -e "ssh -i $KEYFILE" --exclude vbox --exclude $KEYFILE --exclude .chef . ${SSH_USER}@$IP:chef-bcpc 
+  rsync  $RSYNCEXTRA -avP -e "ssh -i $KEYFILE" --exclude vbox --exclude vmware --exclude $KEYFILE --exclude .chef . ${SSH_USER}@$IP:chef-bcpc 
   rsync  $RSYNCEXTRA -avP -e "ssh -i $KEYFILE" vbox/ubuntu-12.04-mini.iso ${SSH_USER}@$IP:chef-bcpc/cookbooks/bcpc/files/default/bins
   $SSH_CMD "cd $BCPC_DIR && ./setup_ssh_keys.sh ${KEYFILE}.pub"
 else
   echo "Running rsync of Vagrant install"
-  $SSH_CMD "rsync $RSYNCEXTRA -avP --exclude vbox --exclude .chef /chef-bcpc-host/ /home/vagrant/chef-bcpc/"
+  $SSH_CMD "rsync $RSYNCEXTRA -avP --exclude vbox --exclude vmware --exclude .chef /chef-bcpc-host/ /home/vagrant/chef-bcpc/"
   echo "Rsync over the hypervisor mini ISO to avoid redownloading"
   $SSH_CMD "rsync $RSYNCEXTRA -avP /chef-bcpc-host/vbox/ubuntu-12.04-mini.iso  /home/vagrant/chef-bcpc/cookbooks/bcpc/files/default/bins"
 fi
 
 echo "Updating server"
 $SSH_CMD "cd $BCPC_DIR && sudo apt-get -y update && sudo apt-get -y dist-upgrade"
-if [[ -z `$VBM snapshot bcpc-bootstrap list | grep dist-upgrade` ]]; then
-  echo "Taking snapshot"
+if [[ -n "$VBOX" && -z `$VBM snapshot bcpc-bootstrap list | grep dist-upgrade` ]]; then
+  echo "Taking snapshot (VirtualBox)"
   $VBM snapshot bcpc-bootstrap take dist-upgrade-complete
+fi
+if [ -n "$VMWARE" ]; then
+  VM_PATH=`ls -d .vagrant/machines/bootstrap/vmware_fusion/*/`
+  VMX_FILE=$VM_PATH/precise64.vmx
+  if [[ -z `"$VMRUN" listSnapshots $VMX_FILE | grep dist-upgrade` ]]; then
+    echo "Taking snapshot (VMware)"
+    "$VMRUN" snapshot $VMX_FILE dist-upgrade-complete
+  fi
 fi
 echo "Building binaries"
 $SSH_CMD "cd $BCPC_DIR && sudo ./cookbooks/bcpc/files/default/build_bins.sh"
