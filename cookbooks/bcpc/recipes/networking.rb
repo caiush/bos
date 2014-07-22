@@ -184,15 +184,17 @@ bash "routing-storage" do
     not_if "grep -e '^2 storage' /etc/iproute2/rt_tables"
 end
 
-template "/etc/network/if-up.d/bcpc-routing" do
-    mode 00775
-    source "bcpc-routing.erb"
-    notifies :run, "execute[run-routing-script-once]", :immediately
-end
+%w{ routing firewall }.each do |function|
+    template "/etc/network/if-up.d/bcpc-#{function}" do
+        mode 00775
+        source "bcpc-#{function}.erb"
+        notifies :run, "execute[run-#{function}-script-once]", :immediately
+    end
 
-execute "run-routing-script-once" do
-    action :nothing
-    command "/etc/network/if-up.d/bcpc-routing"
+    execute "run-#{function}-script-once" do
+        action :nothing
+        command "/etc/network/if-up.d/bcpc-#{function}"
+    end
 end
 
 bash "disable-noninteractive-pam-logging" do
