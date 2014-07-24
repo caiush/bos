@@ -26,6 +26,13 @@ ruby_block "initialize-haproxy-config" do
     end
 end
 
+apt_repository "haproxy" do
+    uri node['bcpc']['repos']['haproxy']
+    distribution node['lsb']['codename']
+    components ["main"]
+    key "haproxy.key"
+end
+
 package "haproxy" do
     action :upgrade
 end

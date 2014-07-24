@@ -110,6 +110,7 @@ default['bcpc']['repos']['ceph-el6-x86_64'] = "http://ceph.com/rpm-dumpling/el6/
 default['bcpc']['repos']['ceph-el6-noarch'] = "http://ceph.com/rpm-dumpling/el6/noarch"
 default['bcpc']['repos']['rabbitmq'] = "http://www.rabbitmq.com/debian"
 default['bcpc']['repos']['mysql'] = "http://repo.percona.com/apt"
+default['bcpc']['repos']['haproxy'] = "http://ppa.launchpad.net/vbernat/haproxy-1.5/ubuntu"
 default['bcpc']['repos']['openstack'] = "http://ubuntu-cloud.archive.canonical.com/ubuntu"
 default['bcpc']['repos']['hwraid'] = "http://hwraid.le-vert.net/ubuntu"
 default['bcpc']['repos']['fluentd'] = "http://packages.treasure-data.com/precise"
