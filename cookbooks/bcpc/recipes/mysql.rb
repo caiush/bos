@@ -44,7 +44,8 @@ end
 ruby_block "initial-mysql-config" do
     block do
         if not system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT user from mysql.user where User=\"haproxy\"'" then
-            %x[ mysql -u root -e "UPDATE mysql.user SET password=PASSWORD('#{get_config('mysql-root-password')}') WHERE user='root'; FLUSH PRIVILEGES;"
+            %x[ mysql -u root -e "DELETE FROM mysql.user WHERE user='';"
+                mysql -u root -e "UPDATE mysql.user SET password=PASSWORD('#{get_config('mysql-root-password')}') WHERE user='root'; FLUSH PRIVILEGES;"
                 mysql -u root -p#{get_config('mysql-root-password')} -e "UPDATE mysql.user SET host='%' WHERE user='root' and host='localhost'; FLUSH PRIVILEGES;"
                 mysql -u root -p#{get_config('mysql-root-password')} -e "GRANT USAGE ON *.* to #{get_config('mysql-galera-user')}@'%' IDENTIFIED BY '#{get_config('mysql-galera-password')}';"
                 mysql -u root -p#{get_config('mysql-root-password')} -e "GRANT ALL PRIVILEGES on *.* TO #{get_config('mysql-galera-user')}@'%' IDENTIFIED BY '#{get_config('mysql-galera-password')}';"
