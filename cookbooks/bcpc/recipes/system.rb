@@ -28,3 +28,15 @@ bash "set-swappiness-to-zero" do
     EOH
     not_if "grep -e '^vm.swappiness=0' /etc/sysctl.conf"
 end
+
+bash "set-deadline-io-scheduler" do
+    user "root"
+    code <<-EOH
+        for i in /sys/block/sd?; do
+            echo deadline > $i/queue/scheduler
+        done
+        echo GRUB_CMDLINE_LINUX_DEFAULT=\\\"\\$GRUB_CMDLINE_LINUX_DEFAULT elevator=deadline\\\" >> /etc/default/grub
+        update-grub
+    EOH
+    not_if "grep 'elevator=deadline' /etc/default/grub"
+end
