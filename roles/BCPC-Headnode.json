@@ -7,6 +7,7 @@
       "role[Basic]",
       "recipe[bcpc]",
       "recipe[bcpc::check_cluster]",
+      "recipe[bcpc::system]",
       "recipe[bcpc::networking]",
       "recipe[bcpc::networking-link-test]",
       "recipe[bcpc::networking-gw-test]",
