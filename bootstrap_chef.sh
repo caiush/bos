@@ -47,6 +47,11 @@ if [[ $# -gt 1 ]]; then
     SSH_USER="vagrant"
     SSH_CMD="vagrant ssh -c"
     DIR=$DIR/vmware
+    if [[ -z "$VMRUN ]]; then
+      echo "vmrun not found!" >&2
+      echo "  Please ensure VMWare is installed and vmrun is accessible." >&2
+      exit 1
+    fi
   else
     SSH_USER="$1"
     SSH_CMD="ssh -t -i $KEYFILE ${SSH_USER}@${IP}" 

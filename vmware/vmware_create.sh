@@ -3,8 +3,20 @@
 # bash imports
 source ./vmware_env.sh
 
-if [[ -f ./proxy_setup.sh ]]; then
-  . ./proxy_setup.sh
+if [[ -z "$VMRUN" ]]; then
+  echo "vmrun not found!" >&2
+  echo "  Please ensure VMWare is installed and vmrun is accessible." >&2
+  exit 1
+fi
+
+if [[ -z "$VMDISK" ]]; then
+  echo "vmware-vdiskmanager not found!" >&2
+  echo "  Please ensure VMWare is installed and vmware-vdiskmanager is accessible." >&2
+  exit 1
+fi
+
+if [[ -f ../proxy_setup.sh ]]; then
+  . ../proxy_setup.sh
 fi
 if [[ -z "$CURL" ]]; then
   echo "CURL is not defined"

@@ -16,11 +16,6 @@ if [[ -z "$VMRUN" ]]; then
     done
   fi
 
-  if [[ -z "$VMRUN" ]]; then
-    echo "vmrun not found!" >&2
-    echo "  Please ensure VMWare is installed and vmrun is accessible." >&2
-    exit 1
-  fi
 fi
 
 if [[ -z "$VMDISK" ]]; then
@@ -35,9 +30,4 @@ if [[ -z "$VMDISK" ]]; then
     done
   fi
 
-  if [[ -z "$VMDISK" ]]; then
-    echo "vmware-vdiskmanager not found!" >&2
-    echo "  Please ensure VMWare is installed and vmware-vdiskmanager is accessible." >&2
-    exit 1
-  fi
 fi

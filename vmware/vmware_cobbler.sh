@@ -2,9 +2,6 @@
 
 set -e
 
-# bash imports
-source ./vmware_env.sh
-
 DIR=`dirname $0`
 
 pushd $DIR
