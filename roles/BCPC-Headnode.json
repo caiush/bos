@@ -11,6 +11,7 @@
       "recipe[bcpc::networking]",
       "recipe[bcpc::networking-link-test]",
       "recipe[bcpc::networking-gw-test]",
+      "recipe[bcpc::networking-route-test]",
       "recipe[bcpc::ceph-head]",
       "recipe[bcpc::mysql]",
       "recipe[bcpc::rabbitmq]",
