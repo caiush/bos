@@ -153,6 +153,17 @@ template "/etc/network/interfaces.d/iface-#{node['bcpc']['floating']['interface'
     )
 end
 
+dhcp_resolvconf_hook="/etc/dhcp/dhclient-enter-hooks.d/resolvconf"
+bash "disable-dhclient-resolvconf-enter-hook" do
+    user "root"
+    code <<-EOH
+        gzip #{dhcp_resolvconf_hook}
+        resolvconf --enable-updates
+        resolvconf -d #{node['bcpc']['management']['interface']}.dhclient
+    EOH
+    only_if { ::File.exists?(dhcp_resolvconf_hook) }
+end
+
 bash "interface-mgmt-make-static-if-dhcp" do
     user "root"
     code <<-EOH
