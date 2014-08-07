@@ -26,9 +26,9 @@ rabbit_durable_queues=True
 auth_strategy=keystone
 api_paste_config=/etc/nova/api-paste.ini
 s3_host=<%=node['bcpc']['management']['vip']%>
-ec2_listen=<%= (node['bcpc']['protocol']['nova'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
+ec2_listen=<%= node['bcpc']['management']['ip'] %>
 ec2_host=<%=node['bcpc']['management']['vip']%>
-osapi_compute_listen=<%= (node['bcpc']['protocol']['nova'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
+osapi_compute_listen=<%= node['bcpc']['management']['ip'] %>
 metadata_listen=169.254.169.254
 metadata_host=169.254.169.254
 dmz_cidr=169.254.169.254/32

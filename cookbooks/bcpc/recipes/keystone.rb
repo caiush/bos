@@ -20,10 +20,6 @@
 include_recipe "bcpc::mysql"
 include_recipe "bcpc::openstack"
 
-if node['bcpc']['protocol']['keystone'] == 'https' then
-    include_recipe "bcpc::stunnel"
-end
-
 ruby_block "initialize-keystone-config" do
     block do
         make_config('mysql-keystone-user', "keystone")

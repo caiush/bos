@@ -30,7 +30,7 @@ defaults
   timeout  client 30m
   timeout  server 30m
 
-listen stats 127.0.0.1:1936
+listen local-stats 127.0.0.1:1936
   mode http
   stats enable
   stats uri /
@@ -96,90 +96,100 @@ listen ldap-389ds <%=node['bcpc']['management']['vip']%>:389
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:389 check inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
-listen keystone-api-ssl <%=node['bcpc']['management']['vip']%>:5000
-  mode tcp
+listen keystone-api
+  bind <%=node['bcpc']['management']['vip']%>:5000 <%= (node['bcpc']['protocol']['keystone'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 300
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:5000 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:5000 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen keystone-admin-ssl <%=node['bcpc']['management']['vip']%>:35357
-  mode tcp
+listen keystone-admin
+  bind <%=node['bcpc']['management']['vip']%>:35357 <%= (node['bcpc']['protocol']['keystone'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 300
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:35357 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:35357 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen glance-api <%=node['bcpc']['management']['vip']%>:9292
-  mode tcp
+listen glance-api
+  bind <%=node['bcpc']['management']['vip']%>:9292 <%= (node['bcpc']['protocol']['glance'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 300
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9292 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9292 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen glance-registry <%=node['bcpc']['management']['vip']%>:9191
-  mode tcp
+listen glance-registry
+  bind <%=node['bcpc']['management']['vip']%>:9191 <%= (node['bcpc']['protocol']['glance'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 401
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9191 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9191 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen cinder-api <%=node['bcpc']['management']['vip']%>:8776
-  mode tcp
+listen cinder-api
+  bind <%=node['bcpc']['management']['vip']%>:8776 <%= (node['bcpc']['protocol']['cinder'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 200
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8776 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8776 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen nova-ec2 <%=node['bcpc']['management']['vip']%>:8773
-  mode tcp
+listen nova-ec2
+  bind <%=node['bcpc']['management']['vip']%>:8773 <%= (node['bcpc']['protocol']['nova'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 404
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8773 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8773 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen nova-compute <%=node['bcpc']['management']['vip']%>:8774
-  mode tcp
+listen nova-api
+  bind <%=node['bcpc']['management']['vip']%>:8774 <%= (node['bcpc']['protocol']['nova'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 200
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8774 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8774 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen heat-api <%=node['bcpc']['management']['vip']%>:8004
-  mode tcp
+listen heat-api
+  bind <%=node['bcpc']['management']['vip']%>:8004 <%= (node['bcpc']['protocol']['heat'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 300
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8004 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8004 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen heat-api-cfn <%=node['bcpc']['management']['vip']%>:8000
-  mode tcp
+listen heat-api-cfn
+  bind <%=node['bcpc']['management']['vip']%>:8000 <%= (node['bcpc']['protocol']['heat'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
-  option  tcplog
-  option tcpka
+  option tcplog
+  option httpchk GET /
+  http-check expect status 300
 <% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8000 check inter 1s rise 1 fall 1 observe layer4" %>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8000 check inter 1s rise 1 fall 1" %>
 <% end -%>
 
-listen ceilometer-api <%=node['bcpc']['management']['vip']%>:8777
-  balance  source
-  option  tcplog
+listen ceilometer-api
+  bind <%=node['bcpc']['management']['vip']%>:8777 <%= (node['bcpc']['protocol']['ceilometer'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
+  balance source
+  option tcplog
   option httpchk GET /
   http-check expect status 401
 <% @servers.each do |server| -%>
@@ -236,4 +246,3 @@ listen radosgw-passthru-https  <%="#{node['bcpc']['floating']['vip']}:#{node['bc
 <% @all_servers.each do |server| -%>
   <%= "server #{server['hostname']} #{server['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']} check port #{node['bcpc']['ports']['apache']['radosgw']} inter 1s rise 1 fall 1 observe layer4" %>
 <% end -%>
-

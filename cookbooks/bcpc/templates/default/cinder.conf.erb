@@ -18,7 +18,7 @@ state_path = /var/lib/cinder
 logdir=/var/log/cinder
 
 # Bind to mgt IP only
-osapi_volume_listen=<%= (node['bcpc']['protocol']['cinder'] == 'https') ? "127.0.0.1" : node['bcpc']['management']['ip'] %>
+osapi_volume_listen=<%=node['bcpc']['management']['ip']%>
 osapi_volume_workers=1
 
 # MySQL Connection
