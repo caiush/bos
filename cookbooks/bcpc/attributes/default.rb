@@ -22,6 +22,8 @@ default['bcpc']['vms_key'] = nil
 default['bcpc']['encrypt_data_bag'] = false
 default['bcpc']['host_firewall'] = true
 
+default['bcpc']['keepalived']['checks'] = true
+
 ###########################################
 #
 #  Host-specific defaults for the cluster
