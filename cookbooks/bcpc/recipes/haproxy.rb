@@ -46,6 +46,14 @@ bash "enable-defaults-haproxy" do
     not_if "grep -e '^ENABLED=1' /etc/default/haproxy"
 end
 
+template "/etc/haproxy/haproxy.pem" do
+    source "haproxy.pem.erb"
+    owner "root"
+    group "root"
+    mode 00600
+    notifies :restart, "service[haproxy]", :delayed
+end
+
 template "/etc/haproxy/haproxy.cfg" do
     source "haproxy.cfg.erb"
     mode 00644
