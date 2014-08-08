@@ -20,10 +20,6 @@
 include_recipe "bcpc::ceph-work"
 include_recipe "bcpc::nova-common"
 
-if node['bcpc']['protocol']['nova'] == 'https' then
-    include_recipe "bcpc::stunnel"
-end
-
 package "nova-compute-#{node['bcpc']['virt_type']}" do
     action :upgrade
 end

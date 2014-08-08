@@ -21,10 +21,6 @@ include_recipe "bcpc::mysql"
 include_recipe "bcpc::ceph-head"
 include_recipe "bcpc::openstack"
 
-if node['bcpc']['protocol']['cinder'] == 'https' then
-    include_recipe "bcpc::stunnel"
-end
-
 ruby_block "initialize-cinder-config" do
     block do
         make_config('mysql-cinder-user', "cinder")
