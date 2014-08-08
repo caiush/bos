@@ -72,4 +72,6 @@ volume_backend_name=<%= type.upcase %>
 rbd_user=admin
 rbd_pool=<%="#{node['bcpc']['ceph']['volumes']['name']}-#{type}"%>
 rbd_secret_uuid=<%=get_config('libvirt-secret-uuid')%>
+rbd_flatten_volume_from_snapshot=False
+rbd_max_clone_depth=5
 <% end -%>
