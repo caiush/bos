@@ -40,6 +40,8 @@ service "cron" do
     action [:enable, :start]
 end
 
+service "networking" 
+
 # Core networking package
 package "vlan"
 
@@ -125,9 +127,17 @@ end
             :ip => node['bcpc'][net]['ip'],
             :netmask => node['bcpc'][net]['netmask'],
             :gateway => node['bcpc'][net]['gateway'],
+            :mtu => node['bcpc'][net]['mtu'],
             :metric => metric
         )
     end
+
+    if node['bcpc'][net]['mtu']
+        execute "set-#{net}-mtu" do
+            command "ifconfig #{node['bcpc'][net]['interface']} mtu #{node['bcpc'][net]['mtu']} up"
+            not_if "ifconfig #{node['bcpc'][net]['interface']} | grep MTU:#{node['bcpc'][net]['mtu']} up"
+        end
+    end    
 end
 
 # set up the DNS resolvers
@@ -149,9 +159,19 @@ template "/etc/network/interfaces.d/iface-#{node['bcpc']['floating']['interface'
         :netmask => node['bcpc']['floating']['netmask'],
         :gateway => node['bcpc']['floating']['gateway'],
         :dns => resolvers,
+        :mtu => node['bcpc']['floating']['mtu'],
         :metric => 200
     )
 end
+
+
+if node['bcpc']['floating']['mtu']
+    execute "set-floating-mtu" do
+        command "ifconfig #{node['bcpc']['floating']['interface']} mtu #{node['bcpc']['floating']['mtu']} up"
+        not_if "ifconfig #{node['bcpc']['floating']['interface']} | grep MTU:#{node['bcpc']['floating']['mtu']} up"
+    end
+end    
+
 
 bash "interface-mgmt-make-static-if-dhcp" do
     user "root"
