@@ -75,7 +75,7 @@ def get_all_nodes
     else
         results.push(node)
     end
-    return results
+    return results.sort! { |a, b| a['hostname'] <=> b['hostname'] }
 end
 
 def get_ceph_osd_nodes
@@ -85,7 +85,7 @@ def get_ceph_osd_nodes
     else
         results.push(node)
     end
-    return results
+    return results.sort! { |a, b| a['hostname'] <=> b['hostname'] }
 end
 
 def get_head_nodes
@@ -94,7 +94,7 @@ def get_head_nodes
     if not results.include?(node) and node.run_list.roles.include?('BCPC-Headnode')
         results.push(node)
     end
-    return results
+    return results.sort! { |a, b| a['hostname'] <=> b['hostname'] }
 end
 
 def get_cached_head_node_names
