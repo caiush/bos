@@ -69,6 +69,40 @@ bash "setup-389ds-server" do
     not_if "test -d /etc/dirsrv/slapd-#{node['hostname']}"
 end
 
+%w{ Tenants Roles }.each do |ou|
+    ruby_block "create-ou-for-#{ou}" do
+        block do
+            if not system "ldapsearch -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" -b \"#{node['bcpc']['domain_name'].split('.').collect { |x| 'dc='+x }.join(',')}\" \"(ou=#{ou})\" | grep ^dn: > /dev/null 2>&1" then
+                %x[ ldapmodify -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" << EOH
+dn: ou=#{ou},#{node['bcpc']['domain_name'].split('.').collect { |x| 'dc='+x }.join(',')}
+changetype: add
+objectClass: top
+objectClass: organizationalunit
+ou: #{ou}
+
+                ]
+            end
+        end
+    end
+end
+
+%w{ Users Tenants }.each do |cn|
+    ruby_block "create-cn-for-#{cn}" do
+        block do
+            if not system "ldapsearch -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" -b \"#{node['bcpc']['domain_name'].split('.').collect { |x| 'dc='+x }.join(',')}\" \"(cn=OpenStack #{cn})\" | grep ^dn: > /dev/null 2>&1" then
+                %x[ ldapmodify -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" << EOH
+dn: cn=OpenStack #{cn},ou=Groups,#{node['bcpc']['domain_name'].split('.').collect { |x| 'dc='+x }.join(',')}
+changetype: add
+objectclass: top
+objectclass: groupOfNames
+ou: groups
+
+                ]
+            end
+        end
+    end
+end
+
 ruby_block "create-ldap-changelog" do
     block do
         if not system "ldapsearch -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" -b cn=config \"(cn=changelog5)\" | grep -v filter | grep changelog5 > /dev/null 2>&1" then
