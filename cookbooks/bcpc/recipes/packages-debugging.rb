@@ -33,6 +33,7 @@ package "iperf"
 # I/O troubleshooting tools
 package "fio"
 package "bc"
+package "iotop"
 
 # System troubleshooting tools
 package "htop"
