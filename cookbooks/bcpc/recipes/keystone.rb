@@ -256,7 +256,7 @@ bash "keystone-create-users-tenants" do
     code <<-EOH
         . /root/adminrc
         . /root/keystonerc
-        export KEYSTONE_ADMIN_TENANT_ID=`keystone tenant-create --name "#{node['bcpc']['admin_tenant']}" | grep " id " | awk '{print $4}'`
+        export KEYSTONE_ADMIN_TENANT_ID=`keystone tenant-create --name "#{node['bcpc']['admin_tenant']}" --description "Admin services" | grep " id " | awk '{print $4}'`
         export KEYSTONE_ROLE_ADMIN_ID=`keystone role-create --name "#{node['bcpc']['admin_role']}" | grep " id " | awk '{print $4}'`
         export KEYSTONE_ROLE_MEMBER_ID=`keystone role-get "#{node['bcpc']['member_role']}" | grep " id " | awk '{print $4}'`
 
