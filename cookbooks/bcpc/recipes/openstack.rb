@@ -40,6 +40,7 @@ end
     python-ceilometerclient
     python-mysqldb
     python-six
+    python-ldap
 }.each do |pkg|
     package pkg do
         action :upgrade
