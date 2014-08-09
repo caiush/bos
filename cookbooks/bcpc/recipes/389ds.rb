@@ -67,6 +67,15 @@ bash "setup-389ds-server" do
         service dirsrv-admin start
     EOH
     not_if "test -d /etc/dirsrv/slapd-#{node['hostname']}"
+    notifies :create, "ruby_block[ldap-requires-initialization]", :immediately
+end
+
+ruby_block "ldap-requires-initialization" do
+    action :nothing
+    block do
+        node.set['bcpc']['ldap_initialized'] = false
+        node.save rescue nil
+    end
 end
 
 # Delete some of the default groups that won't be used
@@ -182,9 +191,20 @@ nsds5replicaroot: #{domain}
 description: Agreement to sync from #{server['hostname']} to #{node['hostname']}
 nsds5replicatedattributelist: (objectclass=*) $ EXCLUDE authorityRevocationList
 nsds5replicacredentials: #{get_config('389ds-replication-password')}
-nsds5BeginReplicaRefresh: start
 
                 ]
+                # Initialize this node once if it's brand new
+                if not node['bcpc']['ldap_initialized'] then
+                    %x[ ldapmodify -h #{server['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" << EOH
+dn: cn=To-#{node['hostname']},cn=replica,cn="#{domain}",cn=mapping tree,cn=config
+changetype: modify
+add: nsds5BeginReplicaRefresh
+nsds5BeginReplicaRefresh: start
+
+                    ]
+                    node.set['bcpc']['ldap_initialized'] = true
+                    node.save rescue nil
+                end
             end
         end
     end
