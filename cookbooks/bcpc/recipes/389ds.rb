@@ -69,6 +69,22 @@ bash "setup-389ds-server" do
     not_if "test -d /etc/dirsrv/slapd-#{node['hostname']}"
 end
 
+# Delete some of the default groups that won't be used
+['Accounting Managers', 'HR Managers', 'PD Managers', 'QA Managers'].each do |cn|
+    ruby_block "create-cn-for-#{cn}" do
+        block do
+            if system "ldapsearch -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" -b \"#{node['bcpc']['domain_name'].split('.').collect { |x| 'dc='+x }.join(',')}\" \"(cn=#{cn})\" | grep ^dn: > /dev/null 2>&1" then
+                %x[ ldapmodify -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" << EOH
+dn: cn=#{cn},ou=Groups,#{node['bcpc']['domain_name'].split('.').collect { |x| 'dc='+x }.join(',')}
+changetype: delete
+
+                ]
+            end
+        end
+    end
+end
+
+# Create an OU for tenants and for roles (we will use the existing ou=People)
 %w{ Tenants Roles }.each do |ou|
     ruby_block "create-ou-for-#{ou}" do
         block do
@@ -86,6 +102,7 @@ ou: #{ou}
     end
 end
 
+# Create a CN to hold the list of enabled users and tenants
 %w{ Users Tenants }.each do |cn|
     ruby_block "create-cn-for-#{cn}" do
         block do
@@ -103,6 +120,7 @@ ou: groups
     end
 end
 
+# Create a changelog so that we can setup replication
 ruby_block "create-ldap-changelog" do
     block do
         if not system "ldapsearch -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" -b cn=config \"(cn=changelog5)\" | grep -v filter | grep changelog5 > /dev/null 2>&1" then
@@ -119,6 +137,7 @@ nsslapd-changelogdir: /var/lib/dirsrv/slapd-#{node['hostname']}/changelogdb
     end
 end
 
+# Create a replica object to hold our replication agreements
 ruby_block "create-ldap-supplier-replica" do
     block do
         if not system "ldapsearch -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" -b cn=config \"(cn=replica)\" | grep -v filter | grep replica > /dev/null 2>&1" then
