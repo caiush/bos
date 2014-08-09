@@ -162,9 +162,10 @@ nsds5ReplicaBindDN: #{get_config('389ds-replication-user')},cn=config
 end
 
 get_head_nodes.each do |server|
-    ruby_block "setup-ldap-consumption-from-#{server['hostname']}" do
+    ruby_block "setup-ldap-replication-from-#{server['hostname']}" do
         only_if { server['hostname'] != node['hostname'] }
         block do
+            # Setup replication from the other head node to us
             if not system "ldapsearch -h #{server['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" -b cn=config \"(cn=To-#{node['hostname']})\" | grep -v filter | grep #{node['hostname']} > /dev/null 2>&1" then
                 domain = node['bcpc']['domain_name'].split('.').collect { |x| 'dc='+x }.join(',')
                 %x[ ldapmodify -h #{server['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" << EOH
@@ -186,6 +187,12 @@ nsds5BeginReplicaRefresh: start
                 ]
             end
         end
+    end
+end
+
+%w{ dirsrv dirsrv-admin }.each do |svc|
+    service svc do
+        action [:enable, :start]
     end
 end
 
