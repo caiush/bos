@@ -68,6 +68,7 @@ bash "setup-389ds-server" do
     EOH
     not_if "test -d /etc/dirsrv/slapd-#{node['hostname']}"
     notifies :create, "ruby_block[ldap-requires-initialization]", :immediately
+    notifies :create, "ruby_block[disable-anonymous-bind]", :immediately
 end
 
 ruby_block "ldap-requires-initialization" do
@@ -75,6 +76,19 @@ ruby_block "ldap-requires-initialization" do
     block do
         node.set['bcpc']['ldap_initialized'] = false
         node.save rescue nil
+    end
+end
+
+ruby_block "disable-anonymous-bind" do
+    action :nothing
+    block do
+        %x[ ldapmodify -h #{node['bcpc']['management']['ip']} -p 389  -D \"#{get_config('389ds-rootdn-user')}\" -w \"#{get_config('389ds-rootdn-password')}\" << EOH
+dn: cn=config
+changetype: modify
+replace: nsslapd-allow-anonymous-access
+nsslapd-allow-anonymous-access: off
+
+        ]
     end
 end
 
