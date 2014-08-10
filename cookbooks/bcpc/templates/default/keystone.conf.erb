@@ -93,7 +93,7 @@ admin_endpoint = <%=node['bcpc']['protocol']['keystone']%>://<%=@node["bcpc"]["m
 # user_tenant_membership table with explicit role grants.
 # After migration, member_role_name will be ignored. (string
 # value)
-#member_role_name=_member_
+member_role_name=<%= node['bcpc']['member_role'] %>
 
 # The value passed as the keyword "rounds" to passlib encrypt
 # method. (integer value)
