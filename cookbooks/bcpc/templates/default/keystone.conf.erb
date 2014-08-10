@@ -590,7 +590,7 @@ log_dir = /var/log/keystone
 #template_file=default_catalog.templates
 
 # Keystone catalog backend driver. (string value)
-#driver=keystone.catalog.backends.sql.Catalog
+driver=keystone.catalog.backends.templated.Catalog
 
 # Maximum number of entities that will be returned in a
 # catalog collection. (integer value)
