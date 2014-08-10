@@ -117,7 +117,7 @@ bash "keystone-create-users-tenants" do
     code <<-EOH
         . /root/adminrc
         . /root/keystonerc
-        export KEYSTONE_ADMIN_TENANT_ID=`keystone tenant-create --name "#{node['bcpc']['admin_tenant']}" | grep " id " | awk '{print $4}'`
+        export KEYSTONE_ADMIN_TENANT_ID=`keystone tenant-create --name "#{node['bcpc']['admin_tenant']}" --description "Admin services" | grep " id " | awk '{print $4}'`
         export KEYSTONE_ROLE_ADMIN_ID=`keystone role-create --name "#{node['bcpc']['admin_role']}" | grep " id " | awk '{print $4}'`
         export KEYSTONE_ADMIN_LOGIN_ID=`keystone user-create --name "$OS_USERNAME" --tenant_id $KEYSTONE_ADMIN_TENANT_ID --pass "$OS_PASSWORD" --email "#{node['bcpc']['admin_email']}" --enabled true | grep " id " | awk '{print $4}'`
         keystone user-role-add --user_id $KEYSTONE_ADMIN_LOGIN_ID --role_id $KEYSTONE_ROLE_ADMIN_ID --tenant_id $KEYSTONE_ADMIN_TENANT_ID
