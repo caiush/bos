@@ -824,7 +824,7 @@ ca_file=/etc/ssl/certs/ssl-bcpc.pem
 # Deprecated group/name - [DEFAULT]/sql_connection
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
-connection = mysql://<%=get_config('mysql-heat-user')%>:<%=get_config('mysql-heat-password')%>@<%=node['bcpc']['management']['vip']%>/<%=node['bcpc']['heat_dbname']%>
+connection = mysql://<%=get_config('mysql-heat-user')%>:<%=get_config('mysql-heat-password')%>@<%=node['bcpc']['management']['vip']%>/<%=node['bcpc']['dbname']['heat']%>
 
 # The SQLAlchemy connection string used to connect to the
 # slave database (string value)

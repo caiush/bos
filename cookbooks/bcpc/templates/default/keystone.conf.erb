@@ -629,7 +629,7 @@ log_dir = /var/log/keystone
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
 #connection=<None>
-connection = mysql://<%=get_config('mysql-keystone-user')%>:<%=get_config('mysql-keystone-password')%>@<%=@node["bcpc"]["management"]["vip"]%>/<%=@node['bcpc']['keystone_dbname']%>
+connection = mysql://<%=get_config('mysql-keystone-user')%>:<%=get_config('mysql-keystone-password')%>@<%=@node["bcpc"]["management"]["vip"]%>/<%=@node['bcpc']['dbname']['keystone']%>
 
 # The SQL mode to be used for MySQL sessions. This option,
 # including the default, overrides any server-set SQL mode. To

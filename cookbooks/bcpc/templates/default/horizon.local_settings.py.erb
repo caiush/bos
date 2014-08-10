@@ -58,7 +58,7 @@ TEMPLATE_DEBUG = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '<%=node['bcpc']['horizon_dbname']%>',
+        'NAME': '<%=node['bcpc']['dbname']['horizon']%>',
         'USER': '<%=get_config('mysql-horizon-user')%>',
         'PASSWORD': '<%=get_config('mysql-horizon-password')%>',
         'HOST': '<%=node['bcpc']['management']['vip']%>',

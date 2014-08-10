@@ -140,16 +140,16 @@ default['bcpc']['mirror']['os-dist'] = ['havana']
 #  Default names for db's, pools, and users
 #
 ###########################################
-default['bcpc']['nova_dbname'] = "nova"
-default['bcpc']['cinder_dbname'] = "cinder"
-default['bcpc']['glance_dbname'] = "glance"
-default['bcpc']['horizon_dbname'] = "horizon"
-default['bcpc']['keystone_dbname'] = "keystone"
-default['bcpc']['heat_dbname'] = "heat"
-default['bcpc']['ceilometer_dbname'] = "ceilometer"
-default['bcpc']['graphite_dbname'] = "graphite"
-default['bcpc']['pdns_dbname'] = "pdns"
-default['bcpc']['zabbix_dbname'] = "zabbix"
+default['bcpc']['dbname']['nova'] = "nova"
+default['bcpc']['dbname']['cinder'] = "cinder"
+default['bcpc']['dbname']['glance'] = "glance"
+default['bcpc']['dbname']['horizon'] = "horizon"
+default['bcpc']['dbname']['keystone'] = "keystone"
+default['bcpc']['dbname']['heat'] = "heat"
+default['bcpc']['dbname']['ceilometer'] = "ceilometer"
+default['bcpc']['dbname']['graphite'] = "graphite"
+default['bcpc']['dbname']['pdns'] = "pdns"
+default['bcpc']['dbname']['zabbix'] = "zabbix"
 
 default['bcpc']['admin_tenant'] = "AdminTenant"
 default['bcpc']['admin_role'] = "Admin"

@@ -42,13 +42,13 @@ end
 
 ruby_block "powerdns-database-creation" do
     block do
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = \"#{node['bcpc']['pdns_dbname']}\"' | grep -q \"#{node['bcpc']['pdns_dbname']}\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = \"#{node['bcpc']['dbname']['pdns']}\"' | grep -q \"#{node['bcpc']['dbname']['pdns']}\""
         if not $?.success? then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} -e "CREATE DATABASE #{node['bcpc']['pdns_dbname']} CHARACTER SET utf8 COLLATE utf8_general_ci;"
-                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['pdns_dbname']}.* TO '#{get_config('mysql-pdns-user')}'@'%' IDENTIFIED BY '#{get_config('mysql-pdns-password')}';"
-                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['pdns_dbname']}.* TO '#{get_config('mysql-pdns-user')}'@'localhost' IDENTIFIED BY '#{get_config('mysql-pdns-password')}';"
-                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['nova_dbname']}.* TO '#{get_config('mysql-pdns-user')}'@'%' IDENTIFIED BY '#{get_config('mysql-pdns-password')}';"
-                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['nova_dbname']}.* TO '#{get_config('mysql-pdns-user')}'@'localhost' IDENTIFIED BY '#{get_config('mysql-pdns-password')}';"
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} -e "CREATE DATABASE #{node['bcpc']['dbname']['pdns']} CHARACTER SET utf8 COLLATE utf8_general_ci;"
+                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['dbname']['pdns']}.* TO '#{get_config('mysql-pdns-user')}'@'%' IDENTIFIED BY '#{get_config('mysql-pdns-password')}';"
+                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['dbname']['pdns']}.* TO '#{get_config('mysql-pdns-user')}'@'localhost' IDENTIFIED BY '#{get_config('mysql-pdns-password')}';"
+                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['dbname']['nova']}.* TO '#{get_config('mysql-pdns-user')}'@'%' IDENTIFIED BY '#{get_config('mysql-pdns-password')}';"
+                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['dbname']['nova']}.* TO '#{get_config('mysql-pdns-user')}'@'localhost' IDENTIFIED BY '#{get_config('mysql-pdns-password')}';"
                 mysql -uroot -p#{get_config('mysql-root-password')} -e "FLUSH PRIVILEGES;"
             ]
             self.notifies :restart, "service[pdns]", :delayed
@@ -62,9 +62,9 @@ ruby_block "powerdns-table-domains" do
 
         reverse_dns_zone = node['bcpc']['floating']['reverse_dns_zone'] || calc_reverse_dns_zone(node['bcpc']['floating']['cidr'])
 
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = \"#{node['bcpc']['pdns_dbname']}\" AND TABLE_NAME=\"domains_static\"' | grep -q \"domains_static\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = \"#{node['bcpc']['dbname']['pdns']}\" AND TABLE_NAME=\"domains_static\"' | grep -q \"domains_static\""
         if not $?.success? then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                 CREATE TABLE IF NOT EXISTS domains_static (
                     id INT auto_increment,
                     name VARCHAR(255) NOT NULL,
@@ -90,9 +90,9 @@ ruby_block "powerdns-table-records" do
 
         reverse_dns_zone = node['bcpc']['floating']['reverse_dns_zone'] || calc_reverse_dns_zone(node['bcpc']['floating']['cidr'])
 
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = \"#{node['bcpc']['pdns_dbname']}\" AND TABLE_NAME=\"records_static\"' | grep -q \"records_static\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = \"#{node['bcpc']['dbname']['pdns']}\" AND TABLE_NAME=\"records_static\"' | grep -q \"records_static\""
         if not $?.success? then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                     CREATE TABLE IF NOT EXISTS records_static (
                         id INT auto_increment,
                         domain_id INT DEFAULT NULL,
@@ -121,9 +121,9 @@ end
 
 ruby_block "powerdns-function-dns-name" do
     block do
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT name FROM mysql.proc WHERE name = \"dns_name\" AND db = \"#{node['bcpc']['pdns_dbname']}\";' \"#{node['bcpc']['pdns_dbname']}\" | grep -q \"dns_name\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT name FROM mysql.proc WHERE name = \"dns_name\" AND db = \"#{node['bcpc']['dbname']['pdns']}\";' \"#{node['bcpc']['dbname']['pdns']}\" | grep -q \"dns_name\""
         if not $?.success? then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                 delimiter //
                 CREATE FUNCTION dns_name (tenant VARCHAR(64) CHARACTER SET latin1) RETURNS VARCHAR(64)
                 COMMENT 'Returns the project name in a DNS acceptable format. Roughly RFC 1035.'
@@ -145,9 +145,9 @@ end
 
 ruby_block "powerdns-function-ip4_to_ptr_name" do
     block do
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT name FROM mysql.proc WHERE name = \"ip4_to_ptr_name\" AND db = \"#{node['bcpc']['pdns_dbname']}\";' \"#{node['bcpc']['pdns_dbname']}\" | grep -q \"ip4_to_ptr_name\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT name FROM mysql.proc WHERE name = \"ip4_to_ptr_name\" AND db = \"#{node['bcpc']['dbname']['pdns']}\";' \"#{node['bcpc']['dbname']['pdns']}\" | grep -q \"ip4_to_ptr_name\""
         if not $?.success? then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                 delimiter //
                 CREATE FUNCTION ip4_to_ptr_name(ip4 VARCHAR(64) CHARACTER SET latin1) RETURNS VARCHAR(64)
                 COMMENT 'Returns the reversed IP with .in-addr.arpa appended, suitable for use in the name column of PTR records.'
@@ -169,9 +169,9 @@ end
 
 ruby_block "powerdns-table-domains-view" do
     block do
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node['bcpc']['pdns_dbname']}\" AND TABLE_NAME=\"domains\"' | grep -q \"domains\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node['bcpc']['dbname']['pdns']}\" AND TABLE_NAME=\"domains\"' | grep -q \"domains\""
         if not $?.success? then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                 CREATE OR REPLACE VIEW domains AS
                     SELECT id,name,master,last_check,type,notified_serial,account FROM domains_static UNION
                     SELECT
@@ -193,9 +193,9 @@ end
 
 ruby_block "powerdns-table-records_forward-view" do
     block do
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node['bcpc']['pdns_dbname']}\" AND TABLE_NAME=\"records_forward\"' | grep -q \"records_forward\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node['bcpc']['dbname']['pdns']}\" AND TABLE_NAME=\"records_forward\"' | grep -q \"records_forward\""
         if not $?.success? then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                 CREATE OR REPLACE VIEW records_forward AS
                     /* SOA Forward */
                     select -1 as id ,
@@ -239,10 +239,10 @@ ruby_block "powerdns-table-records_reverse-view" do
 
         reverse_dns_zone = node['bcpc']['floating']['reverse_dns_zone'] || calc_reverse_dns_zone(node['bcpc']['floating']['cidr'])
 
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node['bcpc']['pdns_dbname']}\" AND TABLE_NAME=\"records_reverse\"' | grep -q \"records_reverse\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node['bcpc']['dbname']['pdns']}\" AND TABLE_NAME=\"records_reverse\"' | grep -q \"records_reverse\""
         if not $?.success? then
 
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                 create or replace view records_reverse as
                 /* SOA reverse */
                 select -2 as id,
@@ -273,10 +273,10 @@ end
 ruby_block "powerdns-table-records-all-view" do
 
     block do
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node['bcpc']['pdns_dbname']}\" AND TABLE_NAME=\"records_all\"' | grep -q \"records_all\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = \"#{node['bcpc']['dbname']['pdns']}\" AND TABLE_NAME=\"records_all\"' | grep -q \"records_all\""
         if not $?.success? then
 
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
               create or replace view records_all as
                 select id, domain_id, name, type, content, ttl, prio, change_date from records_forward
                 union all
@@ -293,7 +293,7 @@ end
 
 ruby_block "powerdns-table-records" do
     block do
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_name = \"records\" AND table_schema = \"#{node['bcpc']['pdns_dbname']}\";' \"#{node['bcpc']['pdns_dbname']}\" | grep -q \"records\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_name = \"records\" AND table_schema = \"#{node['bcpc']['dbname']['pdns']}\";' \"#{node['bcpc']['dbname']['pdns']}\" | grep -q \"records\""
         if not $?.success? then
 
             # Using this as a guide: http://doc.powerdns.com/html/generic-mypgsql-backends.html
@@ -301,7 +301,7 @@ ruby_block "powerdns-table-records" do
             # far. I'm not changing the schema we have now. These might be important if we upgrade PDNS or
             # need to use other features.
 
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
               create table records( 
                 id          bigint(20) not null default 0,
                 domain_id   bigint(20),
@@ -324,9 +324,9 @@ end
 
 ruby_block "powerdns-function-populate_records" do
     block do
-        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT name FROM mysql.proc WHERE name = \"populate_records\" AND db = \"#{node['bcpc']['pdns_dbname']}\";' \"#{node['bcpc']['pdns_dbname']}\" | grep -q \"populate_records\""
+        system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT name FROM mysql.proc WHERE name = \"populate_records\" AND db = \"#{node['bcpc']['dbname']['pdns']}\";' \"#{node['bcpc']['dbname']['pdns']}\" | grep -q \"populate_records\""
         if not $?.success? then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                 delimiter //
                 CREATE PROCEDURE populate_records () 
                 COMMENT 'Persists dynamic DNS records from records_all view into records table'
@@ -354,15 +354,15 @@ cron "powerdns_populate_records" do
     minute "*"
     hour "*"
     weekday "*"
-    command "if [ -n \"$(/usr/local/bin/if_vip echo Y)\" ] ; then echo \"call populate_records();\" | mysql -updns -p#{get_config('mysql-pdns-password')} #{node['bcpc']['pdns_dbname']} 2>&1 > /var/log/pdns_populate_records.last.log ; fi"
+    command "if [ -n \"$(/usr/local/bin/if_vip echo Y)\" ] ; then echo \"call populate_records();\" | mysql -updns -p#{get_config('mysql-pdns-password')} #{node['bcpc']['dbname']['pdns']} 2>&1 > /var/log/pdns_populate_records.last.log ; fi"
 end
 
 get_all_nodes.each do |server|
     ruby_block "create-dns-entry-#{server['hostname']}" do
         block do
-            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} -e 'SELECT name FROM records_static' | grep -q \"#{server['hostname']}.#{node['bcpc']['domain_name']}\""
+            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} -e 'SELECT name FROM records_static' | grep -q \"#{server['hostname']}.#{node['bcpc']['domain_name']}\""
             if not $?.success? then
-                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                         INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node['bcpc']['domain_name']}'),'#{server['hostname']}.#{node['bcpc']['domain_name']}','#{server['bcpc']['management']['ip']}','A',300,NULL);
                 ]
             end
@@ -371,9 +371,9 @@ get_all_nodes.each do |server|
 
     ruby_block "create-dns-entry-#{server['hostname']}-shared" do
         block do
-            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} -e 'SELECT name FROM records_static' | grep -q \"#{server['hostname']}-shared.#{node['bcpc']['domain_name']}\""
+            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} -e 'SELECT name FROM records_static' | grep -q \"#{server['hostname']}-shared.#{node['bcpc']['domain_name']}\""
             if not $?.success? then
-                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                         INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node['bcpc']['domain_name']}'),'#{server['hostname']}-shared.#{node['bcpc']['domain_name']}','#{server['bcpc']['floating']['ip']}','A',300,NULL);
                 ]
             end
@@ -384,9 +384,9 @@ end
 %w{openstack kibana graphite zabbix}.each do |static|
     ruby_block "create-management-dns-entry-#{static}" do
         block do
-            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} -e 'SELECT name FROM records_static' | grep -q \"#{static}.#{node['bcpc']['domain_name']}\""
+            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} -e 'SELECT name FROM records_static' | grep -q \"#{static}.#{node['bcpc']['domain_name']}\""
             if not $?.success? then
-                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                         INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node['bcpc']['domain_name']}'),'#{static}.#{node['bcpc']['domain_name']}','#{node['bcpc']['management']['vip']}','A',300,NULL);
                 ]
             end
@@ -397,9 +397,9 @@ end
 %w{s3}.each do |static|
     ruby_block "create-floating-dns-entry-#{static}" do
         block do
-            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} -e 'SELECT name FROM records_static' | grep -q \"#{static}.#{node['bcpc']['domain_name']}\""
+            system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} -e 'SELECT name FROM records_static' | grep -q \"#{static}.#{node['bcpc']['domain_name']}\""
             if not $?.success? then
-                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['pdns_dbname']} <<-EOH
+                %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                         INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node['bcpc']['domain_name']}'),'#{static}.#{node['bcpc']['domain_name']}','#{node['bcpc']['floating']['vip']}','A',300,NULL);
                 ]
             end

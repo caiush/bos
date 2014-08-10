@@ -58,10 +58,10 @@ end
 
 ruby_block "heat-database-creation" do
     block do
-        if not system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = \"#{node['bcpc']['heat_dbname']}\"'|grep \"#{node['bcpc']['heat_dbname']}\"" then
-            %x[ mysql -uroot -p#{get_config('mysql-root-password')} -e "CREATE DATABASE #{node['bcpc']['heat_dbname']};"
-                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['heat_dbname']}.* TO '#{get_config('mysql-heat-user')}'@'%' IDENTIFIED BY '#{get_config('mysql-heat-password')}';"
-                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['heat_dbname']}.* TO '#{get_config('mysql-heat-user')}'@'localhost' IDENTIFIED BY '#{get_config('mysql-heat-password')}';"
+        if not system "mysql -uroot -p#{get_config('mysql-root-password')} -e 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = \"#{node['bcpc']['dbname']['heat']}\"'|grep \"#{node['bcpc']['dbname']['heat']}\"" then
+            %x[ mysql -uroot -p#{get_config('mysql-root-password')} -e "CREATE DATABASE #{node['bcpc']['dbname']['heat']};"
+                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['dbname']['heat']}.* TO '#{get_config('mysql-heat-user')}'@'%' IDENTIFIED BY '#{get_config('mysql-heat-password')}';"
+                mysql -uroot -p#{get_config('mysql-root-password')} -e "GRANT ALL ON #{node['bcpc']['dbname']['heat']}.* TO '#{get_config('mysql-heat-user')}'@'localhost' IDENTIFIED BY '#{get_config('mysql-heat-password')}';"
                 mysql -uroot -p#{get_config('mysql-root-password')} -e "FLUSH PRIVILEGES;"
             ]
             self.notifies :run, "bash[heat-database-sync]", :immediately
