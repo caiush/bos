@@ -17,18 +17,18 @@
 # limitations under the License.
 #
 cookbook_file "/usr/local/bin/routemon.pl" do
-  source "routemon.pl"
-  owner "root"
-  mode 00755
+    source "routemon.pl"
+    owner "root"
+    mode 00755
 end
 
 template "/etc/init/routemon.conf" do
-  source "routemon.conf.erb"
-  owner "root"
-  mode "0644"
+    source "routemon.conf.erb"
+    owner "root"
+    mode "0644"
 end
 
 service "routemon" do
-  provider Chef::Provider::Service::Upstart
-  action :start
+    provider Chef::Provider::Service::Upstart
+    action :start
 end
