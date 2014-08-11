@@ -2,7 +2,6 @@
   "name": "Test-Laptop",
   "override_attributes": {
     "bcpc": {
-      "apt_upgrade" : true,
       "virt_type" : "qemu",
       "ceph": {
         "pgp_auto_adjust" : true,
