@@ -24,7 +24,7 @@ template "/etc/sysctl.d/70-bcpc.conf" do
     owner "root"
     group "root"
     mode 00644
-    notifies :run, "execute[reload-sysctl]"
+    notifies :run, "execute[reload-sysctl]", :immediately
 end
 
 execute "reload-sysctl" do
