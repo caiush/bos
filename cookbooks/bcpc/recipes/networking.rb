@@ -18,6 +18,7 @@
 #
 
 include_recipe "bcpc::default"
+include_recipe "bcpc::system"
 include_recipe "bcpc::certs"
 
 template "/etc/hosts" do
@@ -45,36 +46,6 @@ package "vlan"
 
 # Enable LLDP - see https://github.com/bloomberg/chef-bcpc/pull/120
 package "lldpd"
-
-bash "enable-ip-forwarding" do
-    user "root"
-    code <<-EOH
-        echo "1" > /proc/sys/net/ipv4/ip_forward
-        sed --in-place '/^net.ipv4.ip_forward/d' /etc/sysctl.conf
-        echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
-    EOH
-    not_if "grep -e '^net.ipv4.ip_forward=1' /etc/sysctl.conf"
-end
-
-bash "enable-nonlocal-bind" do
-    user "root"
-    code <<-EOH
-        echo "1" > /proc/sys/net/ipv4/ip_nonlocal_bind
-        sed --in-place '/^net.ipv4.ip_nonlocal_bind/d' /etc/sysctl.conf
-        echo 'net.ipv4.ip_nonlocal_bind=1' >> /etc/sysctl.conf
-    EOH
-    not_if "grep -e '^net.ipv4.ip_nonlocal_bind=1' /etc/sysctl.conf"
-end
-
-bash "set-tcp-keepalive-timeout" do
-    user "root"
-    code <<-EOH
-        echo "1800" > /proc/sys/net/ipv4/tcp_keepalive_time
-        sed --in-place '/^net.ipv4.tcp_keepalive_time/d' /etc/sysctl.conf
-        echo 'net.ipv4.tcp_keepalive_time=1800' >> /etc/sysctl.conf
-    EOH
-    not_if "grep -e '^net.ipv4.tcp_keepalive_time=1800' /etc/sysctl.conf"
-end
 
 bash "enable-mellanox" do
     user "root"
