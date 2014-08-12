@@ -163,8 +163,8 @@ default['bcpc']['admin_email'] = "admin@localhost.com"
 default['bcpc']['zabbix']['user'] = "zabbix"
 default['bcpc']['zabbix']['group'] = "adm"
 
-default['bcpc']['ports']['apache']['radosgw'] = 8080
-default['bcpc']['ports']['apache']['radosgw_https'] = 8443
+default['bcpc']['ports']['apache']['radosgw'] = 80
+default['bcpc']['ports']['apache']['radosgw_https'] = 443
 default['bcpc']['ports']['haproxy']['radosgw'] = 80
 default['bcpc']['ports']['haproxy']['radosgw_https'] = 443
 
