@@ -28,7 +28,7 @@ package "powernap" do
     action :remove
 end
 
-if node['bcpc']['apt_upgrade'] then
+if node['bcpc']['enabled']['apt_upgrade'] then
 	include_recipe "apt::default"
 	bash "perform-upgrade" do
 	    user "root"

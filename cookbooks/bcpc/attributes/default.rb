@@ -20,7 +20,6 @@ default['bcpc']['domain_name'] = "bcpc.example.com"
 default['bcpc']['vms_key'] = nil
 
 default['bcpc']['keepalived']['checks'] = true
-default['bcpc']['apt_upgrade'] = false
 
 # Flags to enable/disable BCPC cluster features
 default['bcpc']['enabled']['logging'] = true
@@ -29,6 +28,7 @@ default['bcpc']['enabled']['monitoring'] = true
 default['bcpc']['enabled']['dns'] = true
 default['bcpc']['enabled']['host_firewall'] = true
 default['bcpc']['enabled']['encrypt_data_bag'] = false
+default['bcpc']['enabled']['apt_upgrade'] = false
 
 # This can be either 'sql' or 'ldap' to either store identities
 # in the mysql DB or the LDAP server
