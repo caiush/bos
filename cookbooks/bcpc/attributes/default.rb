@@ -10,23 +10,35 @@ default['bcpc']['organization'] = "Bloomberg"
 default['bcpc']['openstack_release'] = "icehouse"
 # Can be "updates" or "proposed"
 default['bcpc']['openstack_branch'] = "proposed"
-# Should be kvm (or qemu if testing in VMs)
+# Should be kvm (or qemu if testing in VMs that don't support VT-x)
 default['bcpc']['virt_type'] = "kvm"
 # Region name for this cluster
 default['bcpc']['region_name'] = node.chef_environment
-# Domain name that will be used for DNS
+# Domain name for this cluster (used in many configs)
 default['bcpc']['domain_name'] = "bcpc.example.com"
 # Key if Cobalt+VMS is to be used
 default['bcpc']['vms_key'] = nil
 
-# Flags to enable/disable BCPC cluster features
+###########################################
+#
+#  Flags to enable/disable BCPC cluster features
+#
+###########################################
+# This will enable elasticsearch & kibana on head nodes and fluentd on all nodes
 default['bcpc']['enabled']['logging'] = true
+# This will enable graphite web and carbon on head nodes and diamond on all nodes
 default['bcpc']['enabled']['metrics'] = true
+# This will enable zabbix server on head nodes and zabbix agent on all nodes
 default['bcpc']['enabled']['monitoring'] = true
+# This will enable powerdns on head nodes
 default['bcpc']['enabled']['dns'] = true
+# This will enable iptables firewall on all nodes
 default['bcpc']['enabled']['host_firewall'] = true
+# This will enable of encryption of the chef data bag
 default['bcpc']['enabled']['encrypt_data_bag'] = false
+# This will enable auto-upgrades on all nodes (not recommended for stability)
 default['bcpc']['enabled']['apt_upgrade'] = false
+## This will enable the extra healthchecks for keepalived (VIP management)
 default['bcpc']['enabled']['keepalived_checks'] = true
 
 # This can be either 'sql' or 'ldap' to either store identities
