@@ -125,9 +125,11 @@ end
             :ip => node['bcpc'][net]['ip'],
             :netmask => node['bcpc'][net]['netmask'],
             :gateway => node['bcpc'][net]['gateway'],
+            :mtu => node['bcpc'][net]['mtu'],
             :metric => metric
         )
     end
+
 end
 
 # set up the DNS resolvers
@@ -149,6 +151,7 @@ template "/etc/network/interfaces.d/iface-#{node['bcpc']['floating']['interface'
         :netmask => node['bcpc']['floating']['netmask'],
         :gateway => node['bcpc']['floating']['gateway'],
         :dns => resolvers,
+        :mtu => node['bcpc']['floating']['mtu'],
         :metric => 200
     )
 end
@@ -181,6 +184,14 @@ end
         EOH
         not_if "ip link show up | grep #{node['bcpc'][iface]['interface']}"
     end
+
+    if node['bcpc'][iface]['mtu']
+        execute "set-#{iface}-mtu" do
+            command "ifconfig #{node['bcpc'][iface]['interface']} mtu #{node['bcpc'][iface]['mtu']} up"
+            not_if "ifconfig #{node['bcpc'][iface]['interface']} | grep MTU:#{node['bcpc'][iface]['mtu']}"
+        end
+    end    
+
 end
 
 bash "routing-management" do
