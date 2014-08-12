@@ -19,7 +19,6 @@ default['bcpc']['domain_name'] = "bcpc.example.com"
 # Key if Cobalt+VMS is to be used
 default['bcpc']['vms_key'] = nil
 
-default['bcpc']['encrypt_data_bag'] = false
 default['bcpc']['host_firewall'] = true
 default['bcpc']['keepalived']['checks'] = true
 default['bcpc']['apt_upgrade'] = false
@@ -29,6 +28,7 @@ default['bcpc']['enabled']['logging'] = true
 default['bcpc']['enabled']['metrics'] = true
 default['bcpc']['enabled']['monitoring'] = true
 default['bcpc']['enabled']['dns'] = true
+default['bcpc']['enabled']['encrypt_data_bag'] = false
 
 # This can be either 'sql' or 'ldap' to either store identities
 # in the mysql DB or the LDAP server
