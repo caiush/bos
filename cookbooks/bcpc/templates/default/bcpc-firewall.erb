@@ -17,7 +17,7 @@ iptables-restore <<EOH
 :OUTPUT ACCEPT [0:0]
 :LOGDROP - [0:0]
 
-<% if node['bcpc']['host_firewall'] -%>
+<% if node['bcpc']['enabled']['host_firewall'] -%>
 
 # Allow all established stuff to keep going
 -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
