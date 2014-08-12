@@ -24,6 +24,12 @@ default['bcpc']['host_firewall'] = true
 default['bcpc']['keepalived']['checks'] = true
 default['bcpc']['apt_upgrade'] = false
 
+# Flags to enable/disable BCPC cluster features
+default['bcpc']['enabled']['logging'] = true
+default['bcpc']['enabled']['metrics'] = true
+default['bcpc']['enabled']['monitoring'] = true
+default['bcpc']['enabled']['dns'] = true
+
 # This can be either 'sql' or 'ldap' to either store identities
 # in the mysql DB or the LDAP server
 default['bcpc']['keystone']['backend'] = 'ldap'
