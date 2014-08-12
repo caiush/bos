@@ -9,8 +9,6 @@ NameVirtualHost <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['a
 
 Listen <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']}"%>
 Listen <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']}"%>
-Listen <%="#{node['bcpc']['metadata']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']}"%>
-Listen <%="#{node['bcpc']['metadata']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']}"%>
 
 FastCgiExternalServer /var/www/s3gw.fcgi -socket /var/lib/ceph/radosgw/rgw_fcgi.sock -idle-timeout 60
 
@@ -18,7 +16,6 @@ FastCgiExternalServer /var/www/s3gw.fcgi -socket /var/lib/ceph/radosgw/rgw_fcgi.
 	    ServerName <%="s3.#{node['bcpc']['domain_name']}"%>
         ServerAlias <%=node['hostname']%>
         ServerAlias <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']}"%>
-				ServerAlias <%="#{node['bcpc']['metadata']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']}"%>
         ServerAdmin <%=node['bcpc']['admin_email']%>
         DocumentRoot /var/www
 	
@@ -46,7 +43,6 @@ NameVirtualHost <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['a
 	    ServerName <%="s3.#{node['bcpc']['domain_name']}"%>
         ServerAlias <%=node['hostname']%>
         ServerAlias <%="#{node['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']}"%>
-				ServerAlias <%="#{node['bcpc']['metadata']['ip']}:#{node['bcpc']['ports']['apache']['radosgw_https']}"%>
         ServerAdmin <%=node['bcpc']['admin_email']%>
         DocumentRoot /var/www
 
