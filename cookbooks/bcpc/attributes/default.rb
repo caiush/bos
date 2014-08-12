@@ -137,7 +137,7 @@ default['bcpc']['repos']['gridcentric'] = "http://downloads.gridcentric.com/pack
 default['bcpc']['mirror']['ubuntu'] = "us.archive.ubuntu.com/ubuntu"
 default['bcpc']['mirror']['ubuntu-dist'] = ['precise']
 default['bcpc']['mirror']['ceph-dist'] = ['firefly']
-default['bcpc']['mirror']['os-dist'] = ['havana']
+default['bcpc']['mirror']['os-dist'] = ['icehouse']
 
 ###########################################
 #
