@@ -61,7 +61,7 @@ template "/root/.ssh/authorized_keys" do
     source "authorized_keys.erb"
     owner "root"
     group "root"
-    mode 00644
+    mode 00640
 end
 
 template "/root/.ssh/id_rsa" do
