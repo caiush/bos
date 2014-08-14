@@ -187,6 +187,12 @@ frontend horizon-https
   stats auth <%=get_config('haproxy-stats-user')%>:<%=get_config('haproxy-stats-password')%>
   acl url_rabbitmq path_beg /rabbitmq
   use_backend rabbitmq-web-backend if url_rabbitmq
+  acl url_kibana path_beg /kibana
+  use_backend kibana-backend if url_kibana
+  acl url_zabbix path_beg /zabbix
+  use_backend zabbix-backend if url_zabbix
+  acl url_graphite path_beg /graphite
+  use_backend graphite-backend if url_graphite
   default_backend horizon-http-backend
 
 backend horizon-http-backend
@@ -203,6 +209,37 @@ backend rabbitmq-web-backend
 <% @servers.each do |server| -%>
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:55672 check inter 5s rise 1 fall 1" %>
 <% end -%>
+
+backend kibana-backend
+  option httpchk GET /
+  http-check expect status 200
+  reqrep ^([^\ :]*)\ /kibana/(.*) \1\ /\2
+<% @servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:5601 check inter 5s rise 1 fall 1" %>
+<% end -%>
+
+backend zabbix-backend
+  option httpchk GET /
+  http-check expect status 200
+  reqrep ^([^\ :]*)\ /zabbix/(.*) \1\ /\2
+<% @servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:7777 check inter 5s rise 1 fall 1" %>
+<% end -%>
+
+backend graphite-backend
+  option httpchk GET /
+  http-check expect status 200
+  reqrep ^([^\ :]*)\ /graphite/(.*) \1\ /\2
+<% @servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8888 check inter 5s rise 1 fall 1" %>
+<% end -%>
+
+# This is temporary until graphite supports being served under /graphite
+frontend graphite
+  bind <%="#{node['bcpc']['management']['vip']}:8888"%> ssl crt /etc/haproxy/haproxy.pem
+  balance source
+  option tcplog
+  default_backend graphite-backend
 
 listen elasticsearch <%=node['bcpc']['management']['vip']%>:9200
   balance  source
