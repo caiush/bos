@@ -66,14 +66,6 @@ template "/etc/apache2/vhost-root.d/000-default.conf" do
     notifies :restart, "service[apache2]", :delayed
 end
 
-template "/etc/apache2/vhost-ssl-root.d/000-default.conf" do
-    source "apache-vhost-ssl-root-000-default.conf.erb"
-    owner "root"
-    group "root"
-    mode 00644
-    notifies :restart, "service[apache2]", :delayed
-end
-
 template "/etc/apache2/sites-enabled/000-default" do
     source "apache-000-default.erb"
     owner "root"
