@@ -16,7 +16,7 @@ defaults
   maxconn  8000
   source <%=node['bcpc']['management']['vip']%>
   mode  http
-  option httpclose
+  option http-server-close
   option abortonclose
   option tcplog
   option dontlognull
