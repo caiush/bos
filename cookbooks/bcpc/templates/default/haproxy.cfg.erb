@@ -59,12 +59,6 @@ listen rabbitmq-amqp <%=node['bcpc']['management']['vip']%>:5672
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:5672 check port 5673 inter 5s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
-frontend rabbitmq-web
-  bind <%=node['bcpc']['management']['vip']%>:55672
-  balance source
-  option tcplog
-  default_backend rabbitmq-web-backend
-
 backend rabbitmq-web-backend
   option httpchk GET /
   http-check expect status 200
