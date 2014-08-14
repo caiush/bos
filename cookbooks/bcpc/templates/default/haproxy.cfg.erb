@@ -170,13 +170,13 @@ listen ceilometer-api
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8777 check inter 5s rise 1 fall 1" %>
 <% end -%>
 
-frontend horizon-http
+frontend http
   bind <%=node['bcpc']['management']['vip']%>:80
   balance source
   option tcplog
-  default_backend horizon-http-backend
+  default_backend http-backend
 
-frontend horizon-https
+frontend https
   bind <%=node['bcpc']['management']['vip']%>:443 ssl crt /etc/haproxy/haproxy.pem
   balance source
   option tcplog
@@ -185,6 +185,11 @@ frontend horizon-https
   stats hide-version
   stats realm Haproxy\ Statistics
   stats auth <%=get_config('haproxy-stats-user')%>:<%=get_config('haproxy-stats-password')%>
+  reqadd X-Forwarded-Protocol:\ https
+  acl url_horizon path_beg /horizon
+  use_backend horizon-backend if url_horizon
+  acl url_horizon_static path_beg /static
+  use_backend horizon-backend if url_horizon_static
   acl url_rabbitmq path_beg /rabbitmq
   use_backend rabbitmq-web-backend if url_rabbitmq
   acl url_kibana path_beg /kibana
@@ -193,13 +198,20 @@ frontend horizon-https
   use_backend zabbix-backend if url_zabbix
   acl url_graphite path_beg /graphite
   use_backend graphite-backend if url_graphite
-  default_backend horizon-http-backend
+  default_backend http-backend
 
-backend horizon-http-backend
+backend http-backend
   option httpchk GET /
   http-check expect status 200
 <% @servers.each do |server| -%>
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:80 check inter 5s rise 1 fall 1" %>
+<% end -%>
+
+backend horizon-backend
+  option httpchk GET /
+  http-check expect status 200
+<% @servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:9999 check inter 5s rise 1 fall 1" %>
 <% end -%>
 
 backend rabbitmq-web-backend

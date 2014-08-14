@@ -239,12 +239,5 @@ template "/etc/phpldapadmin/config.php" do
     owner "root"
     group "root"
     mode 00644
-end
-
-template "/etc/apache2/vhost-ssl-root.d/phpldapadmin.conf" do
-    source "apache-vhost-ssl-root-phpldapadmin.conf.erb"
-    owner "root"
-    group "root"
-    mode 00644
     notifies :restart, "service[apache2]", :delayed
 end
