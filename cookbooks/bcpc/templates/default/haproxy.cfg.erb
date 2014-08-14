@@ -59,14 +59,6 @@ listen rabbitmq-amqp <%=node['bcpc']['management']['vip']%>:5672
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:5672 check port 5673 inter 5s rise 1 fall 1 observe layer4" %>
 <% end -%>
 
-backend rabbitmq-web-backend
-  option httpchk GET /
-  http-check expect status 200
-  reqrep ^([^\ :]*)\ /rabbitmq/(.*) \1\ /\2
-<% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:55672 check inter 5s rise 1 fall 1" %>
-<% end -%>
-
 listen ldap-389ds <%=node['bcpc']['management']['vip']%>:389
   timeout  client 1h
   timeout  server 1h
@@ -184,13 +176,6 @@ frontend horizon-http
   option tcplog
   default_backend horizon-http-backend
 
-backend horizon-http-backend
-  option httpchk GET /
-  http-check expect status 200
-<% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:80 check inter 5s rise 1 fall 1" %>
-<% end -%>
-
 frontend horizon-https
   bind <%=node['bcpc']['management']['vip']%>:443 ssl crt /etc/haproxy/haproxy.pem
   balance source
@@ -203,6 +188,21 @@ frontend horizon-https
   acl url_rabbitmq path_beg /rabbitmq
   use_backend rabbitmq-web-backend if url_rabbitmq
   default_backend horizon-http-backend
+
+backend horizon-http-backend
+  option httpchk GET /
+  http-check expect status 200
+<% @servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:80 check inter 5s rise 1 fall 1" %>
+<% end -%>
+
+backend rabbitmq-web-backend
+  option httpchk GET /
+  http-check expect status 200
+  reqrep ^([^\ :]*)\ /rabbitmq/(.*) \1\ /\2
+<% @servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:55672 check inter 5s rise 1 fall 1" %>
+<% end -%>
 
 listen elasticsearch <%=node['bcpc']['management']['vip']%>:9200
   balance  source
@@ -219,6 +219,12 @@ frontend radosgw-http
   option tcplog
   default_backend radosgw-http-backend
 
+frontend radosgw-https
+  bind <%="#{node['bcpc']['floating']['vip']}:#{node['bcpc']['ports']['haproxy']['radosgw_https']}"%> ssl crt /etc/haproxy/haproxy.pem
+  balance leastconn
+  option tcplog
+  default_backend radosgw-http-backend
+
 backend radosgw-http-backend
   option httpchk GET /
   http-check expect status 200
@@ -226,9 +232,3 @@ backend radosgw-http-backend
 <% @all_servers.each do |server| -%>
   <%= "server #{server['hostname']} #{server['bcpc']['floating']['ip']}:#{node['bcpc']['ports']['apache']['radosgw']} check inter 5s rise 1 fall 1 observe layer7" %>
 <% end -%>
-
-frontend radosgw-https
-  bind <%="#{node['bcpc']['floating']['vip']}:#{node['bcpc']['ports']['haproxy']['radosgw_https']}"%> ssl crt /etc/haproxy/haproxy.pem
-  balance leastconn
-  option tcplog
-  default_backend radosgw-http-backend
