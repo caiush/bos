@@ -2249,7 +2249,7 @@ index f66b4f2..8c3e28b 100644
          info.driver_format = 'raw'
          info.driver_cache = cache_mode
          info.target_bus = disk_bus
-@@ -571,44 +582,55 @@ class Rbd(Image):
+@@ -647,42 +582,55 @@
          return False
  
      def check_image_exists(self):
@@ -2257,17 +2257,15 @@ index f66b4f2..8c3e28b 100644
 -        for vol in rbd_volumes:
 -            if vol.startswith(self.rbd_name):
 -                return True
--
--        return False
 +        return self.driver.exists(self.rbd_name)
  
--    def _resize(self, volume_name, size):
--        size = int(size) * units.Ki
+-        return False
 +    def get_disk_size(self, name):
 +        """Returns the size of the virtual disk in bytes.
  
+-    def _resize(self, volume_name, size):
 -        with RBDVolumeProxy(self, volume_name) as vol:
--            vol.resize(size)
+-            vol.resize(int(size))
 +        The name argument is ignored since this backend already knows
 +        its name, and callers may pass a non-existent local file path.
 +        """
