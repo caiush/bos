@@ -57,6 +57,11 @@ bash "patch-for-nova-libvirt-bugs" do
     code <<-EOH
         cd /usr/lib/python2.7/dist-packages/nova
         patch -p2 < /tmp/nova-libvirt.patch
+        rv=$?
+        if [ $rv -ne 0 ]; then
+          echo "Error applying patch ($rv) - aborting!"
+          exit $rv
+        fi
         cp /tmp/nova-libvirt.patch .
     EOH
     not_if "test -f /usr/lib/python2.7/dist-packages/nova/nova-libvirt.patch"
