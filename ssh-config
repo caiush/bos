@@ -1,3 +1,7 @@
+Host *
+  ControlMaster auto
+  ControlPath /tmp/ssh-%r@%h:%p
+
 Host bcpc-vm1
 Hostname 10.0.100.11
 
