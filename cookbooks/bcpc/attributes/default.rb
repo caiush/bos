@@ -42,6 +42,8 @@ default['bcpc']['enabled']['apt_upgrade'] = false
 default['bcpc']['enabled']['keepalived_checks'] = true
 # This will enable the networking test scripts
 default['bcpc']['enabled']['network_tests'] = true
+# This will enable httpd disk caching for radosgw
+default['bcpc']['enabled']['radosgw_cache'] = false
 
 # This can be either 'sql' or 'ldap' to either store identities
 # in the mysql DB or the LDAP server
