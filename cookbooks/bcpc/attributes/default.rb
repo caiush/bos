@@ -49,6 +49,9 @@ default['bcpc']['enabled']['radosgw_cache'] = false
 # in the mysql DB or the LDAP server
 default['bcpc']['keystone']['backend'] = 'ldap'
 
+# If radosgw_cache is enabled, default to 20MB max file size
+default['bcpc']['radosgw']['cache_max_file_size'] = 20000000
+
 ###########################################
 #
 #  Host-specific defaults for the cluster
