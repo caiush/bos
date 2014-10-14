@@ -10,10 +10,10 @@ global
   group  haproxy
   pidfile  /var/run/haproxy.pid
   log /dev/log local0 info
+  maxconn  8000
 
 defaults
   log  global
-  maxconn  8000
   source <%=node['bcpc']['management']['vip']%>
   mode  http
   option http-server-close
@@ -172,13 +172,11 @@ listen ceilometer-api
 
 frontend http
   bind <%=node['bcpc']['management']['vip']%>:80
-  balance source
   option tcplog
   default_backend http-backend
 
 frontend https
   bind <%=node['bcpc']['management']['vip']%>:443 ssl crt /etc/haproxy/haproxy.pem
-  balance source
   option tcplog
   stats enable
   stats uri /haproxy
@@ -201,6 +199,7 @@ frontend https
   default_backend http-backend
 
 backend http-backend
+  balance source
   option httpchk GET /
   http-check expect status 200
 <% @servers.each do |server| -%>
@@ -208,6 +207,7 @@ backend http-backend
 <% end -%>
 
 backend horizon-backend
+  balance source
   option httpchk GET /
   http-check expect status 200
 <% @servers.each do |server| -%>
@@ -215,6 +215,7 @@ backend horizon-backend
 <% end -%>
 
 backend rabbitmq-web-backend
+  balance source
   option httpchk GET /
   http-check expect status 200
   reqrep ^([^\ :]*)\ /rabbitmq/(.*) \1\ /\2
@@ -223,6 +224,7 @@ backend rabbitmq-web-backend
 <% end -%>
 
 backend kibana-backend
+  balance source
   option httpchk GET /
   http-check expect status 200
   reqrep ^([^\ :]*)\ /kibana/(.*) \1\ /\2
@@ -231,6 +233,7 @@ backend kibana-backend
 <% end -%>
 
 backend zabbix-backend
+  balance source
   option httpchk GET /
   http-check expect status 200
   reqrep ^([^\ :]*)\ /zabbix/(.*) \1\ /\2
@@ -239,6 +242,7 @@ backend zabbix-backend
 <% end -%>
 
 backend graphite-backend
+  balance source
   option httpchk GET /
   http-check expect status 200
   reqrep ^([^\ :]*)\ /graphite/(.*) \1\ /\2
@@ -249,7 +253,6 @@ backend graphite-backend
 # This is temporary until graphite supports being served under /graphite
 frontend graphite
   bind <%="#{node['bcpc']['management']['vip']}:8888"%> ssl crt /etc/haproxy/haproxy.pem
-  balance source
   option tcplog
   default_backend graphite-backend
 
@@ -264,17 +267,16 @@ listen elasticsearch <%=node['bcpc']['management']['vip']%>:9200
 
 frontend radosgw-http
   bind <%="#{node['bcpc']['floating']['vip']}:#{node['bcpc']['ports']['haproxy']['radosgw']}"%>
-  balance leastconn
   option tcplog
   default_backend radosgw-http-backend
 
 frontend radosgw-https
   bind <%="#{node['bcpc']['floating']['vip']}:#{node['bcpc']['ports']['haproxy']['radosgw_https']}"%> ssl crt /etc/haproxy/haproxy.pem
-  balance leastconn
   option tcplog
   default_backend radosgw-http-backend
 
 backend radosgw-http-backend
+  balance leastconn
   option httpchk GET /
   http-check expect status 200
   source <%=node['bcpc']['floating']['vip']%>
