@@ -46,8 +46,8 @@ glance_api_version=2
 enabled_backends=<%= node['bcpc']['ceph']['enabled_pools'].map {|type| type.upcase}.join(",") %>
 
 # Ceilometer metrics
-control_exchange = cinder
-notification_driver = cinder.openstack.common.notifier.rpc_notifier
+#control_exchange = cinder
+#notification_driver = cinder.openstack.common.notifier.rpc_notifier
 
 [ssl]
 ca_file = /etc/ssl/certs/ssl-bcpc.pem
