@@ -113,11 +113,11 @@ use_project_ca=True
 cnt_vpn_clients=5
 
 # Ceilometer metrics
-instance_usage_audit=True
-instance_usage_audit_period=hour
-notify_on_state_change=vm_and_task_state
-notification_driver=nova.openstack.common.notifier.rpc_notifier
-notification_driver=ceilometer.compute.nova_notifier
+#instance_usage_audit=True
+#instance_usage_audit_period=hour
+#notify_on_state_change=vm_and_task_state
+#notification_driver=nova.openstack.common.notifier.rpc_notifier
+#notification_driver=ceilometer.compute.nova_notifier
 
 # Misc other settings
 logdir=/var/log/nova
