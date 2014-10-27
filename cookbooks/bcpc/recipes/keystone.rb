@@ -148,8 +148,15 @@ ruby_block "generate-random-time" do
     end
 end
 
+template "/usr/local/bin/keystone_token_cleaner" do
+    source "keystone.token_cleaner.erb"
+    owner "root"
+    group "root"
+    mode 00755
+end
+
 cron "keystone-token-flush" do
   action :create
-  command "keystone-manage token_flush"
+  command "/usr/local/bin/keystone_token_cleaner"
   hour get_config('keystone-token-clean-hour')
 end
