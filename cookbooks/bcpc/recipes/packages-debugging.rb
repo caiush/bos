@@ -29,6 +29,7 @@ package "bmon"
 package "tshark"
 package "nmap"
 package "iperf"
+package "curl"
 
 # I/O troubleshooting tools
 package "fio"
