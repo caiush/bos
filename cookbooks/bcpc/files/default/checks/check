@@ -56,7 +56,7 @@ def run_test(stack_test, config):
          result["value"] = rr["result"]
          result["message"] = rr["msg"]
 
-      except ValueError as ve:
+      except yaml.parser.ParserError as ve:
          result["value"] = "ERROR"
          result["message"] = "Failed to parse stdout:" + ve.message
    elif not result["value"]:
