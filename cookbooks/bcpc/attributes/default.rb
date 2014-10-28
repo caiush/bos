@@ -198,3 +198,13 @@ default['bcpc']['protocol']['glance'] = "https"
 default['bcpc']['protocol']['nova'] = "https"
 default['bcpc']['protocol']['cinder'] = "https"
 default['bcpc']['protocol']['heat'] = "https"
+
+
+###########################################
+#
+#  Nova Settings
+#
+###########################################
+
+# This should be upped to 5 or 6 GB for a real hardware deployment 
+default['bcpc']['nova']['reserved_host_memory_mb'] = 1024
