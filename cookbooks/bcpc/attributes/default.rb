@@ -206,3 +206,4 @@ default['bcpc']['protocol']['heat'] = "https"
 ###########################################
 # This should be upped to 5 or 6 GB for a real hardware deployment 
 default['bcpc']['nova']['reserved_host_memory_mb'] = 1024
+default['bcpc']['nova']['cpu_allocation_ratio'] = 2.0
