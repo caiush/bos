@@ -41,7 +41,7 @@ for i in bcpc-vm1 bcpc-vm2 bcpc-vm3; do
   echo "Registering $i with $MAC for ${subnet}.${node}"
   REGISTERCMD="sudo cobbler system remove --name=$i; sudo cobbler system add --name=$i --hostname=$i --profile=bcpc_host --ip-address=${subnet}.${node} --mac=${MAC}"
   if hash vagrant 2>/dev/null; then
-    vagrant ssh -c $REGISTERCMD
+    vagrant ssh -c "$REGISTERCMD"
   else
       if hash sshpass 2>/dev/null; then
 	  echo ubuntu | sshpass -p ubuntu $SSHCMD -tt ubuntu@$1 "$REGISTERCMD"
