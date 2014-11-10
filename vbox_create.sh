@@ -111,13 +111,13 @@ function remove_DHCPservers {
     # (e.g. ^vboxnet0$|^vboxnet1$)
     local existing_nets_reg_ex=$(sed -e 's/^/^/' -e '/$/$/' -e 's/ /$|^/g' <<< "$vm_networks")
 
-    $VBM list dhcpservers | grep -E "^NetworkName:\s+HostInterfaceNetworking" | sed 's/^.*-//' |
+    $VBM list dhcpservers | grep -E "^NetworkName:\s+HostInterfaceNetworking" | awk '{print $2}' |
     while read -r network_name; do
       [[ -n $existing_nets_reg_ex ]] && ! egrep -q $existing_nets_reg_ex <<< $network_name && continue
       remove_DHCPservers $network_name
     done
   else
-    $VBM dhcpserver remove --ifname "$network_name" && local return=0 || local return=$?
+    $VBM dhcpserver remove --netname "$network_name" && local return=0 || local return=$?
     return $return
   fi
 }
