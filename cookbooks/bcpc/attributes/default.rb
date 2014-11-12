@@ -60,10 +60,12 @@ default['bcpc']['radosgw']['cache_max_file_size'] = 20000000
 default['bcpc']['ceph']['hdd_disks'] = ["sdb", "sdc"]
 default['bcpc']['ceph']['ssd_disks'] = ["sdd", "sde"]
 default['bcpc']['ceph']['enabled_pools'] = ["ssd", "hdd"]
+
 default['bcpc']['management']['interface'] = "eth0"
 default['bcpc']['storage']['interface'] = "eth1"
 default['bcpc']['floating']['interface'] = "eth2"
 default['bcpc']['fixed']['vlan_interface'] = node['bcpc']['floating']['interface']
+
 
 ###########################################
 #
@@ -96,6 +98,11 @@ default['bcpc']['ceph']['vms_mem']['type'] = 'ssd'
 default['bcpc']['ceph']['vms_mem']['name'] = "vmsmem"
 default['bcpc']['ceph']['ssd']['ruleset'] = 1
 default['bcpc']['ceph']['hdd']['ruleset'] = 2
+
+# If you are about to make a big change to the ceph cluster
+# setting to true will reduce the load form the resulting
+# ceph rebalance and keep things operational. 
+default['bcpc']['ceph']['rebalance'] = false
 
 ###########################################
 #

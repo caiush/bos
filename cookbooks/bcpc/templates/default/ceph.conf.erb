@@ -16,6 +16,10 @@
 [mon]
     keyring = /var/lib/ceph/mon/$cluster-$id/keyring
     debug paxos = 0/5
+<% if @node["bcpc"]["ceph"]["rebalance"] %> 
+    paxos propose interval = 60 
+<% end %>
+
 
 [mds]
     keyring = /var/lib/ceph/mds/$cluster-$id/keyring
@@ -27,6 +31,14 @@
     osd_fs_type = xfs
     osd_fs_mount_options_xfs = noexec,nodev,noatime,nodiratime,barrier=0,discard
     osd_crush_update_on_start = false
+<% if @node["bcpc"]["ceph"]["rebalance"] %> 
+    osd_recovery_max_active = 1
+    osd_max_backfills  = 1
+    osd_op_threads = 10    
+    osd_client_op_priority = 63 
+    osd_recovery_op_priority = 1
+    osd mon report interval min = 30     
+<% end %>
 
 [client.radosgw.gateway]
     keyring = /var/lib/ceph/radosgw/$cluster-$id/keyring
