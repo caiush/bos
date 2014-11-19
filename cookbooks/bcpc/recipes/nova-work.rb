@@ -133,6 +133,16 @@ bash "enable-defaults-libvirt-bin" do
     notifies :restart, "service[libvirt-bin]", :delayed
 end
 
+bash "set-libvirt-bin-ulimit" do
+    user "root"
+    code <<-EOH
+        sed --in-place '/^ulimit/d' /etc/default/libvirt-bin
+        echo "ulimit -n #{node['bcpc']['libvirt-bin']['ulimit']['nofile']}" >> /etc/default/libvirt-bin
+    EOH
+    not_if "grep -e \"^ulimit -n #{node['bcpc']['libvirt-bin']['ulimit']['nofile']}$\" /etc/default/libvirt-bin"
+    notifies :restart, "service[libvirt-bin]", :delayed
+end
+
 template "/etc/libvirt/libvirtd.conf" do
     source "libvirtd.conf.erb"
     owner "root"
