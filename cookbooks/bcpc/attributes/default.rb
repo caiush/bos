@@ -12,6 +12,8 @@ default['bcpc']['openstack_release'] = "icehouse"
 default['bcpc']['openstack_branch'] = "proposed"
 # Should be kvm (or qemu if testing in VMs that don't support VT-x)
 default['bcpc']['virt_type'] = "kvm"
+# ulimits for libvirt-bin
+default['bcpc']['libvirt-bin']['ulimit']['nofile'] = 4096
 # Region name for this cluster
 default['bcpc']['region_name'] = node.chef_environment
 # Domain name for this cluster (used in many configs)
