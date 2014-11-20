@@ -14,7 +14,7 @@ sql_idle_timeout=3600
 rabbit_host=<%=node['bcpc']['management']['vip']%>
 rabbit_password=<%=get_config('rabbitmq-password')%>
 rabbit_ha_queues=False
-rabbit_durable_queues=True
+rabbit_durable_queues=False
 
 # If using qpid...
 #rpc_backend=nova.openstack.common.rpc.impl_qpid
