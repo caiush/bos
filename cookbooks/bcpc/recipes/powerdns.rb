@@ -226,7 +226,7 @@ if node['bcpc']['enabled']['dns'] then
                             'A' AS type,
                             nova.floating_ips.address AS content,
                             300 AS ttl,
-                            NULL AS type,
+                            NULL AS prio,
                             NULL AS change_date FROM nova.instances, nova.fixed_ips, nova.floating_ips
                             WHERE nova.instances.uuid = nova.fixed_ips.instance_uuid AND nova.floating_ips.fixed_ip_id = nova.fixed_ips.id;
                 ]
