@@ -8,8 +8,14 @@ source ./virtualbox_env.sh
 if ! hash vagrant 2>/dev/null; then
     if [[ -z "$1" ]]; then
 	# only if vagrant not available do we need the param
-	echo "Usage: $0 <bootstrap node ip address>"
+	echo "Usage: $0 <bootstrap node ip address> (start)"
 	exit
+    fi
+fi
+
+if [[ -n "$2" ]]; then
+    if [[ "$2" =~ start ]]; then
+        STARTVM=true
     fi
 fi
 
@@ -62,3 +68,10 @@ else
       ssh -t -i $KEYFILE ubuntu@$1 "$SYNCCMD"
   fi
 fi
+
+if [[ -n "$STARTVM" ]]; then
+    for i in bcpc-vm1 bcpc-vm2 bcpc-vm3; do
+        VBoxManage startvm $i
+    done
+fi
+
