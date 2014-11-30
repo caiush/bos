@@ -19,6 +19,7 @@
 # This may be helpful as a quick check after completing the knife
 # bootstrap phase (assigning roles to nodes).
 #
+#set -x
 if [[ -z "$1" ]]; then
     echo "Usage $0 'environment' [role|IP] [verbose]"
     exit
@@ -28,10 +29,17 @@ if [[ -z `which fping` ]]; then
     exit
 fi
 
+SOCKETDIR=/home/ubuntu/.ssh/sockets
+if [[ ! -d $SOCKETDIR ]]; then
+    mkdir $SOCKETDIR
+fi
+
+SSH_COMMAND_OPTS="-o ControlMaster=auto -o ControlPath=${SOCKETDIR}/%r@%h-%p -o ControlPersist=600"
+SSH_COMMON="-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o VerifyHostKeyDNS=no"
+
 echo "$0 : Checking which hosts are online..."
 UPHOSTS=`./cluster-whatsup.sh $2`
 
-#set -x
 ENVIRONMENT="$1"
 HOSTWANTED="$2"
 VERBOSE="$3"
@@ -43,6 +51,21 @@ function vtrace {
         done
     fi
 }
+
+# verify we can access the data bag for this environment
+KNIFESTAT=`knife data bag show configs $ENVIRONMENT 2>&1 | grep ERROR`
+if [[ ! -z "$KNIFESTAT" ]]; then
+    echo "knife error $KNIFESTAT when showing the config"
+    exit
+fi
+
+# get the cobbler root passwd from the data bag
+PASSWD=`knife data bag show configs $ENVIRONMENT | grep "cobbler-root-password:" | awk ' {print $2}'`
+if [[ -z "$PASSWD" ]]; then
+    echo "Failed to retrieve 'cobbler-root-password'"
+    exit
+fi
+
 
 declare -A HOSTNAMES
 
@@ -62,7 +85,6 @@ if [[ -f cluster.txt ]]; then
 	    fi
 	done
         if [[ -z "$HOSTWANTED" || "$HOSTWANTED" = all || "$HOSTWANTED" = "$ROLE" || "$HOSTWANTED" = "$IPADDR" || "$HOSTWANTED" = "$HOSTNAME" ]]; then
-#       HOSTS="$HOSTS $HOSTNAME"
 	    if [[ "$THISUP" = "false" ]]; then
 		echo "$HOSTNAME is down"
 		continue
@@ -77,20 +99,26 @@ if [[ -f cluster.txt ]]; then
     vtrace "HOSTS = $HOSTS"
     echo
     
+
     for HOST in $HOSTS; do
 
+	# open controller session
+	sshpass -p "$PASSWD" ssh $SSH_COMMAND_OPTS $SSH_COMMON -Mn $HOST
+
+	SSH="ssh $SSH_COMMAND_OPTS $SSH_COMMON $HOST"
+
 	echo "Checking name resolution"
-	./nodessh.sh $ENVIRONMENT $HOST "grep -m1 server /etc/ntp.conf | cut -f2 -d' ' > /tmp/clusterjunk.txt "
-	./nodessh.sh $ENVIRONMENT $HOST "cat /tmp/clusterjunk.txt | xargs -n1 host"
+	$SSH "grep -m1 server /etc/ntp.conf | cut -f2 -d' ' > /tmp/clusterjunk.txt "
+	$SSH  "cat /tmp/clusterjunk.txt | xargs -n1 host"
 
 	echo "checking NTP server"
-	./nodessh.sh $ENVIRONMENT $HOST "cat /tmp/clusterjunk.txt | xargs -n1 ping -c 1"
+        $SSH "cat /tmp/clusterjunk.txt | xargs -n1 ping -c 1"
 
 	IDX=`echo $HOST | tr '.' '-'`
 	NAME=${HOSTNAMES["$IDX"]}
 	vtrace "Checking $NAME ($HOST)..."
 
-	ROOTSIZE=`./nodessh.sh $ENVIRONMENT $HOST "df -k / | grep -v Filesystem"`
+	ROOTSIZE=`$SSH "df -k / | grep -v Filesystem"`
 	ROOTSIZE=`echo $ROOTSIZE | awk '{print $4}'`
 	ROOTGIGS=$((ROOTSIZE/(1024*1024)))
 	if [[ $ROOTSIZE -eq 0 ]]; then
@@ -103,44 +131,27 @@ if [[ -f cluster.txt ]]; then
             vtrace "Root fileystem size = $ROOTSIZE ($ROOTGIGS GB) "
 	fi
 
-# ugh, so slow
-#	printf "Disks : "
-#	for DISK in sda sdb sdc sdd sde sdf sdg sdh sdi sdj sdk sdl sdm; do
-#	    DISKTHERE=`./nodessh.sh $ENVIRONMENT $HOST "/sbin/fdisk -l /dev/$DISK"`
-#	    # this is a bit tricksy. Invoking fdisk without root
-#	    # privilege on a disk that is present raises an error, but
-#	    # does nothing if the device is not there at all - so a
-#	    # "present/notpresent" check is implemented as
-#	    # non-null-string/null-string
-#	    if [[ ! -z "$DISKTHERE" ]]; then
-#	        printf "$DISK "
-#	    else
-#		printf "!$DISK "
-#	    fi
-#	done
-#	printf "\n"
-
-        if [[ -z `./nodessh.sh $ENVIRONMENT $HOST "ip route show table mgmt | grep default"` ]]; then
+        if [[ -z `$SSH "ip route show table mgmt | grep default"` ]]; then
             echo "$HOST no mgmt default route !!WARNING!!"
 	    BADHOSTS="$BADHOSTS $HOST"
         else
             vtrace "$HOST has a default mgmt route"
             MG=$[MG + 1]
         fi
-        if [[ -z `./nodessh.sh $ENVIRONMENT $HOST "ip route show table storage | grep default"` ]]; then
+        if [[ -z `$SSH "ip route show table storage | grep default"` ]]; then
             echo "$HOST has no storage default route !!WARNING!!"
 	    BADHOSTS="$BADHOSTS $HOST"
         else
             vtrace "$HOST has a default storage route"
             SG=$[SG + 1]
         fi
-        CHEF=`./nodessh.sh $ENVIRONMENT $HOST "which chef-client"`
+        CHEF=`$SSH "which chef-client"`
         if [[ -z "$CHEF" ]]; then
             echo "$HOST doesn't seem to have chef installed so probably hasn't been assigned a role"
             echo
             continue
         fi
-        STAT=`./nodessh.sh $ENVIRONMENT $HOST "ceph -s | grep HEALTH" sudo`
+        STAT=`$SSH "ceph -s | grep HEALTH"`
         STAT=`echo $STAT | cut -f2 -d:`
         if [[ "$STAT" =~ "HEALTH_OK" ]]; then
             vtrace "$HOST ceph : healthy"
@@ -155,8 +166,8 @@ if [[ -f cluster.txt ]]; then
         # following ps command it's in good shape, if not dump the
         # entire output of that command to the status. This needs more
         # work
-        FLUENTD=`./nodessh.sh $ENVIRONMENT $HOST "ps w -C ruby -C td-agent --no-heading | grep -v chef-client" sudo`
-        STAT=`./nodessh.sh $ENVIRONMENT $HOST "ps w -C ruby -C td-agent --no-heading | grep -v chef-client | wc -l" sudo`
+        FLUENTD=`$SSH "ps w -C ruby -C td-agent --no-heading | grep -v chef-client" `
+        STAT=`$SSH "ps w -C ruby -C td-agent --no-heading | grep -v chef-client | wc -l" `
         STAT=`echo $STAT | cut -f2 -d:`  
         if [[ "$STAT" =~ 2 ]]; then
             if [[ ! -z "$VERBOSE" ]]; then 
@@ -166,7 +177,7 @@ if [[ -f cluster.txt ]]; then
             printf "$HOST %20s %s\n" fluentd "$FLUENTD"
         fi
         for SERVICE in keystone glance-api glance-registry cinder-scheduler cinder-volume cinder-api nova-api nova-novncproxy nova-scheduler nova-consoleauth nova-cert nova-conductor nova-compute nova-network haproxy; do
-            STAT=`./nodessh.sh $ENVIRONMENT $HOST "service $SERVICE status | grep running" sudo`
+            STAT=`$SSH "service $SERVICE status 2>&1"`
             if [[ ! "$STAT" =~ "unrecognized" ]]; then
                 STAT=`echo $STAT | cut -f2 -d":"`
                 if [[ ! "$STAT" =~ "start/running" ]]; then
@@ -181,6 +192,7 @@ if [[ -f cluster.txt ]]; then
             fi
         done
         echo
+	ssh $SSH_COMMAND_OPTS -O exit $HOST
     done
 else
     echo "Warning 'cluster.txt' not found"
