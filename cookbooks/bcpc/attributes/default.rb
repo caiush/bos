@@ -204,6 +204,10 @@ default['bcpc']['protocol']['heat'] = "https"
 #  Nova Settings
 #
 ###########################################
-# This should be upped to 5 or 6 GB for a real hardware deployment 
+#
+# Over-allocation settings. Set according to your cluster
+# SLAs. Default is to not allow over allocation of memory
+# a slight over allocation of CPU (x2). 
+default['bcpc']['nova']['ram_allocation_ratio'] = 1.0
 default['bcpc']['nova']['reserved_host_memory_mb'] = 1024
 default['bcpc']['nova']['cpu_allocation_ratio'] = 2.0
