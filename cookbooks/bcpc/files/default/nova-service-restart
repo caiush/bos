@@ -6,9 +6,9 @@ Ideally this should even not exist, but nova does seem to hang up
 quite often for many reasons, e.g.:
 * rabbit q's failing over
 * database connection being reset
-* inconsistent state in DB and virsh
+* inconsistent state in DB and libvirt
 
-This script has some guards against containtly restarting (--retry)
+This script has some guards against continuosly restarting services (--retry)
 
                                                                                                                                                              
 """
