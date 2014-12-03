@@ -218,4 +218,16 @@ if node['bcpc']['virt_type'] == "kvm" then
     end
 end
 
+cookbook_file "/usr/local/bin/nova-service-restart" do
+  source "nova-service-restart"
+  owner "root"
+  mode "00755"
+end
+
+cron "restart-nova-kludge" do
+  action :create
+  command "/usr/local/bin/nova-service-restart -i #{node['bcpc']['management']['vip']} -u #{get_config('mysql-nova-user')} -p '#{get_config('mysql-nova-password')}'  > /dev/null 2>&1"
+  minute '*/5'   # run this every 5 mins
+end
+
 include_recipe "bcpc::cobalt"
