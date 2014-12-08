@@ -29,7 +29,7 @@ if [[ -z `which fping` ]]; then
     exit
 fi
 
-SOCKETDIR=/home/operations/.ssh/sockets
+SOCKETDIR=${HOME}/.ssh/sockets
 if [[ ! -d $SOCKETDIR ]]; then
     mkdir ${SOCKETDIR}
     chmod a+rwx ${SOCKETDIR}
