@@ -29,28 +29,32 @@ if [[ -z `which fping` ]]; then
     exit
 fi
 
-SOCKETDIR=/home/ubuntu/.ssh/sockets
+SOCKETDIR=/home/operations/.ssh/sockets
 if [[ ! -d $SOCKETDIR ]]; then
-    mkdir $SOCKETDIR
+    mkdir ${SOCKETDIR}
+    chmod a+rwx ${SOCKETDIR}
+else
+    ls ${SOCKETDIR}
 fi
 
 SSH_COMMAND_OPTS="-o ControlMaster=auto -o ControlPath=${SOCKETDIR}/%r@%h-%p -o ControlPersist=600"
 SSH_COMMON="-q -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o VerifyHostKeyDNS=no"
 
 echo "$0 : Checking which hosts are online..."
-UPHOSTS=`./cluster-whatsup.sh $2`
+UPHOSTS=`./cluster-whatsup-silent.sh $2`
 
 ENVIRONMENT="$1"
 HOSTWANTED="$2"
 VERBOSE="$3"
-# verbose trace - information that's not normally needed
 function vtrace {
-    if [[ ! -z "$VERBOSE" ]]; then
+    if [[ -n "$VERBOSE" ]]; then
         for STR in "$@"; do
             echo -e $STR
         done
     fi
 }
+
+# verbose trace - information that's not normally needed
 # verbose printf-style trace
 function vftrace {
     if [[ ! -z "$VERBOSE" ]]; then
@@ -97,6 +101,10 @@ if [[ -f cluster.txt ]]; then
             else
                 vtrace "$HOSTNAME is up"
             fi
+	    if [[ ! "$ROLE" = "head" && ! "$ROLE" = work && ! "$ROLE" = storage-work ]]; then
+		vtrace "$HOSTNAME : unrecognized $ROLE - skipping "
+		continue
+	    fi
             HOSTS="$HOSTS $IPADDR"
             IDX=`echo $IPADDR | tr '.' '-'`
             HOSTNAMES["$IDX"]="$HOSTNAME"
@@ -109,16 +117,9 @@ if [[ -f cluster.txt ]]; then
     for HOST in $HOSTS; do
 
         # open controller session
-        sshpass -p "$PASSWD" ssh $SSH_COMMAND_OPTS $SSH_COMMON -Mn $HOST
+        sshpass -p "$PASSWD" ssh $SSH_COMMAND_OPTS $SSH_COMMON -Mn ubuntu@$HOST >/dev/null 2>&1
         
-        SSH="ssh $SSH_COMMAND_OPTS $SSH_COMMON $HOST"
-        
-        echo "Checking name resolution"
-        $SSH "grep -m1 server /etc/ntp.conf | cut -f2 -d' ' > /tmp/clusterjunk.txt "
-        $SSH  "cat /tmp/clusterjunk.txt | xargs -n1 host"
-        
-        echo "checking NTP server"
-        $SSH "cat /tmp/clusterjunk.txt | xargs -n1 ping -c 1"
+        SSH="ssh $SSH_COMMAND_OPTS $SSH_COMMON ubuntu@$HOST"
         
         IDX=`echo $HOST | tr '.' '-'`
         NAME=${HOSTNAMES["$IDX"]}
@@ -180,7 +181,7 @@ if [[ -f cluster.txt ]]; then
                 vtrace "timeserver pinged ok : $NTP"
                 
                 # Now try to actually set the time by contacting it
-                TIME=`./nodessh.sh $ENVIRONMENT $HOST "cat /tmp/clusterjunk.txt | xargs -n1 ntpdate -q"`
+                TIME=`./nodessh.sh $ENVIRONMENT $HOST "cat /tmp/clusterjunk.txt | xargs -n1 ntpdate -q -p1"`
                 if [[ ! "$TIME" =~ "time server" ]];then
                     echo "timeserver couldn't be used !!WARNING!!"
                 else
@@ -209,8 +210,8 @@ if [[ -f cluster.txt ]]; then
         # entire output of that command to the status. This needs more
         # work
         SERVICE="fluentd"
-        FLUENTD=`$SSH "ps w -C ruby -C td-agent --no-heading | grep -v chef-client" sudo`
-        STAT=`$SSH "ps w -C ruby -C td-agent --no-heading | grep -v chef-client | wc -l" sudo`
+        FLUENTD=`$SSH "ps w -C ruby -C td-agent --no-heading | grep -v chef-client"`
+        STAT=`$SSH "ps w -C ruby -C td-agent --no-heading | grep -v chef-client | wc -l"`
         STAT=`echo $STAT | cut -f2 -d:`  
         if [[ "$STAT" =~ 2 ]]; then
             STAT=" normal"
@@ -221,7 +222,7 @@ if [[ -f cluster.txt ]]; then
         
         # Finally, check well-known BCPC services run out of upstart
         for SERVICE in keystone glance-api glance-registry cinder-scheduler cinder-volume cinder-api nova-api nova-novncproxy nova-scheduler nova-consoleauth nova-cert nova-conductor nova-compute nova-network haproxy apache2; do
-            STAT=`$SSH "service $SERVICE status | grep running" sudo`
+            STAT=`$SSH "service $SERVICE status 2>&1"`
             if [[ ! "$STAT" =~ "unrecognized" ]]; then
                 
                 # upstart at least recognizes the service. Now for any
@@ -254,7 +255,7 @@ if [[ -f cluster.txt ]]; then
         done
         
         echo
-        ssh $SSH_COMMAND_OPTS -O exit $HOST
+        ssh $SSH_COMMAND_OPTS -O exit ubuntu@$HOST >/dev/null 2>&1
 
     done
 else
