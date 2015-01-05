@@ -1,5 +1,20 @@
 #!/usr/bin/perl
 use strict;
+use warnings;
+
+sub getLoggingTime {
+
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst)=localtime(time);
+    my $nice_timestamp = sprintf ( "[%04d/%02d/%02d %02d:%02d:%02d] ",
+                                   $year+1900,$mon+1,$mday,$hour,$min,$sec);
+    return $nice_timestamp;
+}
+
+# timestamped print
+sub myprint {
+    my $timestamp = getLoggingTime();
+    print "$timestamp " . "@_";
+}
 
 # subroutine to verify that the named table in param 1 has a default
 # route.
@@ -9,14 +24,14 @@ sub checkroute {
 
     my $network = shift(@_);
     my $verbose = shift(@_);
-    print "checking $network network\n" if "$verbose";
+    myprint "checking $network network\n" if "$verbose";
     my $command = "ip route show table $network | grep -i default";
     my $result = system("$command >/dev/null 2>&1");
     if ($result) {
-        print "No default route in table $network\n" if "$verbose";
+        myprint "WARN: No default route in table $network\n" if "$verbose";
         return 0;
     } else {
-        print "$network passes (has default route)\n" if "$verbose";
+        myprint "Info: $network passes (has default route)\n" if "$verbose";
         return 1;
     }
 }
@@ -25,7 +40,7 @@ sub checkroute {
 my $mgmt    = checkroute ("mgmt", 1);
 my $storage = checkroute ("storage", 1);
 
-print "Monitoring default routes status  ...\n";
+myprint "Monitoring default routes status  ...\n";
 
 # monitor all IP events and after each one check to see whether the
 # default route appeared or disappeared
@@ -37,9 +52,9 @@ while (<IPEVENTS> )
     my $currentmgmt = checkroute("mgmt",0);
     if ($currentmgmt != $mgmt) {
 	if ($currentmgmt) {
-	    print "Info: Default route established on mgmt network after \n $LINE\n";
+	    myprint "Info: Default route established on mgmt network after \n $LINE\n";
 	} else {
-	    print "WARN: Default route disappeared on mgmt network after \n $LINE\n";
+	    myprint "WARN: Default route disappeared on mgmt network after \n $LINE\n";
 	}
     }
     $mgmt = $currentmgmt;
@@ -48,9 +63,9 @@ while (<IPEVENTS> )
 
     if ($currentstorage != $storage) {
 	if ($currentstorage) {
-	    print "Info: Default route established on storage network after \n $LINE\n";
+	    myprint "Info: Default route established on storage network after \n $LINE\n";
 	} else {
-	    print "WARN: Default route disappeared on storage network after \n $LINE\n";
+	    myprint "WARN: Default route disappeared on storage network after \n $LINE\n";
 	}
     }
     $storage = $currentstorage;
