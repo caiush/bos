@@ -42,6 +42,8 @@ my $storage = checkroute ("storage", 1);
 
 myprint "Monitoring default routes status  ...\n";
 
+my @scrollback;
+
 # monitor all IP events and after each one check to see whether the
 # default route appeared or disappeared
 open (IPEVENTS, "ip monitor all |") or die "Failed $!\n";
@@ -49,26 +51,41 @@ while (<IPEVENTS> )
 {
     my $LINE = $_;
 
+    push @scrollback, $LINE;
+
     my $currentmgmt = checkroute("mgmt",0);
     if ($currentmgmt != $mgmt) {
-	if ($currentmgmt) {
-	    myprint "Info: Default route established on mgmt network after \n $LINE\n";
-	} else {
-	    myprint "WARN: Default route disappeared on mgmt network after \n $LINE\n";
-	}
+        if ($currentmgmt) {
+            myprint "Info: Default route established on mgmt network after \n $LINE\n";
+        } else {
+            myprint "WARN: Default route disappeared on mgmt network after \n $LINE\n";
+        }
     }
     $mgmt = $currentmgmt;
 
     my $currentstorage = checkroute("storage",0);
 
     if ($currentstorage != $storage) {
-	if ($currentstorage) {
-	    myprint "Info: Default route established on storage network after \n $LINE\n";
-	} else {
-	    myprint "WARN: Default route disappeared on storage network after \n $LINE\n";
-	}
+        if ($currentstorage) {
+            myprint "Info: Default route established on storage network after \n $LINE\n";
+        } else {
+            myprint "WARN: Default route disappeared on storage network after \n $LINE\n";
+        }
     }
     $storage = $currentstorage;
+
+    if ($#scrollback >= 10) {
+        shift @scrollback;          
+    }
+
+    myprint "\n-----------------------------------------------------\n";
+
+    foreach (@scrollback) {
+        myprint "$_";
+    }
+
+    myprint "\n-----------------------------------------------------\n";
+
 }
 close IPEVENTS
 
