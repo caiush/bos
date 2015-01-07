@@ -12,6 +12,8 @@ default['bcpc']['openstack_release'] = "icehouse"
 default['bcpc']['openstack_branch'] = "proposed"
 # Should be kvm (or qemu if testing in VMs that don't support VT-x)
 default['bcpc']['virt_type'] = "kvm"
+# Define the kernel to be installed. By default, track latest LTS kernel
+default['bcpc']['preseed']['kernel'] = "linux-image-generic-lts-trusty"
 # ulimits for libvirt-bin
 default['bcpc']['libvirt-bin']['ulimit']['nofile'] = 4096
 # Region name for this cluster
@@ -98,6 +100,12 @@ default['bcpc']['ceph']['vms_mem']['type'] = 'ssd'
 default['bcpc']['ceph']['vms_mem']['name'] = "vmsmem"
 default['bcpc']['ceph']['ssd']['ruleset'] = 1
 default['bcpc']['ceph']['hdd']['ruleset'] = 2
+
+# If you are about to make a big change to the ceph cluster
+# setting to true will reduce the load form the resulting
+# ceph rebalance and keep things operational. 
+# See wiki for further details. 
+default['bcpc']['ceph']['rebalance'] = false
 
 ###########################################
 #
@@ -200,3 +208,16 @@ default['bcpc']['protocol']['glance'] = "https"
 default['bcpc']['protocol']['nova'] = "https"
 default['bcpc']['protocol']['cinder'] = "https"
 default['bcpc']['protocol']['heat'] = "https"
+
+###########################################
+#
+#  Nova Settings
+#
+###########################################
+#
+# Over-allocation settings. Set according to your cluster
+# SLAs. Default is to not allow over allocation of memory
+# a slight over allocation of CPU (x2). 
+default['bcpc']['nova']['ram_allocation_ratio'] = 1.0
+default['bcpc']['nova']['reserved_host_memory_mb'] = 1024
+default['bcpc']['nova']['cpu_allocation_ratio'] = 2.0
