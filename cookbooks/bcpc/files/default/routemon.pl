@@ -16,11 +16,11 @@ sub myprint {
     print "$timestamp " . "@_";
 }
 
-# subroutine to verify that the named table in param 1 has a default
-# route.
-# param 2 can optionally specify verbose output
+# Subroutine to verify that the named IP routing table in param 1 has
+# a default route.
+# Param 2 can optionally specify verbose output
 # Returns 1 if network has default route present, else return 0
-sub checkroute {
+sub hasdefaultroute {
 
     my $network = shift(@_);
     my $verbose = shift(@_);
@@ -36,58 +36,118 @@ sub checkroute {
     }
 }
 
-# check current status of routes for comparison later
-my $mgmt    = checkroute ("mgmt", 1);
-my $storage = checkroute ("storage", 1);
+# number of times we are allowed to fix the routes
+my $fixes = 1000;
+
+my $override = shift @ARGV;
+if ($override) {
+    $fixes = $override;
+    myprint "Allowable fix attempts set to: $fixes\n";
+}
+
+# check and retain current status of routes for comparison later
+my $mgmt_up    = hasdefaultroute ("mgmt", 1);
+my $storage_up = hasdefaultroute ("storage", 1);
+
+# true if either network lacks a default route
+my $routedown = (!($mgmt_up && $storage_up));
+
+sub fix_routes {
+    if ($fixes>0) {
+        myprint "Now attempting to fix default routes...\n";
+        my $fixcommand = "/etc/network/if-up.d/bcpc-routing";
+        system("$fixcommand");
+        $fixes--;
+        # check and see if the routes came back here
+        $mgmt_up    = hasdefaultroute ("mgmt", 1);
+        $storage_up = hasdefaultroute ("storage", 1);
+        if ($mgmt_up && $storage_up) {
+            myprint "Fixed. Remaining fixes: $fixes\n";
+            $routedown = 0;
+        } else {
+            myprint "Not fixed. Unknown behaviours, aborting fix attempts\n";
+            $fixes = 0;
+        }
+    } else {
+        myprint "No fixes left\n";
+    }
+}
+
+# Attempt to start in a good state before we begin monitoring the IP
+# subsystem
+if ($routedown) {
+    fix_routes();
+}
 
 myprint "Monitoring default routes status  ...\n";
 
+# When routes go bad, print out the last few events for diagnostic
+# purposes.
 my @scrollback;
 
-# monitor all IP events and after each one check to see whether the
-# default route appeared or disappeared
-open (IPEVENTS, "ip monitor all |") or die "Failed $!\n";
-while (<IPEVENTS> )
-{
-    my $LINE = $_;
-
-    push @scrollback, $LINE;
-
-    my $currentmgmt = checkroute("mgmt",0);
-    if ($currentmgmt != $mgmt) {
-        if ($currentmgmt) {
-            myprint "Info: Default route established on mgmt network after \n $LINE\n";
-        } else {
-            myprint "WARN: Default route disappeared on mgmt network after \n $LINE\n";
-        }
+sub dump_scrollback() {
+        
+    myprint "-----------------------------------------------------\n";
+    
+    while (my $line = shift @scrollback) {
+        myprint $line;
     }
-    $mgmt = $currentmgmt;
-
-    my $currentstorage = checkroute("storage",0);
-
-    if ($currentstorage != $storage) {
-        if ($currentstorage) {
-            myprint "Info: Default route established on storage network after \n $LINE\n";
-        } else {
-            myprint "WARN: Default route disappeared on storage network after \n $LINE\n";
-        }
-    }
-    $storage = $currentstorage;
-
-    if ($#scrollback >= 10) {
-        shift @scrollback;          
-    }
-
-    myprint "\n-----------------------------------------------------\n";
-
-    foreach (@scrollback) {
-        myprint "$_";
-    }
-
-    myprint "\n-----------------------------------------------------\n";
-
+    
+    myprint "-----------------------------------------------------\n";
 }
-close IPEVENTS
 
 
+while (1) {
+    
+    myprint "Open \"ip monitor\" stream\n";
+    
+    # monitor all IP events and after each one check to see whether
+    # the default route appeared or disappeared
+    my $child = open (IPEVENTS, "ip monitor all |") or die "Failed $!\n";
+    while (<IPEVENTS> )
+    {
+        my $LINE = $_;
+        
+        push @scrollback, $LINE;
+        while ($#scrollback > 10) {
+            shift @scrollback;          
+        }
+        
+        my $currentmgmt = hasdefaultroute("mgmt",0);
+        if ($currentmgmt != $mgmt_up) {
+            if ($currentmgmt) {
+                myprint "Info: Default route established on mgmt network, last events: \n";
+            } else {
+                $routedown = 1;
+                myprint "WARN: Default route disappeared on mgmt network, last events: \n";
+                dump_scrollback();
+            }
+        }
+        $mgmt_up = $currentmgmt;
+        
+        my $currentstorage = hasdefaultroute("storage",0);
+        if ($currentstorage != $storage_up) {
+            if ($currentstorage) {
+                myprint "Info: Default route established on storage network, last events: \n";
+            } else {
+                $routedown = 1;
+                myprint "WARN: Default route disappeared on storage network, last events: \n ";
+                dump_scrollback();
+            }
+        }
+        $storage_up = $currentstorage;
+        
+        if ($routedown) {
+            fix_routes();
+            # give up monitoring this particular stream - throw away the output
+            last;
+        }
+    }
 
+    # terminate the sub-process to avoid leaking memory
+    kill 15, $child;
+    close IPEVENTS;
+
+    # make sure we don't print any stale ip events
+    undef(@scrollback);
+}
