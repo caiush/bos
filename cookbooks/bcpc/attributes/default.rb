@@ -221,3 +221,16 @@ default['bcpc']['protocol']['heat'] = "https"
 default['bcpc']['nova']['ram_allocation_ratio'] = 1.0
 default['bcpc']['nova']['reserved_host_memory_mb'] = 1024
 default['bcpc']['nova']['cpu_allocation_ratio'] = 2.0
+###########################################
+#
+# Routemon settings
+#
+###########################################
+#
+
+# numfixes is how many times to try and fix default routes in the mgmt
+# and storage networks when they disappear. If numfixes starts off at
+# 0, or after 'numfixes' attempts have been made, then routemon
+# subsequently only monitors and reports
+#
+default['bcpc']['routemon']['numfixes'] = 0
