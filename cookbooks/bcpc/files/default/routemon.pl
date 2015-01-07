@@ -37,13 +37,18 @@ sub hasdefaultroute {
 }
 
 # number of times we are allowed to fix the routes
-my $fixes = 1000;
+# default 0 => do not try at all
+my $fixes = 0;
 
 my $override = shift @ARGV;
-if ($override) {
+if ($override>0) {
     $fixes = $override;
-    myprint "Allowable fix attempts set to: $fixes\n";
 }
+
+myprint "-----------------------------------------------------\n";
+myprint "Service \"routemon\" starting ...\n";
+myprint "-----------------------------------------------------\n";
+myprint "Allowable fix attempts set to: $fixes\n";
 
 # check and retain current status of routes for comparison later
 my $mgmt_up    = hasdefaultroute ("mgmt", 1);
