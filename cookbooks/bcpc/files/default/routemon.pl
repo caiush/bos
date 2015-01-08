@@ -25,7 +25,7 @@ sub hasdefaultroute {
     my $network = shift(@_);
     my $verbose = shift(@_);
     myprint "checking $network network\n" if "$verbose";
-    my $command = "ip route show table $network | grep -i default";
+    my $command = "ip route show table $network | grep -i '^default'";
     my $result = system("$command >/dev/null 2>&1");
     if ($result) {
         myprint "WARN: No default route in table $network\n" if "$verbose";
