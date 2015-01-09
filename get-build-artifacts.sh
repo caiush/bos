@@ -24,8 +24,24 @@ if [[ ${BOOT} = "10.0.100.3" ]]; then
         fi
     fi
     BNDO="sshpass -p ubuntu $SSHCMD -t ubuntu@10.0.100.3"
+
+    # Collect all the non-BCPC cookbooks sub-dirs - this is somewhat
+    # fragile. Ideally we'd find everything that looks like a cookbook
+    # and then exlude BCPC ones. For now though we can collect
+    # everything except our own cookbooks and a couple of files that
+    # land here typically.
+
+    # Even better would be to put 3rd-party cookbooks in a separate
+    # directory entirely, but then we would have to feed that path
+    # info back to knife
     echo "Collecting non-BCPC cookbooks..."
-    $BNDO "cd chef-bcpc/cookbooks && tar -cf ../../cookbooks.tar apt chef-client chef-solo-search cron logrotate ntp ubuntu yum"
+    $BNDO "cd chef-bcpc && tar --exclude=bcpc --exclude=bcpc-centos --exclude=chef-client.patch --exclude=README.md -cf ../cookbooks.tar cookbooks"
+
+    # and now our built binaries. This is easier to do, except they
+    # are buried deep down. Perhaps it would be better for the
+    # build_bins.sh script to copy them somewhere else for safekeeping
+    # after a successful run since it is working in that directory
+    # already.
     echo "Collecting built binaries..."
     $BNDO "cd chef-bcpc/cookbooks/bcpc/files/default && tar -cf ../../../../../bins.tar bins"
     echo "Compressing files..."
