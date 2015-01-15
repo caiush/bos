@@ -84,7 +84,7 @@ template "/etc/mysql/conf.d/wsrep.cnf" do
     source "wsrep.cnf.erb"
     mode 00644
     variables(
-        :max_connections => [get_head_nodes.length*50+get_all_nodes.length*5, 200].max,
+        :max_connections => [get_head_nodes.length*100+get_all_nodes.length*10, 200].max,
         :servers => get_head_nodes
     )
     notifies :restart, "service[mysql]", :immediately
