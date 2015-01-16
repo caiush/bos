@@ -12,7 +12,56 @@ This script has some guards against continuosly restarting services (--retry)
 
                                                                                                                                                              
 """
+import requests 
+import syslog 
+import re 
+import subprocess
 
+def restart_service(service, retry):
+    restart_file = "/tmp/nova-restarts.json"
+    last_starts = {}
+    if os.path.exists(restart_file):
+       last_starts = json.load(open(restart_file))
+    if service not in last_starts:
+        last_starts[service] = 0
+    if time.time() - last_starts[service]<args.retry:
+       return False
+
+    output = subprocess.check_output(["/sbin/initctl", "status", service])
+    rr = re.compile(".*, process (\d+)")
+    m = rr.match(output)
+    pid = None
+    if m:
+       pid = int(m.groups()[0])
+    syslog.syslog(syslog.LOG_NOTICE, "restartng %s(%s)" % (service, str(pid)))
+    last_starts[service] = time.time()
+    if pid:
+       if subprocess.call(["/sbin/restart", service]):
+          syslog.syslog(syslog.LOG_ERR, "restart %s failed" % service)
+    else:
+       if subprocess.call(["/sbin/start", service]):
+          sys.stderr.write(syslog.LOG_ERR, "start %s failed" % service)
+    f = open(restart_file, "w")
+    json.dump(last_starts, f)
+    f.close()
+    return True
+
+def check_api():
+   " basically curl -m 2  169.254.169.254:8775"
+   try:
+      r = requests.get('http://169.254.169.254:8775', timeout=1.0)
+   except requests.exceptions.Timeout:
+      syslog.syslog(syslog.LOG_ERR, "nova-api timeout")
+      return False
+   except requests.exceptions.ConnectionError:
+      syslog.syslog(syslog.LOG_ERR, "nova-api connection error")
+      return False
+
+   if r.status_code != 200:
+      syslog.syslog(syslog.LOG_ERR, "nova-api request returned %d" % (r.status_code))
+      return False
+
+   return True
 
 if __name__ == '__main__':
    import sys
@@ -20,10 +69,12 @@ if __name__ == '__main__':
    import MySQLdb as mdb
    import argparse
    import os
-   import subprocess
+
    import json
    import time
-   import syslog
+
+
+
    parser = argparse.ArgumentParser(description='Restart nova services')
    parser.add_argument('-n', '--no-op', dest='noop', action='store_true',
                        default=False,
@@ -35,10 +86,6 @@ if __name__ == '__main__':
    parser.add_argument('-r', '--retry', dest='retry', type=int, default=300, help="Retry time in s, defaults 5m (300)")
    args = parser.parse_args()
 
-   restart_file = "/tmp/nova-restarts.json"
-   last_starts = {}
-   if os.path.exists(restart_file):
-      last_starts = json.load(open(restart_file))
 
    con = mdb.connect(args.host, args.user, args.password, db="nova")
    c = con.cursor()
@@ -50,30 +97,11 @@ if __name__ == '__main__':
    while row:
       dt = int(row[0])
       service = row[1]
-      output = subprocess.check_output(["/sbin/initctl", "status", service])
-      rr = re.compile(".*, process (\d+)")
-      m = rr.match(output)
-      pid = None
-      if m:
-         pid = int(m.groups()[0])
-
-      if service not in last_starts:
-        last_starts[service] = 0
-      if dt > args.down and time.time() - last_starts[service]>args.retry and not args.noop:
-        last_starts[service] = time.time()
-        syslog.syslog(syslog.LOG_NOTICE, "restartng %s(%s)" % (service, str(pid)))
-        if pid:
-            if subprocess.call(["/sbin/restart", service]):
-                syslog.syslog(syslog.LOG_ERR, "restart %s failed" % service)
-        else:
-            if subprocess.call(["/sbin/start", service]):
-                sys.stderr.write(syslog.LOG_ERR, "start %s failed" % service)
-
+      if dt > args.down and not args.noop:     
+        restart_service(service, args.retry)
       row = c.fetchone()
-
-   f = open(restart_file, "w")
-   json.dump(last_starts, f)
-   f.close()
+   if not check_api():
+      restart_service("nova-api", args.retry)
    sys.exit(0)
 
 
