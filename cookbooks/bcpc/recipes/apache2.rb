@@ -70,4 +70,5 @@ template "/var/www/index.html" do
     owner "root"
     group "root"
     mode 00644
+    variables ({ :cookbook_version => run_context.cookbook_collection[cookbook_name].metadata.version })
 end
