@@ -48,6 +48,8 @@ default['bcpc']['enabled']['keepalived_checks'] = true
 default['bcpc']['enabled']['network_tests'] = true
 # This will enable httpd disk caching for radosgw
 default['bcpc']['enabled']['radosgw_cache'] = false
+# This will enable using TPM-based hwrngd
+default['bcpc']['enabled']['tpm'] = false
 
 # This can be either 'sql' or 'ldap' to either store identities
 # in the mysql DB or the LDAP server
@@ -132,7 +134,7 @@ default['bcpc']['fixed']['cidr'] = "1.127.0.0/16"
 default['bcpc']['fixed']['vlan_start'] = "1000"
 default['bcpc']['fixed']['num_networks'] = "100"
 default['bcpc']['fixed']['network_size'] = "256"
-default['bcpc']['fixed']['dhcp_lease_time'] = 3600
+default['bcpc']['fixed']['dhcp_lease_time'] = "120"
 
 default['bcpc']['ntp_servers'] = ["pool.ntp.org"]
 default['bcpc']['dns_servers'] = ["8.8.8.8", "8.8.4.4"]
@@ -221,3 +223,16 @@ default['bcpc']['protocol']['heat'] = "https"
 default['bcpc']['nova']['ram_allocation_ratio'] = 1.0
 default['bcpc']['nova']['reserved_host_memory_mb'] = 1024
 default['bcpc']['nova']['cpu_allocation_ratio'] = 2.0
+###########################################
+#
+# Routemon settings
+#
+###########################################
+#
+
+# numfixes is how many times to try and fix default routes in the mgmt
+# and storage networks when they disappear. If numfixes starts off at
+# 0, or after 'numfixes' attempts have been made, then routemon
+# subsequently only monitors and reports
+#
+default['bcpc']['routemon']['numfixes'] = 0

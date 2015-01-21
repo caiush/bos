@@ -29,6 +29,13 @@ if node['bcpc']['enabled']['network_tests'] then
         source "routemon.conf.erb"
         owner "root"
         mode "0644"
+
+        # using a simple 'restart' here fails. Something is holding
+        # onto the command-line used to invoke routemon.pl too long so
+        # the service restarts with a stale numfixes parameter.
+        notifies :stop, "service[routemon]", :immediately
+        notifies :start, "service[routemon]", :delayed
+
     end
 
     service "routemon" do
