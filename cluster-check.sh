@@ -233,7 +233,7 @@ if [[ -f cluster.txt ]]; then
                     # Apache can be wedged even when apparently
                     # running, so perform an operational test instead
                     # of relying on upstart
-                    wget http://$HOST -t1 -T1 >/dev/null 2>&1
+                    wget http://$HOST -O- -t1 -T1 >/dev/null 2>&1
                     if [[ "$?" != 0 ]]; then
                         STAT=" !! not responding !!"
                     else
