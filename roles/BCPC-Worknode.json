@@ -16,7 +16,6 @@
       "recipe[bcpc::nova-work]",
       "recipe[bcpc::diamond]",
       "recipe[bcpc::fluentd]",
-      "recipe[bcpc::zabbix-work]",
       "recipe[bcpc::tpm]",
       "recipe[bcpc::checks-work]"
     ],
