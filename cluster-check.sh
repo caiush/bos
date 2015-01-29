@@ -221,7 +221,7 @@ if [[ -f cluster.txt ]]; then
         vftrace "$HOST %20s %s\n" "$SERVICE" "$STAT"
         
         # Finally, check well-known BCPC services run out of upstart
-        for SERVICE in keystone glance-api glance-registry cinder-scheduler cinder-volume cinder-api nova-api nova-novncproxy nova-scheduler nova-consoleauth nova-cert nova-conductor nova-compute nova-network haproxy apache2; do
+        for SERVICE in keystone glance-api glance-registry cinder-scheduler cinder-volume cinder-api nova-api nova-novncproxy nova-scheduler nova-consoleauth nova-cert nova-conductor nova-compute nova-network haproxy apache2 routemon tpm; do
             STAT=`$SSH "service $SERVICE status 2>&1"`
             if [[ ! "$STAT" =~ "unrecognized" ]]; then
                 
@@ -233,7 +233,7 @@ if [[ -f cluster.txt ]]; then
                     # Apache can be wedged even when apparently
                     # running, so perform an operational test instead
                     # of relying on upstart
-                    wget http://$HOST -O- -t1 -T1 >/dev/null 2>&1
+                    wget http://$HOST -t1 -T1 >/dev/null 2>&1
                     if [[ "$?" != 0 ]]; then
                         STAT=" !! not responding !!"
                     else
@@ -251,6 +251,14 @@ if [[ -f cluster.txt ]]; then
                 else
                     vftrace "$HOST %20s %s\n" "$SERVICE" "$STAT"
                 fi
+	    elif [[ "$SERVICE" = "tpm" ]]; then
+		STAT=`$SSH "cat /proc/sys/kernel/random/entropy_avail"`
+		if ((${STAT} < 1000)); then
+                    printf "$HOST %20s %s\n" "$SERVICE" "Entropy low ($STAT)"
+                    BADHOSTS="$BADHOSTS $HOST"
+		else
+		    vftrace "$HOST%20s %s\n" "$SERVICE" "Entropy ok ($STAT)"
+		fi
             fi
         done
         
