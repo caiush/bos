@@ -35,7 +35,6 @@ sub hasdefaultroute {
         return 1;
     }
 }
-
 # number of times we are allowed to fix the routes
 # default 0 => do not try at all
 my $fixes = 0;
@@ -45,10 +44,49 @@ if ($override>0) {
     $fixes = $override;
 }
 
+my $mgmt_if    = shift @ARGV;
+my $storage_if = shift @ARGV;
+my $float_if   = shift @ARGV;
+
+sub check_networks() {
+    my $mgmt_stat = system("ifconfig $mgmt_if | grep 'inet addr' >/dev/null 2>&1");
+    if ($mgmt_stat) {
+	myprint"mgmt $mgmt_if down\n";
+	return 0;
+    }
+    my $storage_stat = system("ifconfig $storage_if | grep 'inet addr' >/dev/null 2>&1");
+    if ($storage_stat) {
+	myprint"storage $storage_if down\n";
+	return 0;
+    }
+    my $float_stat = system("ifconfig $float_if | grep 'inet addr' >/dev/null 2>&1");
+    if ($float_stat) {
+	myprint"float $float_if down\n";
+	return 0;
+    }
+    return 1;
+}
+
+
 myprint "-----------------------------------------------------\n";
-myprint "Service \"routemon\" starting ...\n";
+myprint "Service \"routemon \" starting ...\n";
 myprint "-----------------------------------------------------\n";
 myprint "Allowable fix attempts set to: $fixes\n";
+myprint("Management interface specified: $mgmt_if\n");
+myprint("Storage    interface specified: $storage_if\n");
+myprint("Floating   interface specified: $float_if\n");
+
+sub no_network_bail {
+    if (!check_networks()) {
+	# let's wait until the network is properly up.
+	# upstart will respawn us
+	sleep 10;
+	myprint("routemon: Network not fully up - terminating\n");
+	exit 0;
+    }
+}
+
+no_network_bail();
 
 # check and retain current status of routes for comparison later
 my $mgmt_up    = hasdefaultroute ("mgmt", 1);
@@ -141,7 +179,9 @@ while (1) {
             }
         }
         $storage_up = $currentstorage;
-        
+
+	no_network_bail();
+       
         if ($routedown) {
             fix_routes();
             # give up monitoring this particular stream - throw away the output
