@@ -118,17 +118,30 @@ default['bcpc']['management']['vip'] = "10.17.1.15"
 default['bcpc']['management']['netmask'] = "255.255.255.0"
 default['bcpc']['management']['cidr'] = "10.17.1.0/24"
 default['bcpc']['management']['gateway'] = "10.17.1.1"
+default['bcpc']['management']['interface'] = nil
+# if 'interface' is a VLAN interface, specifying a parent allows MTUs
+# to be set properly
+default['bcpc']['management']['interface-parent'] = nil
+
 default['bcpc']['metadata']['ip'] = "169.254.169.254"
 
 default['bcpc']['storage']['netmask'] = "255.255.255.0"
 default['bcpc']['storage']['cidr'] = "100.100.0.0/24"
 default['bcpc']['storage']['gateway'] = "100.100.0.1"
+default['bcpc']['storage']['interface'] = nil
+# if 'interface' is a VLAN interface, specifying a parent allows MTUs
+# to be set properly
+default['bcpc']['storage']['interface-parent'] = nil
 
 default['bcpc']['floating']['vip'] = "192.168.43.15"
 default['bcpc']['floating']['netmask'] = "255.255.255.0"
 default['bcpc']['floating']['cidr'] = "192.168.43.0/24"
 default['bcpc']['floating']['gateway'] = "192.168.43.2"
 default['bcpc']['floating']['available_subnet'] = "192.168.43.128/25"
+default['bcpc']['floating']['interface'] = nil
+# if 'interface' is a VLAN interface, specifying a parent allows MTUs
+# to be set properly
+default['bcpc']['floating']['interface-parent'] = nil
 
 default['bcpc']['fixed']['cidr'] = "1.127.0.0/16"
 default['bcpc']['fixed']['vlan_start'] = "1000"
@@ -210,6 +223,10 @@ default['bcpc']['protocol']['glance'] = "https"
 default['bcpc']['protocol']['nova'] = "https"
 default['bcpc']['protocol']['cinder'] = "https"
 default['bcpc']['protocol']['heat'] = "https"
+
+# Hour for the cron job to run keystone_token_cleaner script which
+# runs `keystone-manage token_flush` to clean out stale tokens
+default['bcpc']['keystone_token_clean_hour'] = "2"
 
 ###########################################
 #

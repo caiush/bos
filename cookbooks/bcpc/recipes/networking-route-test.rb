@@ -23,6 +23,7 @@ if node['bcpc']['enabled']['network_tests'] then
         source "routemon.pl"
         owner "root"
         mode 00755
+        notifies :restart, "service[routemon]", :delayed
     end
 
     template "/etc/init/routemon.conf" do
