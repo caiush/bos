@@ -74,7 +74,7 @@ def search_nodes(key, value)
     if key == "recipe"
         results = search(:node, "recipes:bcpc\\:\\:#{value} AND chef_environment:#{node.chef_environment}")
     elsif key == "role"
-        results = search(:node, "role:#{value} AND chef_environment:#{node.chef_environment}")
+        results = search(:node, "roles:#{value} AND chef_environment:#{node.chef_environment}")
     else
         raise("Invalid search key: #{key}")
     end
