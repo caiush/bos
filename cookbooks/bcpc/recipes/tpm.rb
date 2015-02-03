@@ -28,15 +28,13 @@ if node['bcpc']['enabled']['tpm'] then
     action :stop
   end
 
-  bash "enable-tpm" do
-    user "root"
-    code <<-EOH
-       if [[ ! -f /etc/default/rng-tools.orig ]]; then cp /etc/default/rng-tools /etc/default/rng-tools.orig ; fi
-       sed -i -e '/^#RNG.*tpm.*/s/^#//' /etc/default/rng-tools 
-       sed -i -e '/^#HRNGD.*null/s/^#//' /etc/default/rng-tools 
-       EOH
-  end 
 
+  template "/etc/default/rng-tools" do
+    source "rng-tools.erb"
+    user "root"
+    group "root"
+    mode 0644
+  end
 
   service "rng-tools" do
     action :start
