@@ -167,6 +167,10 @@ if get_head_nodes.length == 1; then
 end
 
 replicas = [search_nodes("recipe", "ceph-work").length, node['bcpc']['ceph']['default']['replicas']].min
+if replicas < 1; then
+    replicas = 1
+end
+
 %w{data metadata rbd}.each do |pool|
     bash "set-#{pool}-rados-pool-replicas" do
         user "root"
