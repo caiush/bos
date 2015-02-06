@@ -90,6 +90,9 @@ node['bcpc']['ceph']['enabled_pools'].each do |type|
     bash "set-cinder-rados-pool-replicas-#{type}" do
         user "root"
         replicas = [search_nodes("recipe", "ceph-work").length, node['bcpc']['ceph']['volumes']['replicas']].min
+        if replicas < 1; then
+            replicas = 1
+        end
         code "ceph osd pool set #{node['bcpc']['ceph']['volumes']['name']}-#{type} size #{replicas}"
         not_if "ceph osd pool get #{node['bcpc']['ceph']['volumes']['name']}-#{type} size | grep #{replicas}"
     end

@@ -72,6 +72,9 @@ rgw_crush_ruleset = (node['bcpc']['ceph']['rgw']['type'] == "ssd") ? node['bcpc'
     bash "set-#{pool}-rados-pool-replicas" do
         user "root"
         replicas = [search_nodes("recipe", "ceph-work").length, node['bcpc']['ceph']['rgw']['replicas']].min
+        if replicas < 1; then
+            replicas = 1
+        end
         code "ceph osd pool set #{pool} size #{replicas}"
         not_if "ceph osd pool get #{pool} size | grep #{replicas}"
     end
