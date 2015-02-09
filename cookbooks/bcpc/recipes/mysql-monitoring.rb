@@ -71,6 +71,23 @@ template "/etc/mysql/conf.d/wsrep.cnf" do
     notifies :restart, "service[mysql]", :immediately
 end
 
+template "/usr/local/etc/chk_mysql_quorum.sql" do
+    source "chk_mysql_quorum.sql.erb"
+    mode 0640
+    owner "root"
+    group "root"
+    variables(
+        :min_quorum => search_nodes("recipe", "mysql-monitoring").length/2+1
+    )
+end
+
+template "/usr/local/bin/chk_mysql_quorum" do
+    source "chk_mysql_quorum.erb"
+    mode 0750
+    owner "root"
+    group "root"
+end
+
 ruby_block "phpmyadmin-debconf-setup" do
     block do
         if not system "debconf-get-selections | grep phpmyadmin >/dev/null 2>&1" then
