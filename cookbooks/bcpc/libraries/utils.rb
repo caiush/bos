@@ -223,3 +223,13 @@ def ping_node_list(list_name, ping_list, fast_exit=true)
         raise ("Network test failed: #{list_name} unreachable")
     end
 end
+
+def generate_vrrp_vrid()
+    init_config if $dbi.nil?
+    dbi = Chef::DataBagItem.load('configs', node.chef_environment)
+    a =  dbi.select {|key| /^keepalived-.*router-id$/.match(key)}.values
+    exclusions = a.collect {|a| [a-1, a, a+1]}.flatten
+    results = (1..254).to_a - exclusions
+    raise "Unable to generate unique VRID" if results.empty?
+    results.first
+end
