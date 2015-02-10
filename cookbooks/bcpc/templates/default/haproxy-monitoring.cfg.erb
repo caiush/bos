@@ -52,3 +52,36 @@ frontend https
   stats realm Haproxy\ Statistics
   stats auth <%=get_config('haproxy-stats-user')%>:<%=get_config('haproxy-stats-password')%>
   reqadd X-Forwarded-Protocol:\ https
+
+backend graphite-web-backend
+  balance source
+  option httpchk GET /composer/
+  http-check expect status 200
+  reqrep ^([^\ :]*)\ /graphite/(.*) \1\ /\2
+<% @graphite_servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8888 check inter 5s rise 1 fall 1" %>
+<% end -%>
+
+# This is temporary until graphite supports being served under /graphite
+frontend graphite-web
+  bind <%="#{node['bcpc']['management']['monitoring']['vip']}:8888"%> ssl crt /etc/haproxy/haproxy.pem
+  option tcplog
+  default_backend graphite-web-backend
+
+listen graphite-carbon-relay-line <%=node['bcpc']['management']['monitoring']['vip']%>:2013
+  mode tcp
+  balance leastconn
+  option tcplog
+  option tcpka
+<% @graphite_servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:2013 check inter 5s rise 1 fall 1 observe layer4" %>
+<% end -%>
+
+listen graphite-carbon-relay-pickle <%=node['bcpc']['management']['monitoring']['vip']%>:2014
+  mode tcp
+  balance leastconn
+  option tcplog
+  option tcpka
+<% @graphite_servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:2014 check inter 5s rise 1 fall 1 observe layer4" %>
+<% end -%>

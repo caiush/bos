@@ -13,7 +13,9 @@
       "recipe[bcpc::networking-route-test]",
       "recipe[bcpc::mysql-monitoring]",
       "recipe[bcpc::haproxy-monitoring]",
-      "recipe[bcpc::keepalived-monitoring]"
+      "recipe[bcpc::keepalived-monitoring]",
+      "recipe[bcpc::graphite]",
+      "recipe[bcpc::diamond]"
     ],
     "description": "Monitoring/Metrics/Logging node in a BCPC cluster",
     "chef_type": "role",

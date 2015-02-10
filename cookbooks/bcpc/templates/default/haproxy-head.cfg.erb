@@ -195,8 +195,6 @@ frontend https
   use_backend kibana-backend if url_kibana
   acl url_zabbix path_beg /zabbix
   use_backend zabbix-backend if url_zabbix
-  acl url_graphite path_beg /graphite
-  use_backend graphite-backend if url_graphite
   default_backend http-backend
 
 backend http-backend
@@ -241,21 +239,6 @@ backend zabbix-backend
 <% @servers.each do |server| -%>
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:7777 check inter 5s rise 1 fall 1" %>
 <% end -%>
-
-backend graphite-backend
-  balance source
-  option httpchk GET /
-  http-check expect status 200
-  reqrep ^([^\ :]*)\ /graphite/(.*) \1\ /\2
-<% @servers.each do |server| -%>
-  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:8888 check inter 5s rise 1 fall 1" %>
-<% end -%>
-
-# This is temporary until graphite supports being served under /graphite
-frontend graphite
-  bind <%="#{node['bcpc']['management']['vip']}:8888"%> ssl crt /etc/haproxy/haproxy.pem
-  option tcplog
-  default_backend graphite-backend
 
 listen elasticsearch <%=node['bcpc']['management']['vip']%>:9200
   balance source

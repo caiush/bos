@@ -421,13 +421,26 @@ if node['bcpc']['enabled']['dns'] then
         end
     end
 
-    %w{openstack kibana graphite zabbix}.each do |static|
+    %w{openstack kibana zabbix}.each do |static|
         ruby_block "create-management-dns-entry-#{static}" do
             block do
                 system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} -e 'SELECT name FROM records_static' | grep -q \"#{static}.#{node['bcpc']['domain_name']}\""
                 if not $?.success? then
                     %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                             INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node['bcpc']['domain_name']}'),'#{static}.#{node['bcpc']['domain_name']}','#{node['bcpc']['management']['vip']}','A',300,NULL);
+                    ]
+                end
+            end
+        end
+    end
+
+    %w{graphite}.each do |static|
+        ruby_block "create-monitoring-dns-entry-#{static}" do
+            block do
+                system "mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} -e 'SELECT name FROM records_static' | grep -q \"#{static}.#{node['bcpc']['domain_name']}\""
+                if not $?.success? then
+                    %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
+                            INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node['bcpc']['domain_name']}'),'#{static}.#{node['bcpc']['domain_name']}','#{node['bcpc']['management']['monitoring']['vip']}','A',300,NULL);
                     ]
                 end
             end
