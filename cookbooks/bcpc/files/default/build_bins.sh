@@ -215,19 +215,22 @@ fi
 FILES="pyrabbit-1.0.1.tar.gz $FILES"
 
 # Build graphite packages
-if [ ! -f python-carbon_0.9.12_all.deb ] || [ ! -f python-whisper_0.9.12_all.deb ] || [ ! -f python-graphite-web_0.9.12_all.deb ]; then
-    ccurl  http://pypi.python.org/packages/source/c/carbon/carbon-0.9.12.tar.gz
-    ccurl  http://pypi.python.org/packages/source/w/whisper/whisper-0.9.12.tar.gz
-    ccurl  http://pypi.python.org/packages/source/g/graphite-web/graphite-web-0.9.12.tar.gz
-    tar zxf carbon-0.9.12.tar.gz
-    tar zxf whisper-0.9.12.tar.gz
-    tar zxf graphite-web-0.9.12.tar.gz
-    fpm --python-install-bin /opt/graphite/bin -s python -t deb carbon-0.9.12/setup.py
-    fpm --python-install-bin /opt/graphite/bin  -s python -t deb whisper-0.9.12/setup.py
-    fpm --python-install-lib /opt/graphite/webapp -s python -t deb graphite-web-0.9.12/setup.py
-    rm -rf carbon-0.9.12 carbon-0.9.12.tar.gz whisper-0.9.12 whisper-0.9.12.tar.gz graphite-web-0.9.12 graphite-web-0.9.12.tar.gz
+GRAPHITE_CARBON_VER="0.9.13"
+GRAPHITE_WHISPER_VER="0.9.13"
+GRAPHITE_WEB_VER="0.9.13"
+if [ ! -f python-carbon_${GRAPHITE_CARBON_VER}_all.deb ] || [ ! -f python-whisper_${GRAPHITE_WHISPER_VER}_all.deb ] || [ ! -f python-graphite-web_${GRAPHITE_WEB_VER}_all.deb ]; then
+    ccurl  http://pypi.python.org/packages/source/c/carbon/carbon-${GRAPHITE_CARBON_VER}.tar.gz
+    ccurl  http://pypi.python.org/packages/source/w/whisper/whisper-${GRAPHITE_WHISPER_VER}.tar.gz
+    ccurl  http://pypi.python.org/packages/source/g/graphite-web/graphite-web-${GRAPHITE_WEB_VER}.tar.gz
+    tar zxf carbon-${GRAPHITE_CARBON_VER}.tar.gz
+    tar zxf whisper-${GRAPHITE_WHISPER_VER}.tar.gz
+    tar zxf graphite-web-${GRAPHITE_WEB_VER}.tar.gz
+    fpm --python-install-bin /opt/graphite/bin -s python -t deb carbon-${GRAPHITE_CARBON_VER}/setup.py
+    fpm --python-install-bin /opt/graphite/bin  -s python -t deb whisper-${GRAPHITE_WHISPER_VER}/setup.py
+    fpm --python-install-lib /opt/graphite/webapp -s python -t deb graphite-web-${GRAPHITE_WEB_VER}/setup.py
+    rm -rf carbon-${GRAPHITE_CARBON_VER} carbon-${GRAPHITE_CARBON_VER}.tar.gz whisper-${GRAPHITE_WHISPER_VER} whisper-${GRAPHITE_WHISPER_VER}.tar.gz graphite-web-${GRAPHITE_WEB_VER} graphite-web-${GRAPHITE_WEB_VER}.tar.gz
 fi
-FILES="python-carbon_0.9.12_all.deb python-whisper_0.9.12_all.deb python-graphite-web_0.9.12_all.deb $FILES"
+FILES="python-carbon_${GRAPHITE_CARBON_VER}_all.deb python-whisper_${GRAPHITE_WHISPER_VER}_all.deb python-graphite-web_${GRAPHITE_WEB_VER}_all.deb $FILES"
 
 # Build the zabbix packages
 if [ ! -f zabbix-agent.tar.gz ] || [ ! -f zabbix-server.tar.gz ]; then
