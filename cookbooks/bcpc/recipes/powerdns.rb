@@ -454,6 +454,7 @@ if node['bcpc']['enabled']['dns'] then
                 if not $?.success? then
                     %x[ mysql -uroot -p#{get_config('mysql-root-password')} #{node['bcpc']['dbname']['pdns']} <<-EOH
                             INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node['bcpc']['domain_name']}'),'#{static}.#{node['bcpc']['domain_name']}','#{node['bcpc']['floating']['vip']}','A',300,NULL);
+                            INSERT INTO records_static (domain_id, name, content, type, ttl, prio) VALUES ((SELECT id FROM domains WHERE name='#{node[:bcpc][:domain_name]}'),'*.#{static}.#{node[:bcpc][:domain_name]}','#{static}.#{node[:bcpc][:domain_name]}','CNAME',300,NULL);
                     ]
                 end
             end
