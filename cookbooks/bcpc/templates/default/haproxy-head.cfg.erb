@@ -91,6 +91,16 @@ listen keystone-admin
   <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:35357 check inter 5s rise 1 fall 1" %>
 <% end -%>
 
+listen keystone-admin-http
+  bind <%=node['bcpc']['management']['vip']%>:35358
+  balance source
+  option tcplog
+  option httpchk GET /
+  http-check expect status 300
+<% @servers.each do |server| -%>
+  <%= "server #{server['hostname']} #{server['bcpc']['management']['ip']}:35357 check inter 5s rise 1 fall 1" %>
+<% end -%>
+
 listen glance-api
   bind <%=node['bcpc']['management']['vip']%>:9292 <%= (node['bcpc']['protocol']['glance'] == 'https') ? "ssl crt /etc/haproxy/haproxy.pem" : "" %>
   balance source
