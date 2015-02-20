@@ -51,5 +51,4 @@
     rgw keystone token cache size = 1000
     rgw keystone revocation interval = 1200
     rgw s3 auth use keystone = true
-
-
+    rgw dns name = s3.<%=node['bcpc']['domain_name'] %>
