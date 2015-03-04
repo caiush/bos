@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: bcpc
-# Recipe:: packages-debugging
+# Recipe:: packages-dev
 #
 # Copyright 2013, Bloomberg Finance L.P.
 #
@@ -22,6 +22,7 @@
 # This recipe installs packages which are useful when developing the stack.
 # 
 
-# for sanity when editing file 
+# for sanity when dev
 package "emacs23-nox"
+package "yaml-mode"
 
