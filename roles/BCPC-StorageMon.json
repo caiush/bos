@@ -1,0 +1,21 @@
+{
+    "name": "BCPC-StorageMon",
+    "default_attributes": {
+    },
+    "json_class": "Chef::Role",
+    "run_list": [
+      "role[Basic]",
+      "recipe[bcpc]",
+      "recipe[bcpc::check_cluster]",
+      "recipe[bcpc::system]",
+      "recipe[bcpc::networking-storage]",
+      "recipe[bcpc::networking-link-test]",
+      "recipe[bcpc::networking-gw-test]",
+      "recipe[bcpc::networking-route-test]",
+      "recipe[bcpc::ceph-head]"
+    ],
+    "description": "A Ceph Mon",
+    "chef_type": "role",
+    "override_attributes": {
+    }
+}

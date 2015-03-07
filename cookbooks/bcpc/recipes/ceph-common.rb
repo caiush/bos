@@ -18,7 +18,7 @@
 #
 
 if platform?("debian", "ubuntu")
-    include_recipe "bcpc::networking"
+    include_recipe "bcpc::networking-storage"
 end
 
 case node['platform']
@@ -69,7 +69,7 @@ end
 template '/etc/ceph/ceph.conf' do
     source 'ceph.conf.erb'
     mode '0644'
-    variables(:servers => get_head_nodes)
+    variables(:servers => get_mon_nodes)
 end
 
 bcpc_cephconfig 'paxos_propose_interval' do  
@@ -106,4 +106,16 @@ bash "wait-for-pgs-creating" do
     action :nothing
     user "root"
     code "sleep 1; while ceph -s | grep -v mdsmap | grep creating >/dev/null 2>&1; do echo Waiting for new pgs to create...; sleep 1; done"
+end
+
+bash "write-client-admin-key" do
+    code <<-EOH
+        ADMIN_KEY=`ceph --name mon. --keyring /etc/ceph/ceph.mon.keyring auth get-or-create-key client.admin`
+        ceph-authtool "/etc/ceph/ceph.client.admin.keyring" \
+            --create-keyring \
+            --name=client.admin \
+            --add-key="$ADMIN_KEY"
+        chmod 644 /etc/ceph/ceph.client.admin.keyring
+    EOH
+    not_if "test -f /etc/ceph/ceph.client.admin.keyring && chmod 644 /etc/ceph/ceph.client.admin.keyring"
 end

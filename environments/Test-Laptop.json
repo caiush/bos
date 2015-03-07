@@ -4,10 +4,10 @@
     "bcpc": {
       "virt_type" : "qemu",
       "enabled": {
-        "logging": true,
-        "monitoring": true,
-        "metrics": true,
-        "dns": true
+        "logging": false,
+        "monitoring": false,
+        "metrics": false,
+        "dns": false
       },
       "ceph": {
         "pgp_auto_adjust" : true,
@@ -21,10 +21,7 @@
         "interface" : "eth0",
         "netmask" : "255.255.255.0",
         "cidr" : "10.0.100.0/24",
-        "gateway" : "10.0.100.3",
-        "monitoring": {
-          "vip" : "10.0.100.6"
-        }
+        "gateway" : "10.0.100.3"
       },
       "storage": {
         "interface" : "eth1",
@@ -44,13 +41,31 @@
         "interface" : "eth0",
         "pxe_interface" : "eth1",
         "server" : "10.0.100.3",
+        "mirror" : "10.0.100.2",
         "dhcp_subnet" : "10.0.100.0",
         "dhcp_range" : "10.0.100.14 10.0.100.250"
+      },
+      "repos": {
+        "ceph":        "http://10.0.100.2/ceph-firefly",
+        "ceph-extras": "http://10.0.100.2/ceph-extras",
+        "ceph-apache": "http://10.0.100.2/ceph-apache",
+        "ceph-fcgi"  : "http://10.0.100.2/ceph-fcgi",
+        "rabbitmq":    "http://10.0.100.2/rabbitmq",
+        "mysql":       "http://10.0.100.2/percona",
+        "haproxy":     "http://10.0.100.2/haproxy",
+        "openstack":   "http://10.0.100.2/ubuntu-cloud",
+        "hwraid":      "http://10.0.100.2/hwraid",
+        "fluentd":     "http://10.0.100.2/fluentd"
       },
       "dns_servers" : [ "8.8.8.8", "8.8.4.4" ]
     },
     "ntp": {
       "servers" : [ "0.pool.ntp.org", "1.pool.ntp.org", "2.pool.ntp.org", "3.pool.ntp.org" ]
+    },
+    "ubuntu": {
+      "archive_url":     "http://10.0.100.2/ubuntu",
+      "security_url":    "http://10.0.100.2/ubuntu",
+      "include_source_packages": false
     },
     "chef_client": {
       "server_url": "http://10.0.100.3:4000",

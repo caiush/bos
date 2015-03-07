@@ -1,0 +1,21 @@
+{
+    "name": "BCPC-Storage",
+    "default_attributes": {
+    },
+    "json_class": "Chef::Role",
+    "run_list": [
+      "role[Basic]",
+      "recipe[bcpc]",
+      "recipe[bcpc::system]",
+      "recipe[bcpc::networking-storage]",
+      "recipe[bcpc::networking-link-test]",
+      "recipe[bcpc::networking-gw-test]",
+      "recipe[bcpc::networking-route-test]",
+      "recipe[bcpc::ceph-work]",
+      "recipe[bcpc::ceph-rgw]"
+    ],
+    "description": "A Ceph Worker Node",
+    "chef_type": "role",
+    "override_attributes": {
+    }
+}
