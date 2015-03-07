@@ -7,21 +7,12 @@ default['bcpc']['country'] = "US"
 default['bcpc']['state'] = "NY"
 default['bcpc']['location'] = "New York"
 default['bcpc']['organization'] = "Bloomberg"
-default['bcpc']['openstack_release'] = "icehouse"
-# Can be "updates" or "proposed"
-default['bcpc']['openstack_branch'] = "proposed"
-# Should be kvm (or qemu if testing in VMs that don't support VT-x)
-default['bcpc']['virt_type'] = "kvm"
 # Define the kernel to be installed. By default, track latest LTS kernel
 default['bcpc']['preseed']['kernel'] = "linux-image-generic-lts-trusty"
-# ulimits for libvirt-bin
-default['bcpc']['libvirt-bin']['ulimit']['nofile'] = 4096
 # Region name for this cluster
 default['bcpc']['region_name'] = node.chef_environment
 # Domain name for this cluster (used in many configs)
 default['bcpc']['domain_name'] = "bcpc.example.com"
-# Key if Cobalt+VMS is to be used
-default['bcpc']['vms_key'] = nil
 
 ###########################################
 #
@@ -35,8 +26,6 @@ default['bcpc']['enabled']['metrics'] = true
 # This will enable zabbix server on head nodes and zabbix agent on all nodes
 default['bcpc']['enabled']['monitoring'] = true
 # This will enable powerdns on head nodes
-default['bcpc']['enabled']['dns'] = true
-# This will enable iptables firewall on all nodes
 default['bcpc']['enabled']['host_firewall'] = true
 # This will enable of encryption of the chef data bag
 default['bcpc']['enabled']['encrypt_data_bag'] = false
@@ -50,10 +39,6 @@ default['bcpc']['enabled']['network_tests'] = true
 default['bcpc']['enabled']['radosgw_cache'] = false
 # This will enable using TPM-based hwrngd
 default['bcpc']['enabled']['tpm'] = false
-
-# This can be either 'sql' or 'ldap' to either store identities
-# in the mysql DB or the LDAP server
-default['bcpc']['keystone']['backend'] = 'ldap'
 
 # If radosgw_cache is enabled, default to 20MB max file size
 default['bcpc']['radosgw']['cache_max_file_size'] = 20000000
@@ -85,21 +70,6 @@ default['bcpc']['ceph']['default']['type'] = 'hdd'
 default['bcpc']['ceph']['rgw']['replicas'] = 3
 default['bcpc']['ceph']['rgw']['portion'] = 33
 default['bcpc']['ceph']['rgw']['type'] = 'hdd'
-default['bcpc']['ceph']['images']['replicas'] = 3
-default['bcpc']['ceph']['images']['portion'] = 33
-default['bcpc']['ceph']['images']['type'] = 'ssd'
-default['bcpc']['ceph']['images']['name'] = "images"
-default['bcpc']['ceph']['volumes']['replicas'] = 3
-default['bcpc']['ceph']['volumes']['portion'] = 33
-default['bcpc']['ceph']['volumes']['name'] = "volumes"
-default['bcpc']['ceph']['vms_disk']['replicas'] = 3
-default['bcpc']['ceph']['vms_disk']['portion'] = 10
-default['bcpc']['ceph']['vms_disk']['type'] = 'ssd'
-default['bcpc']['ceph']['vms_disk']['name'] = "vmsdisk"
-default['bcpc']['ceph']['vms_mem']['replicas'] = 3
-default['bcpc']['ceph']['vms_mem']['portion'] = 10
-default['bcpc']['ceph']['vms_mem']['type'] = 'ssd'
-default['bcpc']['ceph']['vms_mem']['name'] = "vmsmem"
 default['bcpc']['ceph']['ssd']['ruleset'] = 1
 default['bcpc']['ceph']['hdd']['ruleset'] = 2
 
@@ -194,20 +164,9 @@ default['bcpc']['mirror']['os-dist'] = ['icehouse']
 #  Default names for db's, pools, and users
 #
 ###########################################
-default['bcpc']['dbname']['nova'] = "nova"
-default['bcpc']['dbname']['cinder'] = "cinder"
-default['bcpc']['dbname']['glance'] = "glance"
-default['bcpc']['dbname']['horizon'] = "horizon"
-default['bcpc']['dbname']['keystone'] = "keystone"
-default['bcpc']['dbname']['heat'] = "heat"
-default['bcpc']['dbname']['ceilometer'] = "ceilometer"
 default['bcpc']['dbname']['graphite'] = "graphite"
-default['bcpc']['dbname']['pdns'] = "pdns"
 default['bcpc']['dbname']['zabbix'] = "zabbix"
 
-default['bcpc']['admin_tenant'] = "AdminTenant"
-default['bcpc']['admin_role'] = "Admin"
-default['bcpc']['member_role'] = "Member"
 default['bcpc']['admin_email'] = "admin@localhost.com"
 
 default['bcpc']['zabbix']['user'] = "zabbix"
@@ -217,40 +176,3 @@ default['bcpc']['ports']['apache']['radosgw'] = 80
 default['bcpc']['ports']['apache']['radosgw_https'] = 443
 default['bcpc']['ports']['haproxy']['radosgw'] = 80
 default['bcpc']['ports']['haproxy']['radosgw_https'] = 443
-
-# Can be set to 'http' or 'https'
-default['bcpc']['protocol']['keystone'] = "https"
-default['bcpc']['protocol']['glance'] = "https"
-default['bcpc']['protocol']['nova'] = "https"
-default['bcpc']['protocol']['cinder'] = "https"
-default['bcpc']['protocol']['heat'] = "https"
-
-# Hour for the cron job to run keystone_token_cleaner script which
-# runs `keystone-manage token_flush` to clean out stale tokens
-default['bcpc']['keystone_token_clean_hour'] = "2"
-
-###########################################
-#
-#  Nova Settings
-#
-###########################################
-#
-# Over-allocation settings. Set according to your cluster
-# SLAs. Default is to not allow over allocation of memory
-# a slight over allocation of CPU (x2). 
-default['bcpc']['nova']['ram_allocation_ratio'] = 1.0
-default['bcpc']['nova']['reserved_host_memory_mb'] = 1024
-default['bcpc']['nova']['cpu_allocation_ratio'] = 2.0
-###########################################
-#
-# Routemon settings
-#
-###########################################
-#
-
-# numfixes is how many times to try and fix default routes in the mgmt
-# and storage networks when they disappear. If numfixes starts off at
-# 0, or after 'numfixes' attempts have been made, then routemon
-# subsequently only monitors and reports
-#
-default['bcpc']['routemon']['numfixes'] = 0
