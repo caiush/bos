@@ -44,11 +44,19 @@ while read HOST MACADDR IPADDR ILOIPADDR DOMAIN ROLE; do
         elif [[ "$ROLE" = work ]]; then
             WORKERS="$WORKERS $IPADDR"
             FQDNS["$IDX"]="${HOST}.${DOMAIN}"
+        elif [[ "$ROLE" = mon ]]; then
+            MONS="$MONS $IPADDR"
+            FQDNS["$IDX"]="${HOST}.${DOMAIN}"
+        elif [[ "$ROLE" = osd ]]; then
+            OSDS="$OSDS $IPADDR"
+            FQDNS["$IDX"]="${HOST}.${DOMAIN}"
         fi  
     fi
 done < cluster.txt
 echo "heads : $HEADS"
 echo "workers : $WORKERS"
+echo "mons : $MONS"
+echo "osds : $OSDS"
 
 PASSWD=`knife data bag show configs $ENVIRONMENT | grep "cobbler-root-password:" | awk ' {print $2}'`
 
@@ -68,6 +76,19 @@ for HEAD in $HEADS; do
     SSHCMD="./nodessh.sh $ENVIRONMENT $HEAD"
     $SSHCMD "/home/ubuntu/finish-head.sh" sudo  
 done
+
+for MON in $MONS; do
+    MATCH=$MON
+    echo "About to bootstrap head node $MON..."
+    ./chefit.sh $MON $ENVIRONMENT
+    echo $PASSWD | sudo knife bootstrap -E $ENVIRONMENT $MON -x ubuntu  -P $PASSWD --sudo
+    IDX=`echo $MON | tr '.' '-'`
+    FQDN=${FQDNS["$IDX"]}
+    ./make-admin.sh $FQDN
+    knife node run_list add $FQDN 'role[BCPC-StorageMon]'
+    SSHCMD="./nodessh.sh $ENVIRONMENT $MON"
+    $SSHCMD "/home/ubuntu/finish-head.sh" sudo  
+done
 # Work nodes are simpler than head nodes. After installation of Chef
 # we can let knife bootstrap do the rest.
 for WORKER in $WORKERS; do
@@ -78,6 +99,17 @@ for WORKER in $WORKERS; do
     SSHCMD="./nodessh.sh $ENVIRONMENT $WORKER"
     $SSHCMD "/home/ubuntu/finish-worker.sh" sudo    
 done
+for OSD in $OSDS; do
+    MATCH=$OSD
+    echo "About to bootstrap worker worker $OSD..."
+    ./chefit.sh $OSD $ENVIRONMENT
+    echo $PASSWD | sudo knife bootstrap -E $ENVIRONMENT -r 'role[BCPC-Storage]' $OSD -x ubuntu -P $PASSWD --sudo
+    SSHCMD="./nodessh.sh $ENVIRONMENT $OSD"
+    $SSHCMD "/home/ubuntu/finish-worker.sh" sudo    
+done
+
+
+
 if [[ -z "$MATCH" ]]; then
     echo "Warning: No nodes found"
 fi

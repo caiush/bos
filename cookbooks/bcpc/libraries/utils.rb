@@ -119,6 +119,15 @@ def get_head_nodes
     return results.sort! { |a, b| a['hostname'] <=> b['hostname'] }
 end
 
+def get_mon_nodes
+    results = search(:node, "role:BCPC-StorageMon AND chef_environment:#{node.chef_environment}")
+    results.map! { |x| x['hostname'] == node['hostname'] ? node : x }
+    if not results.include?(node) and node.run_list.roles.include?('BCPC-StorageMon')
+        results.push(node)
+    end
+    return results.sort! { |a, b| a['hostname'] <=> b['hostname'] }
+end
+
 def get_cached_head_node_names
     headnodes = []
     begin
