@@ -17,12 +17,6 @@
 # limitations under the License.
 #
 
-#RGW Stuff
-#Note, currently rgw cannot use Keystone to auth S3 requests, only swift, so for the time being we'll have
-#to manually provision accounts for RGW in the radosgw-admin tool
-
-include_recipe "bcpc::apache2"
-
 package "radosgw" do
     action :upgrade
 end
@@ -89,29 +83,6 @@ end
         not_if "((`ceph osd pool get .rgw.buckets #{pg} | awk '{print $2}'` >= #{rgw_optimal_pg}))"
         notifies :run, "bash[wait-for-pgs-creating]", :immediately
     end
-end
-
-file "/var/www/s3gw.fcgi" do
-    owner "root"
-    group "root"
-    mode 0755
-    content "#!/bin/sh\n exec /usr/bin/radosgw -c /etc/ceph/ceph.conf -n client.radosgw.gateway"
-    notifies :restart, "service[radosgw-all]", :immediately
-end
-
-template "/etc/apache2/sites-available/radosgw" do
-    source "apache-radosgw.conf.erb"
-    owner "root"
-    group "root"
-    mode 00644
-    notifies :restart, "service[apache2]", :delayed
-end
-
-bash "apache-enable-radosgw" do
-    user "root"
-    code "a2ensite radosgw"
-    not_if "test -r /etc/apache2/sites-enabled/radosgw"
-    notifies :restart, "service[apache2]", :immediately
 end
 
 
