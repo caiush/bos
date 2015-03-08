@@ -97,6 +97,9 @@ ruby_block "initialize-radosgw-admin-user" do
         make_config('radosgw-admin-access-key', secure_password_alphanum_upper(20))
         make_config('radosgw-admin-secret-key', secure_password(40))
         rgw_admin = JSON.parse(%x[radosgw-admin user create --display-name="Admin" --uid="radosgw" --access_key=#{get_config('radosgw-admin-access-key')} --secret=#{get_config('radosgw-admin-secret-key')}])
+        %w{users buckets metadata usage zone}.each do |caps| 
+          %x[radosgw-admin caps add --uid=radosgw --caps="#{caps}=*"]
+        end
     end
     not_if "radosgw-admin user info --uid='radosgw'"
 end
@@ -107,6 +110,10 @@ ruby_block "initialize-radosgw-test-user" do
         make_config('radosgw-test-access-key', secure_password_alphanum_upper(20))
         make_config('radosgw-test-secret-key', secure_password(40))
         rgw_admin = JSON.parse(%x[radosgw-admin user create --display-name="Tester" --uid="tester" --max-buckets=3 --access_key=#{get_config('radosgw-test-access-key')} --secret=#{get_config('radosgw-test-secret-key')} --caps="usage=read; user=read; bucket=read;" ])
+        %w{users buckets metadata usage zone}.each do |caps| 
+          %x[radosgw-admin caps add --uid=tester --caps="#{caps}=read"]
+        end
+
     end
     not_if "radosgw-admin user info --uid='tester'"
 end
