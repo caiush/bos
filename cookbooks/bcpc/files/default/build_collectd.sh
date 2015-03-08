@@ -9,7 +9,7 @@ cwd=$PWD
 build_dir=/tmp/build/
 mkdir -p  $build_dir 
 cd $build_dir
-wget --no-check-certificate https://collectd.org/files/collectd-5.4.1.tar.gz
+wget -p --no-check-certificate https://collectd.org/files/collectd-5.4.1.tar.gz
 tar zxf collectd-5.4.1.tar.gz 
 
 sudo apt-get install build-essential  
@@ -18,7 +18,7 @@ sudo apt-get -y install libcurl3 librrd2-dev libsnmp-dev
 cd collectd-5.4.1
  ./configure --prefix=/tmp/collectd 
 make install
-
+cd /tmp/collectd
 tar zcf /tmp/collectd.tgz ./*
 cd $cwd
 mkdir -p bins 
@@ -26,4 +26,4 @@ cd bins
 mv /tmp/collectd.tgz .
 
 # pull down the required colelctd modules 
-wget https://raw.githubusercontent.com/dwm/collectd-ceph/master/collectd-ceph.py
+wget -p  https://raw.githubusercontent.com/dwm/collectd-ceph/master/collectd-ceph.py

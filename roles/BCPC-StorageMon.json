@@ -11,7 +11,6 @@
       "recipe[bcpc::networking-storage]",
       "recipe[bcpc::networking-link-test]",
       "recipe[bcpc::networking-gw-test]",
-      "recipe[bcpc::networking-route-test]",
       "recipe[bcpc::ceph-head]"
     ],
     "description": "A Ceph Mon",

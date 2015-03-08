@@ -19,20 +19,12 @@ default['bcpc']['domain_name'] = "bcpc.example.com"
 #  Flags to enable/disable BCPC cluster features
 #
 ###########################################
-# This will enable elasticsearch & kibana on head nodes and fluentd on all nodes
-default['bcpc']['enabled']['logging'] = true
-# This will enable graphite web and carbon on head nodes and diamond on all nodes
-default['bcpc']['enabled']['metrics'] = true
-# This will enable zabbix server on head nodes and zabbix agent on all nodes
-default['bcpc']['enabled']['monitoring'] = true
 # This will enable powerdns on head nodes
 default['bcpc']['enabled']['host_firewall'] = true
 # This will enable of encryption of the chef data bag
 default['bcpc']['enabled']['encrypt_data_bag'] = false
 # This will enable auto-upgrades on all nodes (not recommended for stability)
 default['bcpc']['enabled']['apt_upgrade'] = false
-# This will enable the extra healthchecks for keepalived (VIP management)
-default['bcpc']['enabled']['keepalived_checks'] = true
 # This will enable the networking test scripts
 default['bcpc']['enabled']['network_tests'] = true
 # This will enable httpd disk caching for radosgw
@@ -164,15 +156,15 @@ default['bcpc']['mirror']['os-dist'] = ['icehouse']
 #  Default names for db's, pools, and users
 #
 ###########################################
-default['bcpc']['dbname']['graphite'] = "graphite"
-default['bcpc']['dbname']['zabbix'] = "zabbix"
 
 default['bcpc']['admin_email'] = "admin@localhost.com"
 
-default['bcpc']['zabbix']['user'] = "zabbix"
-default['bcpc']['zabbix']['group'] = "adm"
 
 default['bcpc']['ports']['apache']['radosgw'] = 80
 default['bcpc']['ports']['apache']['radosgw_https'] = 443
 default['bcpc']['ports']['haproxy']['radosgw'] = 80
 default['bcpc']['ports']['haproxy']['radosgw_https'] = 443
+
+default['bcpc']['collectd']['udp_ip'] = "10.0.100.3"
+default['bcpc']['collectd']['udp_port'] = "25826"
+default['bcpc']['collectd']['log_local'] = true
