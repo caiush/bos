@@ -24,3 +24,6 @@ cd $cwd
 mkdir -p bins 
 cd bins
 mv /tmp/collectd.tgz .
+
+# pull down the required colelctd modules 
+wget https://raw.githubusercontent.com/dwm/collectd-ceph/master/collectd-ceph.py
