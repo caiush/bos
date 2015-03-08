@@ -1,0 +1,9 @@
+
+
+description     "collectd"
+author          "caius.howcroft@gmail.com"
+start on runlevel [2345]
+stop on runlevel [016]
+respawn
+expect fork
+exec /usr/local/sbin/collectd -C /usr/local/etc/collectd.conf
