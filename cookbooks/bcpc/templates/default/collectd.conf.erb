@@ -82,7 +82,7 @@ LoadPlugin syslog
 
 #LoadPlugin aggregation
 ##LoadPlugin amqp
-LoadPlugin apache
+#LoadPlugin apache
 #LoadPlugin apcups
 ##LoadPlugin apple_sensors
 ##LoadPlugin aquaero
@@ -234,11 +234,11 @@ LoadPlugin swap
 #  </Publish>
 #</Plugin>
 
-<Plugin apache>
-  <Instance "local">
-    URL "http://127.0.0.1:80?auto"
-  </Instance>
-</Plugin>
+#<Plugin apache>
+#  <Instance "local">
+#    URL "http://127.0.0.1:80?auto"
+#  </Instance>
+#</Plugin>
 
 #<Plugin apcups>
 #	Host "localhost"
@@ -838,10 +838,17 @@ LoadPlugin swap
 #  LocalSocket "/opt/collectd/var/run/collectd-powerdns"
 #</Plugin>
 
+
 <Plugin processes>
+<% if node["bcpc"]["storage_roles"].include?("osd") %>
 	Process "ceph-osd"
+<% end %>
+<% if node["bcpc"]["storage_roles"].include?("mon") %>
 	Process "ceph-mon"
+<% end %>
+<% if node["bcpc"]["storage_roles"].include?("rgw") %>
 	Process "radosgw"
+<% end %>
 </Plugin>
 
 #<Plugin protocols>
@@ -853,6 +860,7 @@ LoadPlugin swap
 	ModulePath "/usr/local/lib/collectd/python-modules/"
 	LogTraces true
 	Interactive false
+<% if node["bcpc"]["collectd"]["ceph-debug"] %>
 	Import "collectd-ceph"
        	<Module collectd-ceph>
         	SocketPath "/var/run/ceph"
@@ -860,6 +868,15 @@ LoadPlugin swap
 	        CephPath "/usr/bin/ceph"
             	LogRawAverages false
 	</Module>
+<% end %>
+<% if node["bcpc"]["storage_roles"].include?("rgw") %>
+	Import "collectd-rgw-buckets"
+       	<Module "collectd-rgw-buckets">
+	    aws_key "<%=get_config('radosgw-test-access-key')%>"
+	    secret "<%=get_config('radosgw-test-secret-key')%>"
+            admin_url "<%=node['bcpc']['floating']['ip']%>:8045"
+	</Module>  
+<% end %>
 </Plugin>
 
 #<Plugin redis>

@@ -124,3 +124,25 @@ template "/usr/local/bin/radosgw_check.py" do
     owner "root"
     group "root"
 end
+
+# install the aws requests library 
+
+cookbook_file "/tmp/python-requests-aws_0.1.5_all.deb" do
+  source "bins/python-requests-aws_0.1.5_all.deb"
+  owner "root"
+  mode 00444
+end
+
+package "requests-aws" do
+  provider Chef::Provider::Package::Dpkg
+  source "/tmp/python-requests-aws_0.1.5_all.deb"
+  action :install
+end
+
+
+template "/usr/local/bin/ceph-rgw-stats.py" do
+  source "ceph-rgw-stats.py.erb"
+  owner "root"
+  group "root"
+  mode "00755"
+end

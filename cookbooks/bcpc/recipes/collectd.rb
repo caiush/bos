@@ -53,6 +53,12 @@ cookbook_file "/usr/local/lib/collectd/python-modules/collectd-ceph.py" do
   mode 00744
 end
 
+cookbook_file "/usr/local/lib/collectd/python-modules/collectd-rgw-buckets.py" do
+  source "collectd-rgw-buckets.py"
+  owner "root"
+  mode 00744
+end
+
 service "collectd" do
   provider Chef::Provider::Service::Upstart
   action [:enable, :start]

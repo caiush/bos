@@ -12,3 +12,7 @@ Currently, these changes are:
 
 
 
+Monitoring
+==========
+
+BOS will install a collectd deamon that will send a complete dump of the ceph perf counters every 2 mins. Note this can get quite heavy so probably should not be run in production. 

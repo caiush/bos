@@ -16,5 +16,6 @@
     "description": "A Ceph Mon",
     "chef_type": "role",
     "override_attributes": {
+       "bcpc" : { "storage_roles" : ["mon"]}
     }
 }
